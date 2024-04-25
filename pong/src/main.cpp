@@ -1,6 +1,6 @@
 #include <iostream>
 #include "GameEngine.h"
-
+// pong game
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Pong", sf::Style::Default);
