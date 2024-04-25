@@ -17,12 +17,16 @@ void Paddle::draw(sf::RenderWindow& window)
 
 void Paddle::move(float dt, float windowYVal)
 {
-	if (m_shape.getPosition().y - m_shape.getSize().y / 2 > windowYVal)
+	if (m_shape.getPosition().y - m_shape.getSize().y / 2 > windowYVal)// prevents the paddle from going out of bounds(top)
 		m_shape.move(0, -m_speed * dt);
 
-	if (m_shape.getPosition().y + m_shape.getSize().y / 2 < windowYVal)
+	if (m_shape.getPosition().y + m_shape.getSize().y / 2 < windowYVal)// prevents paddle from going outside of bounds(bottom)
 		m_shape.move(0, m_speed * dt);
+
+
+
 }
+
 
 sf::FloatRect Paddle::getBounds() const
 {

@@ -57,6 +57,16 @@ void GameEngine::update()
 	m_hud.setString(ss.str());
 }
 
+void GameEngine::setKeyStates( sf::Event event, float dt) {
+    
+	if (W == event.key.code || UP == event.key.code) {
+		m_paddle1.move(-dt, m_window.getSize().y);
+	}
+	else if (S == event.key.code || DOWN == event.key.code) {
+		m_paddle1.move(dt, m_window.getSize().y);
+	}
+}
+
 void GameEngine::run()
 {
 	float dt;
@@ -73,7 +83,26 @@ void GameEngine::run()
 				m_window.close();
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
 				m_gStates = GameStates::playing;
+
+
+			
+		
 		}
+
+
+
+		if (m_gStates == 1 && event.type==sf::Event::KeyPressed) {
+			setKeyStates(event, dt);
+
+			/*if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::W || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up) {
+				m_paddle1.move(-dt , m_window.getSize().y);
+			}
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down) {
+				m_paddle1.move(dt, m_window.getSize().y);
+			}*/
+		}
+
+
 
 		// ADD YOUR CODE HERE !!!
 		
