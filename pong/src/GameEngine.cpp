@@ -5,7 +5,8 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y -100.f), 10, 100, sf::Color::White),
 	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 400.f, sf::Color::White)
-{
+{   
+	origin = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
 	m_p1Score = 0;
 	m_p2Score = 0;
 	m_gStates = GameStates::intro;
@@ -57,15 +58,7 @@ void GameEngine::update()
 	m_hud.setString(ss.str());
 }
 
-void GameEngine::setKeyStates( sf::Event event, float dt) {
-    
-	if (W == event.key.code || UP == event.key.code) {
-		m_paddle1.move(-dt, m_window.getSize().y);
-	}
-	else if (S == event.key.code || DOWN == event.key.code) {
-		m_paddle1.move(dt, m_window.getSize().y);
-	}
-}
+
 
 void GameEngine::run()
 {
@@ -91,15 +84,42 @@ void GameEngine::run()
 
 
 
-		if (m_gStates == 1 && event.type==sf::Event::KeyPressed) {
-			setKeyStates(event, dt);
+		if (m_gStates == 1 ) { // check if the game should be running using the m_gStates enum variable
 
-			/*if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::W || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up) {
+
+			if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){ // using the SFML keyboard check if 
 				m_paddle1.move(-dt , m_window.getSize().y);
 			}
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)||sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 				m_paddle1.move(dt, m_window.getSize().y);
-			}*/
+			}
+
+			m_ball.move(dt, m_window);
+			if (m_paddle1.getBounds().contains(m_ball.getPosition())) { // if the global bounds of the paddle  has the ball current coordinates in its current range then invert the velocity of the ball 
+				m_ball.updateVelocity(1);
+			}
+			if (m_paddle2.getBounds().contains(m_ball.getPosition())) { // if the global bounds of the paddle has the current ball coordinates in its current range then invert the velocity of the ball 
+				m_ball.updateVelocity(-1);
+			}
+			
+
+
+
+
+			if (m_ball.getPosition().x > m_paddle2.getShape().getPosition().x) { // check if the ball has gone passed the paddles position 
+				m_ball.setPosition(origin.x, origin.y); // set the postion of the ball to the centre of the screen once the ball has passed the paddle(half the screen width and half the screen height)
+				m_ball.updateVelocity(-1); // make the ball go in the opposite direction to the side it just scored on 
+				m_p1Score++; // upadte the score 
+			}
+			if (m_ball.getPosition().x < m_paddle1.getShape().getPosition().x) { // similar process as described above but for when the ball passes the left/player paddle 
+				m_ball.setPosition(origin.x, origin.y);
+				m_ball.updateVelocity(1);
+				m_p2Score++;
+				
+			}
+
+
+			
 		}
 
 
