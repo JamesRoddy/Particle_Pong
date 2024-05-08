@@ -17,7 +17,6 @@ void Paddle::draw(sf::RenderWindow& window)
 
 void Paddle::move(float dt, float windowYVal)
 {
-	std::cout << windowYVal << std::endl;
 	if (m_shape.getPosition().y - m_shape.getSize().y / 2 > windowYVal)
 		m_shape.move(0, -m_speed * dt);
 
@@ -32,9 +31,9 @@ void Paddle::move(float dt, float windowYVal)
 
 void Paddle::trackBall(sf::Vector2f ballPos,float dt,float windowYVal) { 
 
-	sf::Vector2f forward = ballPos - m_shape.getPosition();// get vector between the ballPos and the current position of the paddle 
+	sf::Vector2f distance = ballPos - m_shape.getPosition();// get vector between the ballPos and the current position of the paddle 
 	
-	if ( forward.y<=0 ) {// if the differnce is neagtive(meaning that the paddle is above the ball)
+	if ( distance.y<=0 ) {// if the differnce is neagtive(meaning that the paddle is above the ball)
 
 		if (m_shape.getPosition().y <= m_size.y / 2) { // we first check if the paddle is at the top right of the screen(preventing it from going out of bounds
 			setSpeed(0.0f); // set speed to zero if paddle would go of screen 

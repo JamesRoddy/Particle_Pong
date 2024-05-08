@@ -4,7 +4,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	: m_window(window),
 	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y -100.f), 10, 100, sf::Color::White),
-	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 400.f, sf::Color::White)
+	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 300.0f, sf::Color::White)
 {
 	srand(time(0));
 	origin = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
@@ -125,6 +125,7 @@ void GameEngine::run()
 
 			// get the ball to  move 
 			m_ball.move(dt, m_window); 
+			m_ball.increaseSpeed(dt * 20);
 			m_paddle2.trackBall(m_ball.getPosition(), dt, m_window.getSize().y);// tracking method created for the paddle class 
 			//allowing the AI paddle to track the ball based on the vector between the ball and the paddle 
 
