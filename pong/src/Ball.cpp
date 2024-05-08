@@ -5,7 +5,8 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_speed = speed;
 	m_velocity.x = speed;
 	m_velocity.y = speed;
-	m_maxSpeed = 450.0f;
+	m_speedIncreaseMultiplier = 20;
+	m_maxSpeed = 500.0f;
 	m_shape.setRadius(radius);
 	m_shape.setPosition(position);
 	m_shape.setFillColor(color);
@@ -18,18 +19,17 @@ void Ball::draw(sf::RenderWindow& window)
 }
 void Ball::increaseSpeed(float dt) { // allow for maniplation of the ball speed(setter for ball speed) through calling this method
 
-	float differnce = m_maxSpeed - m_speed;
+	float differnce = m_maxSpeed - m_speed; // get the differnce between the current speed and the maximum speed 
 	
-	if ( differnce > dt) {
-		m_speed += dt;
-	}
-	else if (differnce < -dt) {
-		m_speed -= dt;
+	if ( differnce > (dt*m_speedIncreaseMultiplier)) {  /// if the differnce is greater than the current delta time multipled by the speed increase multipler 
+		m_speed += dt*m_speedIncreaseMultiplier; // increase the speed using a multipler otherwise the speed increase wouldnt be noticable during a game due to the value of DT being realtively small 
+		std::cout << m_speed << std::endl;
+	
 	}
 	else {
 		m_speed = m_maxSpeed;
 	}
-	std::cout << m_speed << std::endl;
+
 }
 void Ball::move(float dt, sf::RenderWindow& window)
 {

@@ -5,6 +5,7 @@ class Ball
 private:
 	float m_speed;
 	float m_maxSpeed;
+	float m_speedIncreaseMultiplier;
 	sf::CircleShape m_shape;
 	sf::Vector2f m_velocity;
 public:

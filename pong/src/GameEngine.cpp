@@ -6,7 +6,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y -100.f), 10, 100, sf::Color::White),
 	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 300.0f, sf::Color::White)
 {
-	srand(time(0));
+	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
 	origin = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
 	m_p1Score = 0;
 	m_p2Score = 0;
@@ -115,7 +115,6 @@ void GameEngine::run()
 			// allow the user to move the left paddle with both arrow keys and W/S
 
 			if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){ // using the SFML isKeyPressed method from the keyBoard class to detect when a specifc key is pressed based on the enum for the key passed in
-				std::cout << "move" << std::endl;
 				m_paddle1.move(-dt , m_window.getSize().y); // if the condtion above is true move the player up
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
@@ -125,7 +124,7 @@ void GameEngine::run()
 
 			// get the ball to  move 
 			m_ball.move(dt, m_window); 
-			m_ball.increaseSpeed(dt * 20);
+			m_ball.increaseSpeed(dt); // passe in the differnence in time between each frame for every update and multiply by 
 			m_paddle2.trackBall(m_ball.getPosition(), dt, m_window.getSize().y);// tracking method created for the paddle class 
 			//allowing the AI paddle to track the ball based on the vector between the ball and the paddle 
 
@@ -148,7 +147,7 @@ void GameEngine::run()
 
 			if (m_ball.getPosition().x > m_paddle2.getShape().getPosition().x) { // check if the ball has gone passed the paddles position 
 				
-				int newPosY = (rand() % (randomBoundUpper - randomBoundLower) + randomBoundLower);
+				int newPosY = (rand() % (randomBoundUpper - randomBoundLower) + randomBoundLower); // get a new random y postion for the ball to start at 
 				m_ball.resetPos(-1, origin.x, newPosY); // reset balls postion and speed
 				m_p1Score++;  // increment the score attribute of the m_paddle1 object(as it just scored)
 			}

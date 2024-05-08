@@ -17,11 +17,18 @@ void Paddle::draw(sf::RenderWindow& window)
 
 void Paddle::move(float dt, float windowYVal)
 {
-	if (m_shape.getPosition().y - m_shape.getSize().y / 2 > windowYVal)
-		m_shape.move(0, -m_speed * dt);
 
-	if (m_shape.getPosition().y + m_shape.getSize().y / 2 < windowYVal)
-		m_shape.move(0, m_speed * dt);
+	// modified condtions of the out of bounds detection to ensure that the player and the ai paddle can no longer go off screen or get stuck at the bottom of the screen 
+	if (m_shape.getPosition().y - m_shape.getSize().y / 2 <= 0)  // check if the paddle would be off the top of the screen according to its current postion 
+	{ 
+		m_shape.setPosition(m_shape.getPosition().x, 0 + m_shape.getSize().y / 2); // reset the paddles postion to the top of the screen+ half the paddle width keeping the paddle on screen and pushing them away from the screen edge 
+	}
+	else if (m_shape.getPosition().y + m_shape.getSize().y / 2 >= windowYVal)  // check if the paddle would be off the bottom of the screen according to its current postion 
+	{
+		m_shape.setPosition(m_shape.getPosition().x,windowYVal - m_shape.getSize().y/2);// reset the paddles postion to the bottom y coordinate  of the screen - half the paddle width keeping the paddle on screen and pushing them away from the screen edge 
+	}
+    m_shape.move(0, m_speed * dt); // move the paddle 
+	
 	
 
 
@@ -35,36 +42,16 @@ void Paddle::trackBall(sf::Vector2f ballPos,float dt,float windowYVal) {
 	
 	if ( distance.y<=0 ) {// if the differnce is neagtive(meaning that the paddle is above the ball)
 
-		if (m_shape.getPosition().y <= m_size.y / 2) { // we first check if the paddle is at the top right of the screen(preventing it from going out of bounds
-			setSpeed(0.0f); // set speed to zero if paddle would go of screen 
-		}
-		else { // otherwise we allow the paddle to move upwards towards the ball 
-			setSpeed(375.0f);
+		// we allow the paddle to move upwards towards the ball 
 			move(-dt, windowYVal);
-		}
-	
-
 	}
 	else{ // else the difference in y is postive meaning the ballPos is below the paddle 
-		if (m_shape.getPosition().y >= (windowYVal - m_size.y/2)-10 ) { // check if the paddle would go out of bounds with a slight offset to esure that the paddle doesn't get completly stuck(ensuring its not directly centre as the paddle wouldnt be able to escape)
-			setSpeed(0.0f); // set speed to 0 if true 
-		}
-		else { // otherwise allow the paddle to track the ball and move down to intercept 
-			setSpeed(375.0f);
-			move(dt, windowYVal);
-		}
+		//  allow the paddle to track the ball and move down to intercept 
+		move(dt, windowYVal);
+	
 		
 
 	}
-	
-	
-	
-
-
-
-
-
-
 
 }
 
