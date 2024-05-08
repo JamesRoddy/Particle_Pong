@@ -21,8 +21,8 @@ private:
 	sf::Vector2f origin;
 	int m_p1Score;
 	int m_p2Score;
-	int randomBoundLower = 10;
-	int randomBoundUpper = m_window.getSize().y - 50;
+	int m_screenRandomBoundLower = m_window.getSize().y/2+50;
+	int m_screenRandomBoundUpper = m_window.getSize().y/2 - 50;
 	static const int m_maxScore = 3;
 	enum GameStates {intro, playing, gameOver};
 	

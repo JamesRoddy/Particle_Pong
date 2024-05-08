@@ -94,16 +94,11 @@ void GameEngine::run()
 		sf::Event event;// creating an event object tied to the smfl libaray that allows handling of things such as key presses 
 		while (m_window.pollEvent(event)) // using the window object's pollEvent method as the condition for the while loop continously checking for certain events such as keyboard input or the window closing  
 		{
-
 			if (event.type == sf::Event::Closed) m_window.close();
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 				m_window.close();
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
 				m_gStates = GameStates::playing;
-
-
-			
-		
 		}
 		
 
@@ -113,7 +108,6 @@ void GameEngine::run()
 		if (m_gStates == 1 ) { // check if the game should be running using the m_gStates enum variable
 
 			// allow the user to move the left paddle with both arrow keys and W/S
-
 			if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){ // using the SFML isKeyPressed method from the keyBoard class to detect when a specifc key is pressed based on the enum for the key passed in
 				m_paddle1.move(-dt , m_window.getSize().y); // if the condtion above is true move the player up
 			}
@@ -121,16 +115,15 @@ void GameEngine::run()
 				m_paddle1.move(dt, m_window.getSize().y);// if the condtion above is true move the player down
 			}
 
-
 			// get the ball to  move 
 			m_ball.move(dt, m_window); 
-			m_ball.increaseSpeed(dt); // passe in the differnence in time between each frame for every update and multiply by 
-			m_paddle2.trackBall(m_ball.getPosition(), dt, m_window.getSize().y);// tracking method created for the paddle class 
-			//allowing the AI paddle to track the ball based on the vector between the ball and the paddle 
-
-
+			m_ball.increaseSpeed(dt); // pass in the differnence in time between each frame for every update and increase the balls speed using delta time
+			
+			// below is a tracking method created for the paddle class which
+			//allows the AI paddle to track the ball based on the vector between the ball and the paddle 
+			m_paddle2.trackBall(m_ball.getPosition(), dt, m_window.getSize().y);
+			
 			// collsion detection  for both paddles 
-
 			if (m_paddle1.getBounds().contains(m_ball.getPosition())) { // if the global bounds of the paddle  has the ball current coordinates in its current range then invert the velocity of the ball 
 				m_ball.updateVelocity(1);// we reverse the velocity of the ball to travel towards the right
 			}
@@ -139,28 +132,23 @@ void GameEngine::run()
 				m_ball.updateVelocity(-1); // we reverse the velcoity of the ball to travel towards the left
 			}
 			
-
-
-
-
 			// updating scores when the ball passes either paddle 
 
 			if (m_ball.getPosition().x > m_paddle2.getShape().getPosition().x) { // check if the ball has gone passed the paddles position 
 				
-				int newPosY = (rand() % (randomBoundUpper - randomBoundLower) + randomBoundLower); // get a new random y postion for the ball to start at 
+				int newPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower); // get a new random y postion for the ball to start at 
 				m_ball.resetPos(-1, origin.x, newPosY); // reset balls postion and speed
 				m_p1Score++;  // increment the score attribute of the m_paddle1 object(as it just scored)
 			}
 			if (m_ball.getPosition().x < m_paddle1.getShape().getPosition().x) { // similar process as described above but for when the ball passes the left/player paddle 
-				int newPosY = (rand() % (randomBoundUpper - randomBoundLower) + randomBoundLower);
-				m_ball.resetPos(1, origin.x, newPosY); 
+				int newPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower);
+				m_ball.resetPos(1, origin.x, newPosY); // reset balls postion
 				
 				m_p2Score++;
 				
 			}
 
 			// checking for if either paddle has a score equal to the m_maxScore variable
-
 			if (m_p1Score == m_maxScore || m_p2Score == m_maxScore) { // check if either score attribute attached to the paddle 1 and paddle 2 objects has reached the max score count 
 				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
 			   
@@ -172,11 +160,6 @@ void GameEngine::run()
 
 			
 		}
-
-
-
-		
-		
 		
 		// update hud
 		update();
