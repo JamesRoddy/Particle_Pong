@@ -4,7 +4,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	: m_window(window),
 	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y -100.f), 10, 100, sf::Color::White),
-	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 300.0f, sf::Color::White)
+	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 250.0f, sf::Color::White)
 {
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
 	origin = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
@@ -54,6 +54,9 @@ void GameEngine::update()
 			
 
 		}
+		
+
+
 		// allow player to continue after winning or losing 
 		
 		ss << "would you like to\n continue(y/n)\n";  // added continue message during the game over screen
@@ -61,7 +64,12 @@ void GameEngine::update()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y)) {  // if the m_gameStates is currently set to the constant "gameOver" and the user presses the Y key
 			
 			m_gStates = intro;  // we take them back to the intro state/screen allowing them to play again(rather than just closing the program
-			
+
+			// reset game objects to their original positions
+			m_ball.resetPos(1, m_window.getSize().x / 2, m_window.getSize().y / 2); 
+			m_paddle1.reset(sf::Vector2f(20, m_window.getSize().y / 2));
+			m_paddle2.reset(sf::Vector2f(m_window.getSize().x - 20.f, m_window.getSize().y - 100.f));
+
 			m_p1Score = 0;   // also make sure to reset the scores(so it doesnt keep asking them if they want to continue 
 			m_p2Score = 0;  //i.e otherwise the gameStates vairbale would keep getting set to the  gameOver constant 
 
@@ -150,8 +158,10 @@ void GameEngine::run()
 
 			// checking for if either paddle has a score equal to the m_maxScore variable
 			if (m_p1Score == m_maxScore || m_p2Score == m_maxScore) { // check if either score attribute attached to the paddle 1 and paddle 2 objects has reached the max score count 
+			
 				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
-			   
+				// reset object positions
+
 			
 			}
 

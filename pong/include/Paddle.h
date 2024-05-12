@@ -14,6 +14,7 @@ public:
 	
 	void draw(sf::RenderWindow& window); 
 	void move(float dt, float windowYVal);
+	void reset(sf::Vector2f position);
 	sf::FloatRect getBounds() const;
 	sf::RectangleShape getShape();
 

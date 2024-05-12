@@ -23,7 +23,7 @@ void Ball::increaseSpeed(float dt) { // allow for maniplation of the ball speed(
 	
 	if ( differnce > (dt*m_speedIncreaseMultiplier)) {  /// if the differnce is greater than the current delta time multipled by the speed increase multipler 
 		m_speed += dt*m_speedIncreaseMultiplier; // increase the speed using a multipler otherwise the speed increase wouldnt be noticable during a game due to the value of DT being realtively small 
-		std::cout << m_speed << std::endl;
+		
 	
 	}
 	else {
@@ -55,12 +55,17 @@ void Ball::setPosition(float x, float y)
 
 void Ball::updateVelocity(float val)
 {
+	if (m_velocity.y == 0) { // if the ball has recently reset(y vel is set to 0 when this happens) and a collsion has occurred meaning we need to invert the velocity
+		m_velocity.y = m_speed; // set the y velocity back to the current speed 
+	}
 	m_velocity.x = m_speed * val;
 }
 void Ball::resetPos(float newDirection, int newX, int newY) {
+
+	m_velocity.y = 0; // set y velocity at 0 allowing for each serve to be in a straight line on the x axis 
+	m_speed = 250.0f;// give the ball a slower speed to give the player more time to react when it resets
 	setPosition(newX, newY); // set the postion of the ball to the centre of the screen once the ball has passed the paddle(half the screen width and half the screen height)
-	m_speed = 300.0f;// give the ball a slower speed to give the player more time to react when it resets
-	updateVelocity(newDirection); // make the ball go in the opposite direction to the side it just scored on 
+
 }
 sf::CircleShape Ball::getShape()
 {
