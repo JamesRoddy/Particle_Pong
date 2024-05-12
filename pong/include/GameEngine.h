@@ -3,7 +3,7 @@
 #include <sstream>
 #include "Paddle.h"
 #include "Ball.h"
-
+#include "../particle.h"
 class GameEngine
 {
 private:
@@ -13,8 +13,8 @@ private:
 	sf::SoundBuffer m_ballBuffer;
 	sf::Sound m_ballSound;
 	sf::Clock m_clock;
-
-
+;
+	effectGenerator m_effects;
 	Paddle m_paddle1;
 	Paddle m_paddle2;
 	Ball m_ball;

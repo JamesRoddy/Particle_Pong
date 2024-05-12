@@ -6,14 +6,15 @@ class particle {
 public:
 
 	particle(float x, float y, sf::Color, float radius);
-	void update(float dt);
+	void move(float dt);
+	void draw(sf::RenderWindow& window);
 	sf::CircleShape particleShape;
 	sf::Vector2f velocity;
 	float particleX;
 	float particleY;
 private:
-	float speed = 3;
-	float alpha = 1;
+	float speed = 100.0f;
+	float alpha = 1.0f;
 
 
 
