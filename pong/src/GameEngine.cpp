@@ -95,7 +95,7 @@ void GameEngine::update()
 void GameEngine::run()
 {
 	float dt;
-	m_effects.generateParticles(10, 5);
+	
 	while (m_window.isOpen())
 	{
 		dt = m_clock.restart().asSeconds(); // get the differnce between the last and current frame(delta time)  
@@ -135,10 +135,13 @@ void GameEngine::run()
 			
 			// collsion detection  for both paddles 
 			if (m_paddle1.getBounds().contains(m_ball.getPosition())) { // if the global bounds of the paddle  has the ball current coordinates in its current range then invert the velocity of the ball 
+
+				m_effects.generateCollsionParticles(m_ball.getPosition(), 1);
 				m_ball.updateVelocity(1);// we reverse the velocity of the ball to travel towards the right
 			}
 			if (m_paddle2.getBounds().contains(m_ball.getPosition())) { // if the global bounds of the paddle has the current ball coordinates in its current range then invert the velocity of the ball 
 				
+				m_effects.generateCollsionParticles(m_ball.getPosition(), -1);
 				m_ball.updateVelocity(-1); // we reverse the velcoity of the ball to travel towards the left
 			}
 			
@@ -160,7 +163,7 @@ void GameEngine::run()
 
 			// checking for if either paddle has a score equal to the m_maxScore variable
 			if (m_p1Score == m_maxScore || m_p2Score == m_maxScore) { // check if either score attribute attached to the paddle 1 and paddle 2 objects has reached the max score count 
-			
+			   
 				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
 				// reset object positions
 
