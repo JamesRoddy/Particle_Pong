@@ -22,6 +22,7 @@
     <ClInclude Include="include\Ball.h" />
     <ClInclude Include="include\GameEngine.h" />
     <ClInclude Include="include\Paddle.h" />
+    <ClInclude Include="particle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Particle.cpp" />
