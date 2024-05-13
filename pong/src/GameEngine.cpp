@@ -116,7 +116,9 @@ void GameEngine::run()
 		// ADD YOUR CODE HERE !!!
 
 		if (m_gStates == 1 ) { // check if the game should be running using the m_gStates enum variable
-			m_effects.update(dt);
+			
+			m_effects.update(dt); // update all particles currently on screen 
+
 			// allow the user to move the left paddle with both arrow keys and W/S
 			if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){ // using the SFML isKeyPressed method from the keyBoard class to detect when a specifc key is pressed based on the enum for the key passed in
 				m_paddle1.move(-dt , m_window.getSize().y); // if the condtion above is true move the player up
@@ -136,12 +138,12 @@ void GameEngine::run()
 			// collsion detection  for both paddles 
 			if (m_paddle1.getBounds().contains(m_ball.getPosition())) { // if the global bounds of the paddle  has the ball current coordinates in its current range then invert the velocity of the ball 
 
-				m_effects.generateCollsionParticles(m_ball.getPosition(), 1);
+				m_effects.generateCollsionParticles(m_ball.getPosition(), 1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 				m_ball.updateVelocity(1);// we reverse the velocity of the ball to travel towards the right
 			}
 			if (m_paddle2.getBounds().contains(m_ball.getPosition())) { // if the global bounds of the paddle has the current ball coordinates in its current range then invert the velocity of the ball 
 				
-				m_effects.generateCollsionParticles(m_ball.getPosition(), -1);
+				m_effects.generateCollsionParticles(m_ball.getPosition(), -1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 				m_ball.updateVelocity(-1); // we reverse the velcoity of the ball to travel towards the left
 			}
 			

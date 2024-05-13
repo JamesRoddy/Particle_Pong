@@ -25,19 +25,19 @@ particle::particle(float startX, float startY, sf::Color colour, float radius, b
 
 }
 
-void particle::move(float dt) { // method od the particle class used to update the pos of the particles shape 
+void particle::update(float dt) { // method of the particle class used to update the pos of the particles shape and any other arttibutes that need to be updated i.e alpha values
 
 	this->m_particleShape.move(m_velocity*dt); // get the particles shape attribute  and call the predefined move method 
 	// moving the particle's shape  at on offset of its velocity vector attribute multiplied by dt to move it at a consistent rate 
 
-	/*if (m_hasAlpha) {
-		m_colour.a = m_alpha;
-		this->m_particleShape.setFillColor(m_colour);
+	if (m_hasAlpha) { // if the particles alpha value should be manipulated 
+		m_colour.a = m_alpha; // set the particles color attribute to the current value of its alpha attriubte m_alpha(has a default value of 255 for each particle)
+		this->m_particleShape.setFillColor(m_colour); // set the fill colour of the particles shape to take into account the new alpha value 
 
-		if (!(m_alpha <= 0.0f)) {
-			m_alpha -= 0.1f;
+		if (!(m_alpha <= 0.0f)) {  // if the alpha values is not smaller than or equal to 0(ensuring the particles dont reappear after fading)
+			m_alpha -= 0.055f; // tick down the alpha value of the particle by a small amount,resulting in it fading over time 
 		}
-	}*/
+	}
 	
 
 }
@@ -50,7 +50,7 @@ void particle::draw(sf::RenderWindow& window) { // the draw method for the parti
 
 
 effectGenerator::effectGenerator(unsigned int width, unsigned int height) { // effect egenrator constructor that takes in the current window width and height 
-	windowWidth = width; // asgin the passed in widht and height arguments to the windowHeight and windowWidth attributes of the effectGenerator  class
+	windowWidth = width; // assign the passed in widht and height arguments to the windowHeight and windowWidth attributes of the effectGenerator  class
 	windowHeight = height;
 
 }
@@ -79,8 +79,8 @@ void effectGenerator::generateParticles(int newCount, float radius, sf::Vector2f
 // used to generate a burst of particles each time the ball collides with the paddle 
 void effectGenerator::generateCollsionParticles( sf::Vector2f position, int direction) {  // takes in the postion of the collsion and the direction the particles need to fly according to the paddle they hit 
 
-	int iradiusUpperBound = 5; // setting an upper bound for genrtaing a random radius 
-	int iradiusLowerBound = 2; /// setting lower bound 
+	int iradiusUpperBound = 4; // setting an upper bound for genrtaing a random radius 
+	int iradiusLowerBound = 1; /// setting lower bound 
 	
 	
 	for (int i = 0; i < 5; i++) { // generate 5 particles on each collsion
@@ -88,7 +88,7 @@ void effectGenerator::generateCollsionParticles( sf::Vector2f position, int dire
 		float fRadius = (rand() % (iradiusUpperBound - iradiusLowerBound) + iradiusLowerBound); // egenrate random radius for the particle depeding on upper and lower bound values 
 		particle newParticle = particle(position.x, position.y, sf::Color::White, fRadius, true, -100, 100); // gernate a new particle object to be pushed to the currentParticle vector arrtibute of the effect geenrator class allowing the particles to be drawn onto the screen and updated 
 		// these particles have a speed range of -100 to 100
-		newParticle.m_velocity.x = abs(newParticle.m_speed) * direction; // dertmine the direction the particles will go in on the x and y with the particles in this case the particles will always tarvel in the opposite direction of the paddle they just hit 
+		newParticle.m_velocity.x = abs(newParticle.m_speed) * direction; // determine the direction the particles will go in on the x and y with the particles in this case the particles will always tarvel in the opposite direction of the paddle they just hit 
 		newParticle.m_velocity.y = newParticle.m_speed; // particles will travel up and down on y ( n or p) depedning on  their generated speed value (-100 to 100)
 
 		currentParticles.push_back(newParticle); // push the new particle object to the currentParticles vector 
@@ -108,15 +108,19 @@ void effectGenerator::draw(sf::RenderWindow& window) { // this is the main metho
 }
 
 void effectGenerator::update(float dt) { // the effect egenrator is used to amange all of the current particles on screen therefore it only needs to update the particles and check for condtions where they would need to disappear 
-	
-	for (int i = 0; i < currentParticles.size();i++) { // loop through all of the current particle objects contained wihtin the vector attribute of the effect geenrator class 
-		/*if (currentParticles[i].m_alpha <= 0.0f) {
 
-			currentParticles.erase(currentParticles.begin() + i);
-			currentParticles.resize(currentParticles.size() - 1);
-		}*/
-		currentParticles[i].move(dt); // for each particle update its postion and any toher attributes of the particle object such as an alpha value for its colour 
+	for (int i = 0; i < currentParticles.size();i++) { // loop through all of the current particle objects contained wihtin the vector attribute of the effect geenrator class 
+		std::cout << i << std::endl;
+		if (currentParticles[i].m_alpha <= 0.0f) { // if the currentPaticle being checked in the vector has an alpha value smaller than or equal to 0 meaning it is no longer visible
+
+			currentParticles.erase(currentParticles.begin() + i); // remove the particle object from the array so it is no longer drawn/updated erase also automalically adjusts the size of the vector based on the number of elements removed 
+			
+		} 
+		else { // otherwise if there ar no condtions that would require the particle t be removed from the vector 
+			
+			currentParticles[i].update(dt); // for each particle update its postion and any other attributes of the particle object such as an alpha value for its colour 
 		
+		}
 	}
 
 

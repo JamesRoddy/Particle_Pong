@@ -7,7 +7,7 @@ class particle {
 public:
 	// definig constrcuor  for particle and ist arguments 
 	particle(float x, float y, sf::Color colour, float radius , bool hasAlpha,int speedMin = 100 ,int speedMax = 200);
-	void move(float dt); /// used to update the particles postion in accordance wiht dt
+	void update(float dt); /// used to update the particles postion in accordance wiht dt
 	void draw(sf::RenderWindow& window); // draw method that will be used to render the shape attribute of each particle
 	// public atttributes for the particle 
 
@@ -17,7 +17,7 @@ public:
 
 	float m_speed; // speed attribute used to control the rate at which the particle will move 
 	bool m_hasAlpha = false; // definng if the alpha value of the colour should be manipluated 
-	float m_alpha = 1.0f; // inital alpha 
+	float m_alpha = 255.0f; // inital alpha 
 
 private:
 	float m_particleX;
