@@ -63,9 +63,11 @@ void Ball::updateVelocity(float val)
 void Ball::resetPos(float newDirection, int newX, int newY) {
 
 	m_velocity.y = 0; // set y velocity at 0 allowing for each serve to be in a straight line on the x axis 
-	m_speed = 250.0f;// give the ball a slower speed to give the player more time to react when it resets
+	m_speed = 250.0f;
+	m_velocity.x = m_speed;// give the ball a slower speed to give the player more time to react when it resets
+	
 	setPosition(newX, newY); // set the postion of the ball to the centre of the screen once the ball has passed the paddle(half the screen width and half the screen height)
-
+	
 }
 sf::CircleShape Ball::getShape()
 {

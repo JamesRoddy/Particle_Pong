@@ -149,13 +149,13 @@ void GameEngine::run()
 			
 			// updating scores when the ball passes either paddle 
 
-			if (m_ball.getPosition().x > m_paddle2.getShape().getPosition().x) { // check if the ball has gone passed the paddles position 
+			if (m_ball.getPosition().x > m_window.getSize().x) { // check if the ball has gone passed the paddles position 
 				
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower); // get a new random y postion for the ball to start at 
 				m_ball.resetPos(-1, origin.x, inewPosY); // reset balls postion and speed
 				m_p1Score++;  // increment the score attribute of the m_paddle1 object(as it just scored)
 			}
-			if (m_ball.getPosition().x < m_paddle1.getShape().getPosition().x) { // similar process as described above but for when the ball passes the left/player paddle 
+			if (m_ball.getPosition().x < 0) { // similar process as described above but for when the ball passes the left/player paddle 
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower);
 				m_ball.resetPos(1, origin.x, inewPosY); // reset balls postion
 				

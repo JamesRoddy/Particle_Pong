@@ -35,7 +35,7 @@ void particle::update(float dt) { // method of the particle class used to update
 		this->m_particleShape.setFillColor(m_colour); // set the fill colour of the particles shape to take into account the new alpha value 
 
 		if (!(m_alpha <= 0.0f)) {  // if the alpha values is not smaller than or equal to 0(ensuring the particles dont reappear after fading)
-			m_alpha -= 0.055f; // tick down the alpha value of the particle by a small amount,resulting in it fading over time 
+			m_alpha -= 0.1f; // tick down the alpha value of the particle by a small amount, resulting in it fading over time 
 		}
 	}
 	
