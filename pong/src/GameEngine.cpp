@@ -174,8 +174,6 @@ void GameEngine::run()
 			   
 				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
 				
-				
-				// reset object positions
 
 			
 			}

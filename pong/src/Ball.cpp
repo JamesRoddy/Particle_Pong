@@ -2,6 +2,8 @@
 #include<iostream>
 Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 {
+	// asiging the attributes to any instance/object created that is of the ball class
+	//  all of the arguments passed into the constructor are assgined to the attributes when it is called 
 	m_speed = speed;
 	m_velocity.x = speed;
 	m_velocity.y = speed;
@@ -27,13 +29,12 @@ void Ball::increaseSpeed(float dt) { // allow for maniplation of the ball speed(
 	     
 	}
 	else {
-		m_speed = m_maxSpeed;
+		m_speed = m_maxSpeed; // otherwise if the max speed is hit we ensure that it doesnt go over that value 
 	}
 
 }
 void Ball::move(float dt, sf::RenderWindow& window)
 {
-	
 
 	if (m_shape.getPosition().y < 1 ||
 		m_shape.getPosition().y + m_shape.getRadius() * 2 > window.getSize().y - 1)
@@ -45,12 +46,14 @@ void Ball::move(float dt, sf::RenderWindow& window)
 
 sf::Vector2f Ball::getPosition()
 {
-	return m_shape.getPosition();
+	return m_shape.getPosition(); // return the resul of calling the get postion method on the m_shape attribute contained within the ball class 
+	// this wil return an sfml vector2f object repsenting the current coordinates of the m_shape object  
 }
 
+// this mehtod will set the psotion of the m_shape object( assgine dot the built in CircleShape class) based on the passed in float arguments(x,y)
 void Ball::setPosition(float x, float y)
 {
-	m_shape.setPosition(x, y);
+	m_shape.setPosition(x, y); 
 }
 
 void Ball::updateVelocity(float val)
@@ -69,9 +72,11 @@ void Ball::resetPos(float newDirection, int newX, int newY ) {
 	setPosition(newX, newY); // set the postion of the ball to the centre of the screen once the ball has passed the paddle(half the screen width and half the screen height)
 	
 }
+
+// allows access to the private m_shape attribute that is conatined wihtin the ball class(and assgine to any object of the ball class)
 sf::CircleShape Ball::getShape()
 {
-	return m_shape;
+	return m_shape; // this will allow access to all of the methods asscoiated with the m_shape attribute
 }
 
 

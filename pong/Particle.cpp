@@ -16,7 +16,7 @@ particle::particle(float startX, float startY, sf::Color colour, float radius, b
 	m_hasAlpha = hasAlpha; // some particles may have their alpha values manipulated therefore this bool attribute 'm_hasAlpha' will be used to determine if the particles alpha should be changed 
 	m_colour = colour;  // set the colour attribute of the particle 
     	
-	// setting the properties of the particles shape object(in this case the in built sf::circle object)
+	// setting the properties of the particle's shape object(in this case the in built sf::circle object)
 	m_particleShape.setRadius(radius); // set the radius of the particle using the radius argument passed into the constructor  
 	m_particleShape.setPosition(m_particleX, m_particleY); //set pos
 	m_particleShape.setFillColor(colour);// set colour 
@@ -45,7 +45,7 @@ void particle::update(float dt) { // method of the particle class used to update
 	
 
 }
-void particle::draw(sf::RenderWindow& window) { // the draw method for the particle that will be called in a foreach loop to draw each aprticle to the screen(this loop can be located in the effectGenerator class)
+void particle::draw(sf::RenderWindow& window) { // the draw method for the particle that will be called in a foreach loop to draw each particle to the screen(this loop can be located in the effectGenerator class)
 
 	window.draw(this->m_particleShape); // call the draw method through the refernce argument to the window to draw the particles shape(an attribute of the particle class)
 	
@@ -54,7 +54,7 @@ void particle::draw(sf::RenderWindow& window) { // the draw method for the parti
 
 
 effectGenerator::effectGenerator(unsigned int width, unsigned int height) { // effect generator constructor that takes in the current window width and height 
-	windowWidth = width; // assign the passed in widht and height arguments to the windowHeight and windowWidth attributes of the effectGenerator  class
+	windowWidth = width; // assign the passed in width and height arguments to the windowHeight and windowWidth attributes of the effectGenerator  class
 	windowHeight = height;
 
 }
@@ -65,7 +65,7 @@ effectGenerator::effectGenerator(unsigned int width, unsigned int height) { // e
 void effectGenerator::generateParticles(int newCount, float radius, sf::Vector2f position ) { 
 
 
-	float newColorValue = rand() % 255; // genertae random colour value up to 255
+	float newColorValue = rand() % 255; // generate random colour value up to 255
 	float randX = (rand() % int(windowWidth - radius * 2)); // generate random postion based on screen widht  height and radius argument 
 	float randY = (rand() % int(windowHeight - radius * 2));
 	
@@ -109,7 +109,7 @@ void effectGenerator::generateCollsionParticles( sf::Vector2f position, int dire
 }
 
 
-void effectGenerator::draw(sf::RenderWindow& window) { // this is the main method that will be called by an effect geenrator object defined in the game engine header file/cpp and is used to draw each particle object currently active on the screen 
+void effectGenerator::draw(sf::RenderWindow& window) { // this is the main method that will be called by an effect generator object defined in the game engine header file/cpp and is used to draw each particle object currently active on the screen 
 	for (int i = 0; i < currentParticles.size(); i++) { // for each particle object in the vector 'currentParticles'
 		currentParticles[i].draw(window); // call each particle objects draw method
 	}
