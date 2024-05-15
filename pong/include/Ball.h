@@ -16,7 +16,7 @@ public:
 	void move(float dt, sf::RenderWindow& window);
 	sf::Vector2f getPosition();
 	void setPosition(float x, float y);
-	void resetPos(float newDirection,int newX,int newY );
+	void resetPos(float newDirection,int newX,int newY);
 	void updateVelocity(float val);
 	sf::CircleShape getShape();
 };

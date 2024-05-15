@@ -4,6 +4,8 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 {
 	m_size.x = width;
 	m_size.y = height;
+	m_debug.setRadius(10);
+	m_debug.setFillColor(sf::Color::Blue);
 	m_shape.setSize(m_size);
 	m_shape.setPosition(position);
 	m_shape.setFillColor(color);
@@ -19,6 +21,7 @@ void Paddle:: reset(sf::Vector2f position) {
 void Paddle::draw(sf::RenderWindow& window)
 {
 	window.draw(m_shape);
+	window.draw(m_debug);
 }
 
 void Paddle::move(float dt, float windowYVal)
@@ -35,28 +38,32 @@ void Paddle::move(float dt, float windowYVal)
 	}
     m_shape.move(0, m_speed * dt); // move the paddle 
 	
-	
-
 
 }
 
+void Paddle::setAiSpeed(float angle) {
+	
+	
+	m_AIvelocity.y = sin(angle) *m_speed ;
+	
+	m_shape.move(m_AIvelocity);
 
+}
 
-void Paddle::trackBall(sf::Vector2f ballPos,float dt,float windowYVal) { 
+void Paddle::trackBall(sf::Vector2f ballPos,sf::Vector2f playerPos,float dt,float windowYVal) { 
 
 	sf::Vector2f distance = ballPos - m_shape.getPosition();// get vector between the ballPos and the current position of the paddle 
+	
 	
 	if ( distance.y<=0 ) {// if the differnce is neagtive(meaning that the paddle is above the ball)
 
 		// we allow the paddle to move upwards towards the ball 
 			move(-dt, windowYVal);
 	}
-	else{ // else the difference in y is postive meaning the ballPos is below the paddle 
-		//  allow the paddle to track the ball and move down to intercept 
-		move(dt, windowYVal);
+	else{ // else the difference in y is postive meaning the ballPos is below the paddle 	
+	//  allow the paddle to track the ball and move down to intercept 
+	move(dt, windowYVal);
 	
-		
-
 	}
 
 }

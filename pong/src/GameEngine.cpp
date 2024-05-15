@@ -4,7 +4,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	: m_window(window),
 	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y - 100.f), 10, 100, sf::Color::White),
-	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 250.0f, sf::Color::White),
+	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 300.0f, sf::Color::White),
 	m_effects(window.getSize().x, window.getSize().y)
 {   
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
@@ -133,18 +133,25 @@ void GameEngine::run()
 			
 			// below is a tracking method created for the paddle class which
 			//allows the AI paddle to track the ball based on the vector between the ball and the paddle 
-			m_paddle2.trackBall(m_ball.getPosition(), dt, m_window.getSize().y);
+			if (m_ball.getPosition().x > m_window.getSize().x / 4) { // only allow the AI to move if the ball is on its side of the court
+				m_paddle2.trackBall(m_ball.getPosition(), m_paddle1.getShape().getPosition(), dt, m_window.getSize().y);
+			
+			}
+	
 			
 			// collsion detection  for both paddles 
-			if (m_paddle1.getBounds().contains(m_ball.getPosition())) { // if the global bounds of the paddle  has the ball current coordinates in its current range then invert the velocity of the ball 
-
-				m_effects.generateCollsionParticles(m_ball.getPosition(), 1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
-				m_ball.updateVelocity(1);// we reverse the velocity of the ball to travel towards the right
-			}
-			if (m_paddle2.getBounds().contains(m_ball.getPosition())) { // if the global bounds of the paddle has the current ball coordinates in its current range then invert the velocity of the ball 
+			if (m_ball.getShape().getGlobalBounds().intersects(m_paddle1.getBounds())) { // if the global bounds of the ball intersect with the global bounds of the  m_paddle1 meaning that the two bounding rectangles intersect 
 				
-				m_effects.generateCollsionParticles(m_ball.getPosition(), -1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
+				m_ball.updateVelocity(1);// we reverse the velocity of the ball to travel towards the right
+				
+				m_effects.generateCollsionParticles(m_ball.getPosition(), 1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
+				
+			}
+			if (m_ball.getShape().getGlobalBounds().intersects(m_paddle2.getBounds())) { // if the global bounds of the ball intersect with the global bounds of the  m_paddle2 meaning that the two bounding rectangles intersect 
+				
 				m_ball.updateVelocity(-1); // we reverse the velcoity of the ball to travel towards the left
+				m_effects.generateCollsionParticles(m_ball.getPosition(), -1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
+				
 			}
 			
 			// updating scores when the ball passes either paddle 
@@ -158,7 +165,6 @@ void GameEngine::run()
 			if (m_ball.getPosition().x < 0) { // similar process as described above but for when the ball passes the left/player paddle 
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower);
 				m_ball.resetPos(1, origin.x, inewPosY); // reset balls postion
-				
 				m_p2Score++;
 				
 			}
@@ -167,6 +173,8 @@ void GameEngine::run()
 			if (m_p1Score == m_maxScore || m_p2Score == m_maxScore) { // check if either score attribute attached to the paddle 1 and paddle 2 objects has reached the max score count 
 			   
 				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
+				
+				
 				// reset object positions
 
 			

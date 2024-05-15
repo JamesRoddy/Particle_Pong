@@ -5,8 +5,8 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_speed = speed;
 	m_velocity.x = speed;
 	m_velocity.y = speed;
-	m_speedIncreaseMultiplier = 20;
-	m_maxSpeed = 500.0f;
+	m_speedIncreaseMultiplier = 30;
+	m_maxSpeed = 600.0f;
 	m_shape.setRadius(radius);
 	m_shape.setPosition(position);
 	m_shape.setFillColor(color);
@@ -21,10 +21,10 @@ void Ball::increaseSpeed(float dt) { // allow for maniplation of the ball speed(
 
 	float differnce = m_maxSpeed - m_speed; // get the differnce between the current speed and the maximum speed 
 	
-	if ( differnce > (dt*m_speedIncreaseMultiplier)) {  /// if the differnce is greater than the current delta time multipled by the speed increase multipler 
+	if ( differnce > (dt * m_speedIncreaseMultiplier)) {  /// if the differnce is greater than the current delta time multipled by the speed increase multipler 
 		m_speed += dt*m_speedIncreaseMultiplier; // increase the speed using a multipler otherwise the speed increase wouldnt be noticable during a game due to the value of DT being realtively small 
-		
-	
+		 
+	     
 	}
 	else {
 		m_speed = m_maxSpeed;
@@ -60,10 +60,10 @@ void Ball::updateVelocity(float val)
 	}
 	m_velocity.x = m_speed * val;
 }
-void Ball::resetPos(float newDirection, int newX, int newY) {
+void Ball::resetPos(float newDirection, int newX, int newY ) {
 
 	m_velocity.y = 0; // set y velocity at 0 allowing for each serve to be in a straight line on the x axis 
-	m_speed = 250.0f;
+	m_speed = 300.0f;
 	m_velocity.x = m_speed;// give the ball a slower speed to give the player more time to react when it resets
 	
 	setPosition(newX, newY); // set the postion of the ball to the centre of the screen once the ball has passed the paddle(half the screen width and half the screen height)
