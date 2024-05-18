@@ -1,8 +1,9 @@
 #include "GameEngine.h"
 
 GameEngine::GameEngine(sf::RenderWindow& window)
+// initilasing all of the attributes that are objects of other classes wihtin the game engine.h file 
 	: m_window(window),
-	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),
+	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),  // initialsing the m_paddle1 class 
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y - 100.f), 10, 100, sf::Color::White),
 	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 300.0f, sf::Color::White),
 	m_effects(window.getSize().x, window.getSize().y)
@@ -11,9 +12,9 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	origin = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
 	m_p1Score = 0;
 	m_p2Score = 0;
-	m_gStates = GameStates::intro;
-	m_font.loadFromFile(".\\assets\\fonts\\digital-7.ttf");
-	m_hud.setFont(m_font);
+	m_gStates = GameStates::intro; // on intialisation set the game states enum vairbale to the value of 0
+	m_font.loadFromFile(".\\assets\\fonts\\digital-7.ttf");  // used to load the specifc font file that will be used when text is rendered to the screen 
+	m_hud.setFont(m_font); // setting the font of the m_hud attribute within the GameEngine class whihc is an object of the Text class 
 	m_hud.setCharacterSize(50);
 	m_hud.setFillColor(sf::Color::White);
 
@@ -25,27 +26,30 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 
 void GameEngine::draw()
 {
-	m_window.clear();
+	// draw all shapes and text to the screen
+	m_window.clear(); // refresh window for each call to draw
 	m_paddle1.draw(m_window);
 	m_paddle2.draw(m_window);
 	m_ball.draw(m_window);
-	m_effects.draw(m_window);
+	m_effects.drawShapes(m_window); // draw all current particle effects to the screen 
+	/*m_effects.drawVerticies(m_window);*/
 	m_window.draw(m_hud);
-	m_window.display();
+	m_window.display(); // display everything to the screen once it has been rendered 
 }
 
 void GameEngine::update()
 {
 	// update hud
-	std::stringstream ss;
-	switch (m_gStates)
+	std::stringstream ss; // string stream that will hold all of the text currently being displayed on the screen 
+	switch (m_gStates) // switch case used to dtermine how the hud should change based on the current value of the enum objet m_gamestates 
 	{
-	case GameEngine::intro:
+	case GameEngine::intro: // if the value of game states has the same value as the enum constant 'intro'(0)
 		ss << "Press the Space\nkey to start";
 		break;
-	case GameEngine::playing:
+	case GameEngine::playing: 
 		ss << m_p1Score << " - " << m_p2Score;
 		break;
+
 	case GameEngine::gameOver:
 		if (m_p1Score > m_p2Score) {
 			ss << "Player 1 wins\n";
@@ -57,8 +61,6 @@ void GameEngine::update()
 
 		}
 		
-
-
 		// allow player to continue after winning or losing 
 		
 		ss << "would you like to\n continue(y/n)\n";  // added continue message during the game over screen
@@ -83,11 +85,12 @@ void GameEngine::update()
 		
 
 		break;
+
 	default:
 		break;
 	}
 		
-	m_hud.setString(ss.str());
+	m_hud.setString(ss.str()); // assigining the string stream to the m_hud attribute that is an object of the built in SFML Text class that allows text to be drawn to the window
 }
 
 
@@ -117,11 +120,12 @@ void GameEngine::run()
 
 		if (m_gStates == 1 ) { // check if the game should be running using the m_gStates enum variable
 			
-			m_effects.update(dt); // update all particles currently on screen 
 
 			// allow the user to move the left paddle with both arrow keys and W/S
 			if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){ // using the SFML isKeyPressed method from the keyBoard class to detect when a specifc key is pressed based on the enum for the key passed in
 				m_paddle1.move(-dt , m_window.getSize().y); // if the condtion above is true move the player up
+			
+			
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 				m_paddle1.move(dt, m_window.getSize().y);// if the condtion above is true move the player down
@@ -133,25 +137,23 @@ void GameEngine::run()
 			
 			// below is a tracking method created for the paddle class which
 			//allows the AI paddle to track the ball based on the vector between the ball and the paddle 
-			if (m_ball.getPosition().x > m_window.getSize().x / 4) { // only allow the AI to move if the ball is on its side of the court
+			if (m_ball.getPosition().x > m_window.getSize().x / 4) { // only allow the AI to move if the ball is at a certain point on the screen giving it a reaction time rather than it constanlty tracking the ball
+				/// get the second paddle to track the ball based on the distance between the two
 				m_paddle2.trackBall(m_ball.getPosition(), m_paddle1.getShape().getPosition(), dt, m_window.getSize().y);
 			
 			}
-	
 			
-			// collsion detection  for both paddles 
-			if (m_ball.getShape().getGlobalBounds().intersects(m_paddle1.getBounds())) { // if the global bounds of the ball intersect with the global bounds of the  m_paddle1 meaning that the two bounding rectangles intersect 
-				
-				m_ball.updateVelocity(1);// we reverse the velocity of the ball to travel towards the right
+			
+			
+			//// collsion detection  for both paddles 
+			if (m_ball.ballCollisionPushBack(m_paddle1.getShape())) { // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap
 				
 				m_effects.generateCollsionParticles(m_ball.getPosition(), 1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
-				
+			
 			}
-			if (m_ball.getShape().getGlobalBounds().intersects(m_paddle2.getBounds())) { // if the global bounds of the ball intersect with the global bounds of the  m_paddle2 meaning that the two bounding rectangles intersect 
+			if (m_ball.ballCollisionPushBack(m_paddle2.getShape())){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
 				
-				m_ball.updateVelocity(-1); // we reverse the velcoity of the ball to travel towards the left
 				m_effects.generateCollsionParticles(m_ball.getPosition(), -1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
-				
 			}
 			
 			// updating scores when the ball passes either paddle 
@@ -173,12 +175,13 @@ void GameEngine::run()
 			if (m_p1Score == m_maxScore || m_p2Score == m_maxScore) { // check if either score attribute attached to the paddle 1 and paddle 2 objects has reached the max score count 
 			   
 				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
-				
+				m_effects.clearParticle(); // clear all particles if there are any remaining on screen 
 
 			
 			}
 			
-			
+			m_effects.update(dt); // update all particles currently on screen 
+
 			
 				
 
