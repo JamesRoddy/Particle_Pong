@@ -94,11 +94,14 @@ void GameEngine::update()
 }
 
 
-
 void GameEngine::run()
 {
 	float dt;
-	
+	if (!m_ballBuffer.loadFromFile(".\\assets\\audio\\beep.flac")) {
+		std::cout << "couldn't load sound BallHit" << std::endl;
+		
+	}
+	m_ballSound.setBuffer(m_ballBuffer);
 	while (m_window.isOpen())
 	{
 		dt = m_clock.restart().asSeconds(); // get the differnce between the last and current frame(delta time)  
@@ -120,7 +123,6 @@ void GameEngine::run()
 
 		if (m_gStates == 1 ) { // check if the game should be running using the m_gStates enum variable
 			
-
 			// allow the user to move the left paddle with both arrow keys and W/S
 			if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){ // using the SFML isKeyPressed method from the keyBoard class to detect when a specifc key is pressed based on the enum for the key passed in
 				m_paddle1.move(-dt , m_window.getSize().y); // if the condtion above is true move the player up
@@ -129,6 +131,7 @@ void GameEngine::run()
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 				m_paddle1.move(dt, m_window.getSize().y);// if the condtion above is true move the player down
+				
 			}
 
 			// get the ball to  move 
@@ -137,7 +140,7 @@ void GameEngine::run()
 			
 			// below is a tracking method created for the paddle class which
 			//allows the AI paddle to track the ball based on the vector between the ball and the paddle 
-			if (m_ball.getPosition().x > m_window.getSize().x / 4) { // only allow the AI to move if the ball is at a certain point on the screen giving it a reaction time rather than it constanlty tracking the ball
+			if (m_ball.getPosition().x > m_window.getSize().x / 2 ) { // only allow the AI to move if the ball is at a certain point on the screen giving it a reaction time rather than it constanlty tracking the ball
 				/// get the second paddle to track the ball based on the distance between the two
 				m_paddle2.trackBall(m_ball.getPosition(), m_paddle1.getShape().getPosition(), dt, m_window.getSize().y);
 			
@@ -147,12 +150,12 @@ void GameEngine::run()
 			
 			//// collsion detection  for both paddles 
 			if (m_ball.ballCollisionPushBack(m_paddle1.getShape())) { // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap
-				
+				m_ballSound.play();
 				m_effects.generateCollsionParticles(m_ball.getPosition(), 1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 			
 			}
 			if (m_ball.ballCollisionPushBack(m_paddle2.getShape())){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
-				
+				m_ballSound.play();
 				m_effects.generateCollsionParticles(m_ball.getPosition(), -1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 			}
 			

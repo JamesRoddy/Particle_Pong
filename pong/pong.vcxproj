@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EffectGenerator.h" />
+    <ClInclude Include="include\EffectGenerator.h" />
     <ClInclude Include="include\Ball.h" />
     <ClInclude Include="include\GameEngine.h" />
     <ClInclude Include="include\Paddle.h" />
-    <ClInclude Include="particle.h" />
+    <ClInclude Include="include\particle.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EffectGenerator.cpp" />
-    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="src\EffectGenerator.cpp" />
+    <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\Ball.cpp" />
     <ClCompile Include="src\GameEngine.cpp" />
     <ClCompile Include="src\main.cpp" />

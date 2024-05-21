@@ -71,7 +71,7 @@ sf::Vector2f Ball::getPosition()
 bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 
 
-	// this code is a rectangle to cricle intersection algorithm and has been implemnted for better accuracy of collsion 
+	// this code is a rectangle to cricle intersection algorithm and has been implmented for better accuracy of collsion 
 	// rather than just using the two bounding boxes of the CircleShape and the rectangle sfml provides 
 	// in order to generate the collsion particles when the ball collides with the paddle 
 	sf::Vector2f distanceBetweenBall = paddleBounds.getPosition() - m_shape.getPosition(); // get the vector between the current paddle position and the ball
@@ -83,17 +83,10 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 	
 	// below will compute the surafce point collsion on the paddle that the ball is likley to hit by clamping the balls current postion within the range of the paddles bounding rectangle essentially representing the balls postion 
 	// but  restricting it to the bounds of the paddle 
-	
-	// this means that the surfacePoint on the x axis that the ball can collide with will always be the minimum x coordinate of the reactangle or the maximum x coordinate the paddle is rapped in 
-	// and the maximum surfaceY collsion point will always be the height of the paddle added to its  minY cordinate(top left y coordinate)
 
-	// for this case only the surfacePointY will change as the paddle is restricted to vertcial movement 
-	// meaning that the surfacePoint of collsion will move up and down in the Y axis with the ball but be restcited to the current toy left Y coordinate of the paddle 
-	// and the bottom Y cordinate of the paddles corners essentially REPLICATING the balls current postion within the bounds of each paddle  
-	/// this is achived by using the min  and max functions below 
 
 	// get the minumum value between the balls psotion and the maximum x cordinate the paddle covers ensuring that the surfacePoint of collision stays within the bounds 
-	// of the paddle on the x axis than max that with the minimumX cordinate of the paddle this measn that if the ball isnt within the paddle we will always get the postion of the surface point at minimum 
+	// of the paddle on the x axis then max that with the minimumX cordinate of the paddle this means that if the ball isnt within the paddle we will always get the postion of the surface point at minimum 
 	// or maximum X depending on if the ball is on the left or right of the paddle(same for y)
 	float surfacePointX = std::max(minX,std::min(m_shape.getPosition().x, minX + paddleBounds.getGlobalBounds().width));  
 	float surfacePointY = std::max(minY, std::min(m_shape.getPosition().y, minY + paddleBounds.getGlobalBounds().height));
@@ -132,26 +125,6 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
     return false; // collsion didn't happen
 
 
-	// i found that using the intersects method would often result in less precise collsion and often the code below would return true multiple times especially whe hitting the edges 
-	// i found that this was due to the intersects method using the bounding box of the ball to check for the intersection therefore with this being a bounding box encompassing the ball 
-	// it would often result in miss fires where there was actually no collsion at all( as the bounding box is merly a rectangle that encompasses the vertcies of the CircleShape to the best of its capabilties) 
-	// resulting in inaccurate collsion with the edges of the paddle(and a lot more collsion particles than intended)
-	/*if (paddleBounds.getGlobalBounds().intersects(m_shape.getGlobalBounds())) {
-       
-		if (distanceBetweenBall.x < 0) {
-			updateVelocity(1);
-		}
-		else {
-			updateVelocity(-1);
-		}
-		return true;
-        
-
-
-
-	}
-	return false;*/
-	
 	
 
 }

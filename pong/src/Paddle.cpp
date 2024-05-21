@@ -12,25 +12,7 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 	m_shape.setOrigin(m_shape.getSize() / 2.f);
 }
 
-bool Paddle::collsion(sf::CircleShape ballBounds) {
-	
-	
-	sf::Vector2f distanceBetweenBall = (m_shape.getPosition().x - ballBounds.getPosition().x, m_shape.getPosition() - ballBounds.getPosition());
-	float distanceLength = sqrt(powf(distanceBetweenBall.x, 2) + powf(distanceBetweenBall.y, 2)) - ballBounds.getRadius() - m_shape.getSize().x/2;
-	
-    
-	if (m_shape.getGlobalBounds().contains(ballBounds.getPosition())){
-		
-		return true; 
 
-		
-		
-	}
-	
-	return false;
-   
-
-}
 // used to reset the paddles postion when switching game states for example when the gameOver state is triggered the paddles postion will be reset to its starting point 
 void Paddle::reset(sf::Vector2f position) {
 

@@ -14,7 +14,6 @@ public:
 	Paddle(sf::Vector2f position, float width, float height, sf::Color color); // defining consructor/initialiser function for the paddle class(including its parameters)
 	void trackBall(sf::Vector2f ballPos,sf::Vector2f playerPos,float dt,float windowYVal); // defining track ball method(functionality is defined in paddle.ccp)
 	void draw(sf::RenderWindow& window); 
-	bool collsion(sf::CircleShape bounds); // used to check if the bounds of the ball intersect the bound of the paddle 
 	void move(float dt, float windowYVal);
 	void reset(sf::Vector2f position);
 	sf::FloatRect getBounds() const; // used to get the bounds of the shape object assigned to the m_shape attribute 

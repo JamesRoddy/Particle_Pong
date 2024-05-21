@@ -3,7 +3,7 @@
 #include <sstream>
 #include "Paddle.h"
 #include "Ball.h"
-#include "../EffectGenerator.h"
+#include "EffectGenerator.h"
 class GameEngine
 {
 private:
