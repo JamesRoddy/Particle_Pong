@@ -6,12 +6,7 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 	m_size.y = height;
 	
 	// setting the properties of the sf::rectangle object associated with the m_shape attribute of the paddle 
-	m_debug0.setRadius(5.0f);
-	m_debug0.setFillColor(sf::Color::Blue);
-	m_debug1.setRadius(5.0f);
-	m_debug1.setFillColor(sf::Color::Red);
-	m_debug2.setRadius(5.0f);
-	m_debug2.setFillColor(sf::Color::Red);
+	
 	m_shape.setSize(m_size); 
 	m_shape.setPosition(position);
 	m_shape.setFillColor(color);
@@ -29,9 +24,7 @@ void Paddle::reset(sf::Vector2f position) {
 void Paddle::draw(sf::RenderWindow& window)
 {
 	window.draw(m_shape);
-	window.draw(m_debug0);
-	window.draw(m_debug1);
-	window.draw(m_debug2);
+
 }
 
 void Paddle::move(float dt, float windowYVal)
@@ -141,14 +134,13 @@ float Paddle::getRayIntersectionValue(sf::Vector2f velocityVec, sf::Vector2f bal
 
 	float frayIntersectionU = ((lineTop.x - forigin.x) * frayDistance.y - (lineTop.y - forigin.y) * frayDistance.x) / fdistanceCross; // used to compute the rate we move along the line from the top edge of the screen to the bottom egde of the screen 
 	
-	// these two rates have been calculated such that we can find the intersection point of the ray and the line 
-	// by interpolating along the line using the u rate and along the ray using the the t rate eventually the interpolated points will meet
+	// these  this frayIntersectionU  has been calculated such that we can find the intersection point of the ray and the line 
+	// by interpolating along the line using the u rate and along the ray using the same rate eventually the interpolated points will meet
 
-	//if (frayIntersectionT >= 0 && frayIntersectionT <= 1 && frayIntersectionU >= 0 && frayIntersectionU <= 1) { // if both u and t are in the range 0 to 1 meaning that we have an intersection that is in the range of the line sgement we are checking  the ray against 
-		m_debug2.setPosition(lerpToIntersection(lineTop, lineBottom, frayIntersectionU));
-		return frayIntersectionU; // we move along the line the percentage u and lerp along the line to that intersection point with the ray 
+	
+	return frayIntersectionU; // we move along the line the percentage u and lerp along the line to that intersection point with the ray 
 		
-	//} 
+	 
 	
 	
 }

@@ -7,9 +7,6 @@ private:
 	float m_speed = 400.f; 
 	sf::Vector2f m_size; // defining the vairbale object as an object of the built in sfml Vector2f class 
 	sf::RectangleShape m_shape;
-	sf::CircleShape m_debug0;
-	sf::CircleShape m_debug1;
-	sf::CircleShape m_debug2;
 	bool m_hasCollided = false; 
 
 public:
