@@ -21,8 +21,8 @@ private:
 	std::vector<Particle> currentParticles; // store each particle that is currenlty being drawn to the window 
 	sf::VertexArray verticies;
 
-	unsigned int windowWidth;// attributes used to keep track of windows width and height so particles arent drawn of screen 
-	unsigned int windowHeight;
+	unsigned int m_windowWidth;// attributes used to keep track of windows width and height so particles arent drawn of screen 
+	unsigned int m_windowHeight;
 
 
 

@@ -140,12 +140,11 @@ void GameEngine::run()
 			
 			// below is a tracking method created for the paddle class which
 			//allows the AI paddle to track the ball based on the vector between the ball and the paddle 
-			if (m_ball.getPosition().x > m_window.getSize().x / 2 ) { // only allow the AI to move if the ball is at a certain point on the screen giving it a reaction time rather than it constanlty tracking the ball
+			if (m_ball.getPosition().x > m_window.getSize().x / 4 ) { // only allow the AI to move if the ball is at a certain point on the screen giving it a reaction time rather than it constanlty tracking the ball
 				/// get the second paddle to track the ball based on the distance between the two
-				m_paddle2.trackBall(m_ball.getPosition(), m_paddle1.getShape().getPosition(), dt, m_window.getSize().y);
+				m_paddle2.trackBall(m_ball.getPosition(), m_ball.getVelocity(), dt, m_window.getSize().y, m_window.getSize().x);
 			
 			}
-			
 			
 			
 			//// collsion detection  for both paddles 

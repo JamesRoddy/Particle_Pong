@@ -1,8 +1,8 @@
 #include "effectGenerator.h"
 #include <iostream>
 EffectGenerator::EffectGenerator(unsigned int width, unsigned int height) { // effect generator constructor that takes in the current window width and height 
-	windowWidth = width; // assign the passed in width and height arguments to the windowHeight and windowWidth attributes of the effectGenerator  class
-	windowHeight = height;
+	m_windowWidth = width; // assign the passed in width and height arguments to the windowHeight and windowWidth attributes of the effectGenerator  class
+	m_windowHeight = height;
 
 }
 
@@ -42,13 +42,13 @@ void EffectGenerator::generateConstellation() {
 void EffectGenerator::generateParticles(int newCount, float radius, sf::Vector2f position) {
 
 	verticies.resize(newCount);
-	float newColorValue = rand() % 255; // generate random colour value up to 255
-	float randX = (rand() % int(windowWidth - radius * 2)); // generate random postion based on screen widht  height and radius argument 
-	float randY = (rand() % int(windowHeight - radius * 2));
+	float fnewColorValue = rand() % 255; // generate random colour value up to 255
+	float frandX = (rand() % int(m_windowWidth - radius * 2)); // generate random postion based on screen widht  height and radius argument 
+	float frandY = (rand() % int(m_windowHeight - radius * 2));
 
 	for (int i = 0; i < newCount; i++) { // generate number of particles according to newCount arg 
 
-		Particle newParticle = Particle(randX, randY, sf::Color::Color(newColorValue, newColorValue, newColorValue, 255), radius, true); // create particle object with a random postion and colour, aong with the defined radius( these particles also have a modifiable alpha value) 
+		Particle newParticle = Particle(frandX, frandY, sf::Color::Color(fnewColorValue, fnewColorValue, fnewColorValue, 255), radius, true); // create particle object with a random postion and colour, aong with the defined radius( these particles also have a modifiable alpha value) 
 		currentParticles.push_back(newParticle);// push particle object to the currentParticles vector attribute of the effect generator class 
 		verticies.append( sf::Vertex(newParticle.getShape().getPosition()));
 		// this will allow the particles to be drawn and updated 
@@ -71,8 +71,8 @@ void EffectGenerator::generateCollsionParticles(sf::Vector2f position, int direc
 	
 	for (int i = 0; i < 5; i++) { // generate 5 particles on each collsion
 
-		float fRadius = (rand() % (iradiusUpperBound - iradiusLowerBound) + iradiusLowerBound); // egenrate random radius for the particle depeding on upper and lower bound values 
-		Particle newParticle = Particle(position.x, position.y, sf::Color::White, fRadius, true, -100, 100); // gernate a new particle object to be pushed to the currentParticle vector arrtibute of the effect geenrator class allowing the particles to be drawn onto the screen and updated 
+		float fradius = (rand() % (iradiusUpperBound - iradiusLowerBound) + iradiusLowerBound); // egenrate random radius for the particle depeding on upper and lower bound values 
+		Particle newParticle = Particle(position.x, position.y, sf::Color::White, fradius, true, -100, 100); // gernate a new particle object to be pushed to the currentParticle vector arrtibute of the effect geenrator class allowing the particles to be drawn onto the screen and updated 
 		// these particles have a speed range of -100 to 100
 		sf::Vector2f newParicleVelocity(abs(newParticle.getSpeed()) * direction, newParticle.getSpeed());
 		

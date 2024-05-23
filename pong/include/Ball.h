@@ -20,6 +20,7 @@ public:
 	void setPosition(float x, float y); // setting the position of the ball using the passed in x and y float variables  
 	void resetPos(float newDirection,int newX,int newY); // used for resetting the balls speed, velocity, and postion each time it goes off screen
 	void updateVelocity(float val); // used to switch the direction of the ball
+	sf::Vector2f getVelocity();
 	sf::CircleShape getShape(); // returns the m_shape attribute that is an object of class CircleShape(built into sfml)
 };
 
