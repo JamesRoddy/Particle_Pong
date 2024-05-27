@@ -29,11 +29,11 @@ private:
 	int m_p2Score;
 	int m_screenRandomBoundLower = m_window.getSize().y/2+50; // random range for spawn point of the ball each time the player or AI scores 
 	int m_screenRandomBoundUpper = m_window.getSize().y/2 - 50;
-	static const int m_maxScore = 3; // a constant vairiable that defines the maximum score(the value of this variable cannot be edited/changed aside from where it is defined)
+	static const int m_maxScore = 5; // a constant vairiable that defines the maximum score(the value of this variable cannot be edited/changed aside from where it is defined)
 	enum GameStates {intro, playing, gameOver};// an enum type is defined that is used to control what should be dislayed to the player and the overall state of the game 
     // enums are a special set of defined constants(integer values only) in this case it provides a group of constants to represent game states 
 	
-	GameStates m_gStates; /// creating an attribute of the GameEngine class that has the enum type GameStates giving thispsecifc attribute access to the set of constants defined by that enum type 
+	GameStates m_gStates; /// creating an attribute of the GameEngine class that has the enum type GameStates giving thi spsecifc attribute access to the set of constants defined by that enum type 
 	
 public:
 	GameEngine(sf::RenderWindow& window);

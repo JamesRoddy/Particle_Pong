@@ -6,13 +6,14 @@ class Ball
 private:
 	float m_speed; // determine how fast the ball moves
 	float m_maxSpeed; // used to control the overall speed limit the ball has 
-	float m_speedIncreaseMultiplier; // used to control at what rate the ball will increase in speed over time 
+	float m_speedIncreaseMultiplier; // used to control at what rate the ball will increase in speed each collision 
+	float maxCollsionAngle ; // maximum rotation angle that can be applied to the ball
 	sf::CircleShape m_debug;
 	sf::CircleShape m_shape; // the ball has an atttribute that is an object of the built in CircleShape class 
 	sf::Vector2f m_velocity; // will determine the direction of movement for the ball
 public:
 	Ball(sf::Vector2f position, float radius, float speed, sf::Color color); // constrctor for the ball allowing values to be assgined to its attributes 
-	bool ballCollisionPushBack(sf::RectangleShape paddleBounds);
+	bool ballCollisionPushBack(sf::RectangleShape paddleBounds,float dt);
 	void increaseSpeed(float dt); // method to increase the balls speed over time 
 	void draw(sf::RenderWindow& window); // method to redner the ball to the window using a refernce argument ot the current sf::render window object 
 	void move(float dt, sf::RenderWindow& window); // method used to move the ball and keep it in the bounds of the screen 

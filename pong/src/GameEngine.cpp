@@ -5,7 +5,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	: m_window(window),
 	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),  // initialsing the m_paddle1 class 
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y - 100.f), 10, 100, sf::Color::White),
-	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 300.0f, sf::Color::White),
+	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 400.0f, sf::Color::White),
 	m_effects(window.getSize().x, window.getSize().y)
 {   
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
@@ -32,7 +32,7 @@ void GameEngine::draw()
 	m_paddle2.draw(m_window);
 	m_ball.draw(m_window);
 	m_effects.drawShapes(m_window); // draw all current particle effects to the screen 
-	/*m_effects.drawVerticies(m_window);*/
+	m_effects.drawVerticies(m_window);
 	m_window.draw(m_hud);
 	m_window.display(); // display everything to the screen once it has been rendered 
 }
@@ -136,24 +136,20 @@ void GameEngine::run()
 
 			// get the ball to  move 
 			m_ball.move(dt, m_window); 
-			m_ball.increaseSpeed(dt); // pass in the differnence in time between each frame for every update and increase the balls speed using delta time
-			
+			m_ball.increaseSpeed(dt);
 			// below is a tracking method created for the paddle class which
 			//allows the AI paddle to track the ball based on the vector between the ball and the paddle 
-			if (m_ball.getPosition().x > m_window.getSize().x / 4 ) { // only allow the AI to move if the ball is at a certain point on the screen giving it a reaction time rather than it constanlty tracking the ball
-				/// get the second paddle to track the ball based on the distance between the two
-				m_paddle2.trackBall(m_ball.getPosition(), m_ball.getVelocity(), dt, m_window.getSize().y, m_window.getSize().x);
-			
-			}
+			/// get the second paddle to track the ball 
+			m_paddle2.trackBall(m_ball.getPosition(), m_ball.getVelocity(), dt, m_window.getSize().y, m_window.getSize().x,m_ball.getShape().getRadius());
 			
 			
 			//// collsion detection  for both paddles 
-			if (m_ball.ballCollisionPushBack(m_paddle1.getShape())) { // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap
+			if (m_ball.ballCollisionPushBack(m_paddle1.getShape(),dt)) { // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap
 				m_ballSound.play();
 				m_effects.generateCollsionParticles(m_ball.getPosition(), 1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
-			
+			   
 			}
-			if (m_ball.ballCollisionPushBack(m_paddle2.getShape())){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
+			if (m_ball.ballCollisionPushBack(m_paddle2.getShape(),dt)){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
 				m_ballSound.play();
 				m_effects.generateCollsionParticles(m_ball.getPosition(), -1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 			}

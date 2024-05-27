@@ -6,7 +6,11 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 	m_size.y = height;
 	
 	// setting the properties of the sf::rectangle object associated with the m_shape attribute of the paddle 
-	
+	m_debug.setRadius(8.0f);
+	m_debug.setFillColor(sf::Color::Blue);
+	m_debug1.setRadius(8.0f);
+	m_debug1.setFillColor(sf::Color::Red);
+
 	m_shape.setSize(m_size); 
 	m_shape.setPosition(position);
 	m_shape.setFillColor(color);
@@ -24,7 +28,8 @@ void Paddle::reset(sf::Vector2f position) {
 void Paddle::draw(sf::RenderWindow& window)
 {
 	window.draw(m_shape);
-
+	window.draw(m_debug);
+	window.draw(m_debug1);
 }
 
 void Paddle::move(float dt, float windowYVal)
@@ -45,29 +50,37 @@ void Paddle::move(float dt, float windowYVal)
 
 
 
+void Paddle::trackBall(sf::Vector2f ballPos ,sf::Vector2f ballVelocity,float dt, float windowYVal, float windowXVal, float ballRadius) {
 
-
-
-void Paddle::trackBall(sf::Vector2f ballPos,sf::Vector2f velocity,float dt,float windowYVal,float fwindowXVal) { 
 	
+	if (ballVelocity.x < 0.0f) { // if the ball isnt coming towards the ai we reset its wait time back to 0 and do not continue further 
+		m_AiIsPrediciting = false; // the ai doesnt need to predict the ball so we set the boolean flag for genertaing a new random behaviour to false
+		
+		m_speed = 400.0f;
+		
+		AiMovement(sf::Vector2f(m_shape.getPosition().x, windowYVal / 2 - m_shape.getSize().y / 2),windowYVal,dt,ballVelocity);// move back to centre with some offset
+		return;
+	}
+
 	
-	// we want to get an intersection point between the ray we are casting in the getIntersectionValueFuntcion from the ball and the path the paddle has available to it on the y 
+
+
+
 	sf::Vector2f fpaddlePathTop(m_shape.getPosition().x, 0); // the top of the line is at y 0 
 	sf::Vector2f fpaddlePathBottom(m_shape.getPosition().x, windowYVal); // bottom of line is at the height of the window 
 	
-	float isIntersection = getRayIntersectionValue(velocity, ballPos, windowYVal,fpaddlePathTop,fpaddlePathBottom); 
-
-	if (isIntersection != 0) {
+	// we want to get an intersection point between the ray we are casting in the getIntersectionValueFuntcion from the ball and the path the paddle has available to it on the y 
+	float fisIntersection = getRayIntersectionValue(ballVelocity, ballPos, windowYVal, fpaddlePathTop, fpaddlePathBottom);
+	if (fisIntersection != 0 ) { // if we have an interesection between the ray being cast from the ball and the paddle path
+			aItarget = lerpToIntersection(fpaddlePathTop, fpaddlePathBottom, fisIntersection,windowYVal); // we interpolate along the screen edge line to the intersection point between the ray and the line 
+			m_debug.setPosition(aItarget);
+			sf::Vector2f distanceToTarget = aItarget - m_shape.getPosition();
+			m_speed = abs(distanceToTarget.y) * (aIspeedMultiplier); // the AI speed is based on the distance to the target making it move fast or slower depending on how wide the target is
 		
-		sf::Vector2f fintersectionPoint = lerpToIntersection(fpaddlePathTop, fpaddlePathBottom, isIntersection);
-		AiMovement(fintersectionPoint, windowYVal,dt);
-
+			
+			AiMovement(sf::Vector2f(aItarget.x,aItarget.y), windowYVal, dt, ballPos); // move the ai towards the intersection point 
 	}
-
-
-	  
 	
-
 	//sf::Vector2f distance = ballPos - m_shape.getPosition();// get vector between the ballPos and the current position of the paddle 
 	//
 	//
@@ -85,72 +98,83 @@ void Paddle::trackBall(sf::Vector2f ballPos,sf::Vector2f velocity,float dt,float
 }
 
 
+void Paddle::AiMovement(sf::Vector2f targetPosition,float windowYVal,float dt,sf::Vector2f ballPosition) {
+	
+	m_debug1.setPosition(targetPosition);
+	sf::Vector2f fvectorBetween = targetPosition - m_shape.getPosition(); // get the vector between the current paddle postion and the target we got from getting the intersection between the ball ray and the paddles path
 
-void Paddle::AiMovement(sf::Vector2f targetVector,float windowYVal,float dt) {
-
-	sf::Vector2f fvectorBetween = targetVector - m_shape.getPosition(); // get the vector between the current paddle postion and the target we got from getting the intersection between the ball ray and the paddles path
-
+	
 	float fdirectionMag = sqrt(fvectorBetween.x * fvectorBetween.x + fvectorBetween.y * fvectorBetween.y);
 
-	float fnormalizedY = fvectorBetween.y /= fdirectionMag; // get the direction the paddle needs to move in by normalizing the vector between the two points
+	float fnormalizedY = fvectorBetween.y / fdirectionMag; // get the direction the paddle needs to move in by normalizing the vector between the two points
 
-	// modified condtions of the out of bounds detection to ensure that the player and the ai paddle can no longer go off screen or get stuck at the bottom of the screen 
-	if (m_shape.getPosition().y - m_shape.getSize().y / 2 <= 0)  // check if the paddle would be off the top of the screen according to its current postion 
+	// ensure that the ai doesnt go out of bounds(similar to the player)
+	if (m_shape.getPosition().y - m_shape.getSize().y / 2 <= 0)  
 	{
-		m_shape.setPosition(m_shape.getPosition().x, 0 + m_shape.getSize().y / 2); // reset the paddles postion to the top of the screen+ half the paddle width keeping the paddle on screen and pushing them away from the screen edge 
+		m_shape.setPosition(m_shape.getPosition().x, 0 + m_shape.getSize().y / 2);  
 	}
-	else if (m_shape.getPosition().y + m_shape.getSize().y / 2 >= windowYVal)  // check if the paddle would be off the bottom of the screen according to its current postion 
+	else if (m_shape.getPosition().y + m_shape.getSize().y / 2 >= windowYVal) 
 	{
-		m_shape.setPosition(m_shape.getPosition().x, windowYVal - m_shape.getSize().y / 2);// reset the paddles postion to the bottom y coordinate  of the screen - half the paddle width keeping the paddle on screen and pushing them away from the screen edge 
+		m_shape.setPosition(m_shape.getPosition().x, windowYVal - m_shape.getSize().y / 2);
 	}
 
-	if (m_shape.getPosition() != targetVector) { // if we havent reached are target intersection point 
-		float offsetY = fnormalizedY * (m_speed * dt); // we move along the calculated direction vector by the paddles speed * dt
-		m_shape.move(0, offsetY); 
+	// moving the ai along the normalized direction vector 
+	 
+	float offsetY = fnormalizedY * (m_speed * dt);
+	if (m_shape.getPosition() != targetPosition) { // if we havent reached are target intersection point 
+		
+		m_shape.move(0, offsetY);
+		    
 	}
 	
-	
-	
-
-
-
 
 }
-float Paddle::getRayIntersectionValue(sf::Vector2f velocityVec, sf::Vector2f ballPos,float windowYVal,sf::Vector2f lineTop,sf::Vector2f lineBottom) {
+
+
+
+// the method that is used to calculate the intersection point between the ai paddle bath and the ball
+float Paddle::getRayIntersectionValue(sf::Vector2f velocityVec, sf::Vector2f ballPos, float windowYVal, sf::Vector2f pathTop, sf::Vector2f pathBottom) {
 	
 	
 	float fvelocityMag = sqrt(velocityVec.x * velocityVec.x + velocityVec.y * velocityVec.y); // used to normalize the velocity in order to get the balls current velocity normal 
-	float fnormalizedX = velocityVec.x / fvelocityMag; // normaliing each compoenent of the velocity vector 
-	float fnormalizedY = velocityVec.y / fvelocityMag;
+	 velocityVec.x /= fvelocityMag; // normaliing each compoenent of the velocity vector 
+     velocityVec.y /= fvelocityMag;
 
-	sf::Vector2f forigin = ballPos; // where we will be casting the ray from 
-	sf::Vector2f vfdirection(fnormalizedX * 10.0f, fnormalizedY * 10.0f); // cast a ray in the dircection the ball is going from the balls centre point  always keeping it ahead of the ball 
-	sf::Vector2f fend = forigin + vfdirection;
+	
+	sf::Vector2f vfdirection(velocityVec.x * 10.0f, velocityVec.y * 10.0f); // cast a ray in the dircection the ball is going from the balls centre point  always keeping it ahead of the ball 
+	sf::Vector2f fend = ballPos + vfdirection;
 
-	sf::Vector2f fpaddleLineDistance = lineBottom - lineTop; // this defines our line to represent the paddles path i.e  the vector from the top of the screen to the bottom of the screen using the paddles x coordinate to postion the line in accordance with the paddle  
-	sf::Vector2f frayDistance = fend - forigin; // get the distance between the end of the ray and the start(a segement of the ray) 
+	sf::Vector2f fpaddleLineDistance = pathBottom - pathTop; // this defines our line to represent the paddles path i.e  the vector from the top of the screen to the bottom of the screen using the paddles x coordinate to postion the line in accordance with the paddle  
+	sf::Vector2f frayDistance = fend - ballPos; // get the distance between the end of the ray and the start(a segement of the ray) 
 
 	float fdistanceCross = frayDistance.x * fpaddleLineDistance.y - frayDistance.y * fpaddleLineDistance.x; // here we take a cross product of those two distances in order to produce an overall scalar value from the two differnce vectors 
 
-	float frayIntersectionU = ((lineTop.x - forigin.x) * frayDistance.y - (lineTop.y - forigin.y) * frayDistance.x) / fdistanceCross; // used to compute the rate we move along the line from the top edge of the screen to the bottom egde of the screen 
+	float frayIntersectionU = ((pathTop.x - ballPos.x) * frayDistance.y - (pathTop.y - ballPos.y) * frayDistance.x) / fdistanceCross; // used to compute the rate we move along the line from the top edge of the screen to the bottom egde of the screen 
 	
-	// these  this frayIntersectionU  has been calculated such that we can find the intersection point of the ray and the line 
-	// by interpolating along the line using the u rate and along the ray using the same rate eventually the interpolated points will meet
-
+	//  this frayIntersectionU  has been calculated such that we can find the intersection point of the ray and the line 
+	// by interpolating along the line that represents the paddles movement path using the percentage rate u we will eventually reach a point where the interpolated point will meet the ray representing our intersection
 	
-	return frayIntersectionU; // we move along the line the percentage u and lerp along the line to that intersection point with the ray 
+	return frayIntersectionU; // return the percentage that will be passed into the lerp function to get the intersection point  
 		
 	 
 	
 	
 }
 
-sf::Vector2f Paddle::lerpToIntersection(sf::Vector2f start, sf::Vector2f end, float percent) // used to get the intersection point between the ray being cast from the ball and the edge of the screen 
+sf::Vector2f Paddle::lerpToIntersection(sf::Vector2f start, sf::Vector2f end, float percent,float windowYVal) // used to get the intersection point between the ray being cast from the ball and the edge of the screen 
 {
 	  
-	sf::Vector2f finterpolation = start + (end - start) * percent;
+	sf::Vector2f finterpolation = start + (end - start) * percent; // get the new intersection coordinate by interpolating from our starting point(our paddle path top) to a point along the paddle path based on a specifc percentage 
+	
+	
+	if (finterpolation.y > windowYVal -1 ) { // if the intersection point is off the top of the screen
+		finterpolation.y = windowYVal - m_shape.getSize().y/2; // we bring the y up  to a point that is reachable by the paddle
+	}
+	else if (finterpolation.y < 1.0f) { // if its off the bottom of the screen
+		finterpolation.y = 0 + m_shape.getSize().y/2; // we bring the y value down to a point where the ai can reach
+	}
 
-	return finterpolation;
+	return finterpolation; // return the new coordinate
 
 
 }
@@ -166,8 +190,6 @@ sf::RectangleShape Paddle::getShape()
 {
 	return m_shape;
 }
-
-
 
 void Paddle::setSpeed(float fspeed)
 {

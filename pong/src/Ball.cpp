@@ -8,15 +8,15 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_speed = speed;
 	m_velocity.x = speed;
 	m_velocity.y = speed;
-	m_speedIncreaseMultiplier = 30;
-	
-	m_maxSpeed = 600.0f;
-	m_debug.setRadius(2.0f);
+	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed each collision
+	maxCollsionAngle = 45.0f; // maximum collsion angle for ball
+	m_maxSpeed = 550.0f; // maximum speed ball can reach
+	m_debug.setRadius(3.5f);
 	m_debug.setFillColor(sf::Color::Blue);
 	m_debug.setOrigin(m_debug.getRadius() / 2, m_debug.getRadius() / 2);
 
 	m_shape.setRadius(radius); // set the radius of the m_shape attribute that repsents an object of the inbuilt CircleShape class wihtin sfml this wil ajsut the size of the ball using the float raidus argument passed into the constructor for the ball class 
-	m_shape.setPosition(position); 
+	m_shape.setPosition(position);  // set the initial postion of the ball from inside this constructor
 	m_shape.setFillColor(color);
 	m_shape.setOrigin(m_shape.getRadius() / 2, m_shape.getRadius() / 2);
 }
@@ -26,18 +26,16 @@ void Ball::draw(sf::RenderWindow& window)
 	window.draw(m_shape);
 	window.draw(m_debug);
 }
-void Ball::increaseSpeed(float dt) { // allow for maniplation of the ball speed(setter for ball speed) through calling this method
+void Ball::increaseSpeed(float dt) { // increase ball speed each collision time through calling this method
 
-	float fdiffernce = m_maxSpeed - m_speed; // get the differnce between the current speed and the maximum speed 
+	if (!(m_speed>m_maxSpeed)) { // if we havent reached our max velocity
+			m_speed += dt * m_speedIncreaseMultiplier; // increase the speed using a multipler otherwise the speed increase wouldnt be noticable during a game due to the value of DT being realtively small 
+			std::cout << m_speed << std::endl;
+			
 	
-	if ( fdiffernce > (dt * m_speedIncreaseMultiplier)) {  /// if the differnce is greater than the current delta time multipled by the speed increase multipler 
-		m_speed += dt*m_speedIncreaseMultiplier; // increase the speed using a multipler otherwise the speed increase wouldnt be noticable during a game due to the value of DT being realtively small 
-		 
-	     
 	}
-	else {
-		m_speed = m_maxSpeed; // otherwise if the max speed is hit we ensure that it doesnt go over that value 
-	}
+	std::cout << m_speed << std::endl;
+	
 
 }
 void Ball::move(float dt, sf::RenderWindow& window) // this method is used to move the ball based on its current speed and velocity
@@ -55,6 +53,7 @@ void Ball::move(float dt, sf::RenderWindow& window) // this method is used to mo
 		m_velocity.y = -m_velocity.y; // invert the balls velocity making it go a different direction 
 	}
 	// both condtions above are used to change the direction of the ball each time it hits the top edge or bottm edge of the screen  in order to create a bouncing effect
+	
 	m_shape.move(m_velocity * dt); // call the move method associtated with the CircleShape class that the m_shape attribute is an object of which will move the shape by an offest of the velocity attribute(an sf::vector2f object) multiplied by delta time(an argument passed into this method) 
 }
 
@@ -68,55 +67,60 @@ sf::Vector2f Ball::getPosition()
 
 
 
-bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
+bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds,float dt) {
 
 
-	// this code is a rectangle to cricle intersection algorithm and has been implmented for better accuracy of collsion 
+	// this code is a rectangle to circle intersection algorithm and has been implmented for better accuracy of collsion 
 	// rather than just using the two bounding boxes of the CircleShape and the rectangle sfml provides 
 	// in order to generate the collsion particles when the ball collides with the paddle 
 	sf::Vector2f fdistanceBetweenBall = paddleBounds.getPosition() - m_shape.getPosition(); // get the vector between the current paddle position and the ball
 
-
 	float fminX = paddleBounds.getPosition().x - paddleBounds.getSize().x/2; //get the minmum top left cordinate of the paddle we are checking on the x axis 
 	float fminY = paddleBounds.getPosition().y - paddleBounds.getSize().y/2; // get the minumum top left cordinate of the paddle we are checking on the y axis 
-
 	
-	// below will compute the surafce point collsion on the paddle that the ball is likley to hit by clamping the balls current postion within the range of the paddles bounding rectangle essentially representing the balls postion 
-	// but  restricting it to the bounds of the paddle 
-
-
 	// get the minumum value between the balls psotion and the maximum x cordinate the paddle covers ensuring that the surfacePoint of collision stays within the bounds 
 	// of the paddle on the x axis then max that with the minimumX cordinate of the paddle this means that if the ball isnt within the paddle we will always get the postion of the surface point at minimum 
 	// or maximum X depending on if the ball is on the left or right of the paddle(same for y)
 	float fsurfacePointX = std::max(fminX,std::min(m_shape.getPosition().x, fminX + paddleBounds.getGlobalBounds().width));  
 	float fsurfacePointY = std::max(fminY, std::min(m_shape.getPosition().y, fminY + paddleBounds.getGlobalBounds().height));
-
+	m_debug.setPosition(fsurfacePointX, fsurfacePointY);
 	//m_debug.setPosition(surfacePointX, surfacePointY);
-
 	sf::Vector2f fnearestPointToSurface = sf::Vector2f(fsurfacePointX - m_shape.getPosition().x, fsurfacePointY - m_shape.getPosition().y); // get the differnce between the surfacePoint of collsion on the paddle and the balls actaul postion
- 
 	float fdistanceToSurfacePoint = sqrt(powf(fnearestPointToSurface.x, 2) + powf(fnearestPointToSurface.y, 2)); // get the maginutude of the vector between the balls postion represented in the bounds of the paddle and the balls actual postion 
 	
 	if (fdistanceToSurfacePoint < m_shape.getRadius()) { // if the distance to the surface point x and y is smaller than the balls current radius meanig that we have an foverlap 
 		
-	    std::cout << "collsion" << std::endl;
 		float foverlap = m_shape.getRadius() - fdistanceToSurfacePoint; // calculate  the amount the ball overlapped which is the differnce bewteen the balls radius and the distance between the surface point as the ball is currenlty overlapping the paddle 
-		// meaning that some part of the circle is inside which can be measured using the radius and the current distance between the centre point of the circle and the surface collision point 
-		  
-		std::cout << foverlap << std::endl;
-		sf::Vector2f fnormaliseCollisionVector = sf::Vector2f(fnearestPointToSurface.x /= fdistanceToSurfacePoint, fnearestPointToSurface.y /= fdistanceToSurfacePoint);
+		sf::Vector2f fnormaliseCollisionVector = -sf::Vector2f(fnearestPointToSurface.x / fdistanceToSurfacePoint, fnearestPointToSurface.y / fdistanceToSurfacePoint);
 		// get the collsion normal which is the vector between the centre of the circle and surface point normalsied 
 		
-		// move the ball along the direction of inverted collsion normal so that it travels backward multiplying the 
-		// collsion normal by the radius+foverlap to move the ball fully outside of the paddle before registering a collision as true 
-		m_shape.move(-fnormaliseCollisionVector * (m_shape.getRadius() + foverlap)); 
-	
+		// move the ball along the direction of inverted collsion normal so that it travels backward 
+		m_shape.move(fnormaliseCollisionVector * (m_shape.getRadius()*2 + foverlap)); // push the ball back by its full diameter plus the overlap we calculated correcting the collision 
 		
-		if (fdistanceBetweenBall.x < 0) { // if the diatnce between the ball is less then 0 then the ball is coming from the right as the paddles postion will be smaller than the ball 
-			updateVelocity(1); // so we update the velcoity to be psotive making the ball move to the right again 
+	   // the following code will give a spin/rotation to the balls y velocity depending on how it hits the paddle
+		float distanceToCentre = fsurfacePointY - paddleBounds.getPosition().y; // get distance between surface point where collsion happend and the centre of paddle
+		float relativeDistanceToCentre = distanceToCentre*2  / paddleBounds.getGlobalBounds().height; // get the surface point distance to the centre of the paddle as a percentage
+		std::cout << relativeDistanceToCentre << std::endl;
+		
+		float angle = relativeDistanceToCentre * maxCollsionAngle; // adjust the angle based on the percentage point caluclated(how close collsion point is to centre)
+		float rotationY = rotationY = sin(angle) + cos(angle); // calculate rotation that should be applied to the current velocity vector y; 
+		if (relativeDistanceToCentre < 0) {
+			rotationY = -(abs(rotationY));
+		}
+		else if (rotationY > 0) {
+			rotationY = abs(rotationY);
+		}
+	
+	    m_velocity.y = rotationY * m_speed;  // apply rotation to velocity vector y
+		
+	     
+		
+	  if (fdistanceBetweenBall.x<0) { // if the distance between the ball is less then 0 then the ball is coming from the right as the paddles postion will be smaller than the ball 
+		
+		 updateVelocity(1); // so we update the x velcoity to be positive making the ball move to the right again 
 		}
 		else {
-			updateVelocity(-1); // opposite of above 
+	   	   updateVelocity(-1); // opposite of above 
 		}
 		return true; // collsion happend 
 	 
@@ -147,8 +151,8 @@ void Ball::updateVelocity(float val)
 void Ball::resetPos(float newDirection, int newX, int newY ) {
 
 	m_velocity.y = 0; // set y velocity at 0 allowing for each serve to be in a straight line on the x axis 
-	m_speed = 300.0f;
-	m_velocity.x = m_speed;// give the ball a slower speed to give the player more time to react when it resets
+	m_speed = 400.0f;
+	m_velocity.x = -m_speed;// give the ball a slower speed to give the player more time to react when it resets
 	
 	setPosition(newX, newY); // set the postion of the ball to the centre of the screen once the ball has passed the paddle(half the screen width and half the screen height)
 	
