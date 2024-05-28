@@ -10,9 +10,9 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 	m_particleY = startY;
 	
 	m_speed = (rand() % (speedMax - speedMin) + speedMin); // define the speed of the particle by geernating a random value bewteen the speed range min and max(including those numbers)
-	m_velocity.x = m_speed; /// set the velcoity vector's x and y to the speed generated 
-	m_velocity.y = m_speed; // this vector is what will be used to move each particle on the screen 
-
+	m_velocity.x = (rand() % (speedMax - speedMin) + speedMin); /// set the velcoity vector's x and y to the speed generated 
+	m_velocity.y = (rand() % (speedMax - speedMin) + speedMin); // this vector is what will be used to move each particle on the screen 
+	
 	m_hasAlpha = hasAlpha; // some particles may have their alpha values manipulated therefore this bool attribute 'm_hasAlpha' will be used to determine if the particles alpha should be changed 
 	m_colour = colour;  // set the colour attribute of the particle 
     	
@@ -21,7 +21,7 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 	m_particleShape.setPosition(m_particleX, m_particleY); //set pos
 	m_particleShape.setFillColor(colour);// set colour 
 	m_particleShape.setOrigin(m_particleShape.getRadius() / 2, m_particleShape.getRadius() / 2); // set origin based on radius 
-
+	
 
 }
 

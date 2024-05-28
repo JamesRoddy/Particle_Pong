@@ -10,7 +10,7 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_velocity.y = speed;
 	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed each collision
 	maxCollsionAngle = 45.0f; // maximum collsion angle for ball
-	m_maxSpeed = 550.0f; // maximum speed ball can reach
+	m_maxSpeed = 575.0f; // maximum speed ball can reach
 	m_debug.setRadius(3.5f);
 	m_debug.setFillColor(sf::Color::Blue);
 	m_debug.setOrigin(m_debug.getRadius() / 2, m_debug.getRadius() / 2);
@@ -30,11 +30,10 @@ void Ball::increaseSpeed(float dt) { // increase ball speed each collision time 
 
 	if (!(m_speed>m_maxSpeed)) { // if we havent reached our max velocity
 			m_speed += dt * m_speedIncreaseMultiplier; // increase the speed using a multipler otherwise the speed increase wouldnt be noticable during a game due to the value of DT being realtively small 
-			std::cout << m_speed << std::endl;
-			
+		
 	
 	}
-	std::cout << m_speed << std::endl;
+
 	
 
 }
@@ -96,31 +95,18 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds,float dt) {
 		
 		// move the ball along the direction of inverted collsion normal so that it travels backward 
 		m_shape.move(fnormaliseCollisionVector * (m_shape.getRadius()*2 + foverlap)); // push the ball back by its full diameter plus the overlap we calculated correcting the collision 
-		
-	   // the following code will give a spin/rotation to the balls y velocity depending on how it hits the paddle
 		float distanceToCentre = fsurfacePointY - paddleBounds.getPosition().y; // get distance between surface point where collsion happend and the centre of paddle
-		float relativeDistanceToCentre = distanceToCentre*2  / paddleBounds.getGlobalBounds().height; // get the surface point distance to the centre of the paddle as a percentage
-		std::cout << relativeDistanceToCentre << std::endl;
-		
-		float angle = relativeDistanceToCentre * maxCollsionAngle; // adjust the angle based on the percentage point caluclated(how close collsion point is to centre)
-		float rotationY = rotationY = sin(angle) + cos(angle); // calculate rotation that should be applied to the current velocity vector y; 
-		if (relativeDistanceToCentre < 0) {
-			rotationY = -(abs(rotationY));
-		}
-		else if (rotationY > 0) {
-			rotationY = abs(rotationY);
-		}
+
+		float rotationY = getRotation(distanceToCentre, paddleBounds);
 	
 	    m_velocity.y = rotationY * m_speed;  // apply rotation to velocity vector y
+	
+	    if (fdistanceBetweenBall.x<0) { // if the distance between the ball is less then 0 then the ball is coming from the right as the paddles postion will be smaller than the ball 
+		    updateVelocity(1); // so we update the x velcoity to be positive making the ball move to the right again 
 		
-	     
-		
-	  if (fdistanceBetweenBall.x<0) { // if the distance between the ball is less then 0 then the ball is coming from the right as the paddles postion will be smaller than the ball 
-		
-		 updateVelocity(1); // so we update the x velcoity to be positive making the ball move to the right again 
 		}
 		else {
-	   	   updateVelocity(-1); // opposite of above 
+	   	    updateVelocity(-1); // opposite of above 
 		}
 		return true; // collsion happend 
 	 
@@ -133,7 +119,21 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds,float dt) {
 
 }
 
+float Ball::getRotation(float distanceToCentre, sf::RectangleShape paddleBounds) {
+	// the following code will give a spin/rotation to the balls y velocity depending on how it hits the paddle
+	float relativeDistanceToCentre = distanceToCentre * 2 / paddleBounds.getGlobalBounds().height; // get the surface point distance to the centre of the paddle as a percentage
+	std::cout << relativeDistanceToCentre << std::endl;
 
+	float angle = relativeDistanceToCentre * maxCollsionAngle; // adjust the angle based on the percentage point caluclated(how close collsion point is to centre)
+	float rotationY = rotationY = sin(angle) + cos(angle); // calculate rotation that should be applied to the current velocity vector y; 
+	if (relativeDistanceToCentre < 0) { // base the sign of the rotation of where it hit the paddle
+		rotationY = -(abs(rotationY));
+	}
+	else if (rotationY > 0) {
+		rotationY = abs(rotationY);
+	}
+	return rotationY;
+}
 
 // this mehtod will set the psotion of the m_shape object( assgine dot the built in CircleShape class) based on the passed in float arguments(x,y)
 void Ball::setPosition(float x, float y)

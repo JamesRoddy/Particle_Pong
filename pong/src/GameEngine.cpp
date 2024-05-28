@@ -75,7 +75,7 @@ void GameEngine::update()
 			m_paddle2.reset(sf::Vector2f(m_window.getSize().x - 20.f, m_window.getSize().y - 100.f));
 
 			m_p1Score = 0;   // also make sure to reset the scores(so it doesnt keep asking them if they want to continue 
-			m_p2Score = 0;  //i.e otherwise the gameStates vairbale would keep getting set to the  gameOver constant 
+			m_p2Score = 0;  // otherwise the gameStates variable would keep getting set to the  gameOver constant 
 
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::N)) { // if the user presses N during the game over screen
@@ -113,7 +113,7 @@ void GameEngine::run()
 			if (event.type == sf::Event::Closed) m_window.close();
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 				m_window.close();
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && m_gStates!=gameOver)
 				m_gStates = GameStates::playing;
 		}
 		
@@ -177,7 +177,8 @@ void GameEngine::run()
 
 			
 			}
-			
+			m_effects.generateEvent();
+			m_effects.manageEvents(m_ball.getPosition());
 			m_effects.update(dt); // update all particles currently on screen 
 
 			

@@ -9,19 +9,10 @@ private:
 	sf::RectangleShape m_shape;
 	sf::CircleShape m_debug;
 	sf::CircleShape m_debug1;
-	
-	bool m_AiIsPrediciting = false;
 
+	float m_aISpeedMultiplier;
+	sf::Vector2f m_aITarget;
 
-	float m_faIbaseReactionTime = 0.2f;
-	float m_faIreactionCount = 0.0f;
-	float currentErrorOffset = 0.0f;
-	float initialErrorOffset = 0.0f;
-	float aIspeedMultiplier = 2.75f;
-	int behaviourOffset = 2;
-	sf::Vector2f aItarget;
-	enum Behaviours {OVERSHOOT,EXACT,UNDERSHOOT,RISKY};
-	Behaviours m_currentBehaviour;
 
 
 public:
@@ -30,13 +21,13 @@ public:
 
 	void draw(sf::RenderWindow& window); 
 	void move(float dt, float windowYVal);
+	void aiScoreTracker(int playerScore, int aiScore, int maxScore);
 	void reset(sf::Vector2f position);
-	void aIErrorCorrection(float ballTRadius,sf::Vector2f ballPos);
 	void trackBall(sf::Vector2f ballPos, sf::Vector2f velocity, float dt, float windowYVal, float fwindowXVal,float ballRadius); // defining track ball method(functionality is defined in paddle.ccp)
 	void AiMovement(sf::Vector2f target,float windowYVal,float dt,sf::Vector2f ballPos);
+	void aIGenerateResetPosition(float windowYVal);
 	float getRayIntersectionValue(sf::Vector2f velocity,sf::Vector2f ballPos,float windowYVal,sf::Vector2f lineTop,sf::Vector2f lineBottom);
-	void generateNewBehaviour(float ballRadius,sf::Vector2f ballVelocity);
-	void paddleGetErrorOffset(sf::Vector2f ballvelocity);
+
 
 	sf::Vector2f lerpToIntersection(sf::Vector2f start, sf::Vector2f end, float percent, float windowYval);
 	sf::FloatRect getBounds() const; // used to get the bounds of the shape object assigned to the m_shape attribute 

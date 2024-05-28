@@ -17,11 +17,12 @@ public:
 	sf::Color getColour();
 	void setVelocity(sf::Vector2f velocityVec);
 	float getSpeed();
-
+	
 	
 private:
 	float m_particleX;
 	float m_particleY;
+
 	float m_speed; // speed attribute used to control the rate at which the particle will move 
 	bool m_hasAlpha = false; // definng if the alpha value of the colour should be manipluated 
 	float m_alpha = 255.0f; // inital alpha 
