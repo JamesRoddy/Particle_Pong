@@ -3,7 +3,7 @@
 
 
 // a particle class that defines a circular particle with a speed range, alpha value, radius, position, and color,
-Particle::Particle(float startX, float startY, sf::Color colour, float radius, bool hasAlpha, int speedMin , int speedMax  ) {
+Particle::Particle(float startX, float startY, sf::Color colour, float radius, bool hasAlpha, int speedMin , int speedMax) {
 
 	
 	m_particleX = startX; // set the m_particle X and y attributes of the particle class the the startX and startY psotions passed into the constructor 
@@ -15,7 +15,7 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 	
 	m_hasAlpha = hasAlpha; // some particles may have their alpha values manipulated therefore this bool attribute 'm_hasAlpha' will be used to determine if the particles alpha should be changed 
 	m_colour = colour;  // set the colour attribute of the particle 
-    	
+	
 	// setting the properties of the particle's shape object(in this case the in built sf::CircleShape object)
 	m_particleShape.setRadius(radius); // set the radius of the particle using the radius argument passed into the constructor  
 	m_particleShape.setPosition(m_particleX, m_particleY); //set pos
@@ -29,9 +29,7 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 
 void Particle::update(float dt) { // method of the particle class used to update the pos of the particles shape and any other arttibutes that need to be updated i.e alpha values
 
-	m_particleShape.move(m_velocity*dt); // get the particles shape attribute  and call the predefined move method 
-	// moving the particle's shape  at on offset of its velocity vector attribute multiplied by dt to move it at a consistent rate 
-
+	
 	if (m_hasAlpha) { // if the particles alpha value should be manipulated 
 		m_colour.a = m_alpha; // set the particles color attribute to the current value of its alpha attriubte m_alpha(has a default value of 255 for each particle)
 		m_particleShape.setFillColor(m_colour); // set the fill colour of the particles shape to take into account the new alpha value 
@@ -41,6 +39,9 @@ void Particle::update(float dt) { // method of the particle class used to update
 
 		}
 	}
+	m_particleShape.move(m_velocity * dt); // get the particles shape attribute  and call the predefined move method 
+	// moving the particle's shape  at on offset of its velocity vector attribute multiplied by dt to move it at a consistent rate 
+
 	
 
 }
@@ -58,22 +59,28 @@ sf::CircleShape Particle::getShape() {
 
 	return m_particleShape;
 }
-
+sf::FloatRect Particle::getBounds() {
+	return m_particleShape.getGlobalBounds();
+}
 sf::Color Particle::getColour() {
 
 	return m_colour;
 }
+
 float Particle::getAlpha() {
 
 	return m_alpha;
 }
+
 float Particle::getSpeed() {
 
 	return m_speed;
 }
+
 void Particle::setVelocity(sf::Vector2f velocityVec) {
 	m_velocity = velocityVec;
 }
+
 
 
 

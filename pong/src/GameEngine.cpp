@@ -157,7 +157,6 @@ void GameEngine::run()
 			// updating scores when the ball passes either paddle 
 
 			if (m_ball.getPosition().x > m_window.getSize().x) { // check if the ball has gone passed the paddles position 
-				
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower); // get a new random y postion for the ball to start at 
 				m_ball.resetPos(-1, origin.x, inewPosY); // reset balls postion and speed
 				m_p1Score++;  // increment the score attribute of the m_paddle1 object(as it just scored)
@@ -177,10 +176,16 @@ void GameEngine::run()
 
 			
 			}
-			m_effects.generateEvent();
-			m_effects.manageEvents(m_ball.getPosition());
-			m_effects.update(dt); // update all particles currently on screen 
 
+
+			m_effects.generateEvent();
+			m_effects.manageEvents(m_ball.getPosition(),m_ball.getVelocity());
+			if (m_effects.handleParticleCollisions(m_ball.getShape().getGlobalBounds())) {
+				m_ball.setVelocity(-m_ball.getVelocity());
+			}
+			m_effects.update(dt); // update all particles currently on screen 
+			m_effects.updateVertcies(); // update all verticies needed for the effects
+		
 			
 				
 

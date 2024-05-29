@@ -65,7 +65,7 @@ void Paddle::trackBall(sf::Vector2f ballPos ,sf::Vector2f ballVelocity,float dt,
 	float fisIntersection = getRayIntersectionValue(ballVelocity, ballPos, windowYVal, fpaddlePathTop, fpaddlePathBottom);
 	if (fisIntersection != 0 ) { // if we have an interesection between the ray being cast from the ball and the paddle path
 			m_aITarget = lerpToIntersection(fpaddlePathTop, fpaddlePathBottom, fisIntersection,windowYVal); // we interpolate along the screen edge line to the intersection point between the ray and the line 
-			m_debug.setPosition(m_aITarget);
+			
 			sf::Vector2f distanceToTarget = m_aITarget - m_shape.getPosition();
 			m_speed = abs(distanceToTarget.y) * (m_aISpeedMultiplier); // the AI speed is based on the distance to the target making it move fast or slower depending on how wide the target is
 		
@@ -92,7 +92,7 @@ void Paddle::trackBall(sf::Vector2f ballPos ,sf::Vector2f ballVelocity,float dt,
 
 void Paddle::AiMovement(sf::Vector2f targetPosition,float windowYVal,float dt,sf::Vector2f ballPosition) {
 	
-	m_debug1.setPosition(targetPosition);
+	
 	sf::Vector2f fvectorBetween = targetPosition - m_shape.getPosition(); // get the vector between the current paddle postion and the target we got from getting the intersection between the ball ray and the paddles path
 
 	

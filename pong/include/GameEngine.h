@@ -4,6 +4,7 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include "EffectGenerator.h"
+
 class GameEngine
 {
 private:
@@ -21,7 +22,7 @@ private:
 	Paddle m_paddle1;
 	Paddle m_paddle2;
 	Ball m_ball;
-	
+	std::vector<Particle> particlesWithCollision;
 	
 	
 	sf::Vector2f origin; /// attribute to store the centre of the window when the GameEngine class is initialised used to reset the postion of objects such as the ball when it goes off screen

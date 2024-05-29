@@ -11,18 +11,20 @@ public:
 	void update(float dt); /// used to update the particles postion in accordance with dt
 	void draw(sf::RenderWindow& window); // draw method that will be used to render the shape attribute of each particle
 	
-	
+	sf::FloatRect getBounds();
 	sf::CircleShape getShape(); // get the circle shape object associated wiht the particle object allowing for manipluation outside of the particle class through built in sfml methods such as move and getPostion
 	float getAlpha(); // used to access the private m_alpha attribute when needed 
+	void setEvent(int eventVal);
 	sf::Color getColour();
 	void setVelocity(sf::Vector2f velocityVec);
 	float getSpeed();
-	
-	
+
+	int m_event;
+
 private:
 	float m_particleX;
 	float m_particleY;
-
+	sf::Vector2f m_particlePos;
 	float m_speed; // speed attribute used to control the rate at which the particle will move 
 	bool m_hasAlpha = false; // definng if the alpha value of the colour should be manipluated 
 	float m_alpha = 255.0f; // inital alpha 
