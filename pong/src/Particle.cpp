@@ -3,7 +3,7 @@
 
 
 // a particle class that defines a circular particle with a speed range, alpha value, radius, position, and color,
-Particle::Particle(float startX, float startY, sf::Color colour, float radius, bool hasAlpha, int speedMin , int speedMax) {
+Particle::Particle(float startX, float startY, sf::Color colour, float radius, bool hasAlpha, int speedMin , int speedMax,bool collision) {
 
 	
 	m_particleX = startX; // set the m_particle X and y attributes of the particle class the the startX and startY psotions passed into the constructor 
@@ -15,7 +15,9 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 	
 	m_hasAlpha = hasAlpha; // some particles may have their alpha values manipulated therefore this bool attribute 'm_hasAlpha' will be used to determine if the particles alpha should be changed 
 	m_colour = colour;  // set the colour attribute of the particle 
+	m_event = 0; // used to control what effects are applied to the particle 
 	
+
 	// setting the properties of the particle's shape object(in this case the in built sf::CircleShape object)
 	m_particleShape.setRadius(radius); // set the radius of the particle using the radius argument passed into the constructor  
 	m_particleShape.setPosition(m_particleX, m_particleY); //set pos
@@ -25,7 +27,16 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 
 }
 
+bool Particle::hasCollided(sf::FloatRect bounds) {
 
+
+
+	if (m_alpha >= 0.0f && m_particleShape.getGlobalBounds().intersects(bounds)) {
+		return true;
+	}
+	
+	return false;
+};
 
 void Particle::update(float dt) { // method of the particle class used to update the pos of the particles shape and any other arttibutes that need to be updated i.e alpha values
 

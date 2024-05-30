@@ -32,7 +32,7 @@ void GameEngine::draw()
 	m_paddle2.draw(m_window);
 	m_ball.draw(m_window);
 	m_effects.drawShapes(m_window); // draw all current particle effects to the screen 
-	m_effects.drawVerticies(m_window);
+	/*m_effects.drawVerticies(m_window);*/
 	m_window.draw(m_hud);
 	m_window.display(); // display everything to the screen once it has been rendered 
 }
@@ -173,18 +173,19 @@ void GameEngine::run()
 			   
 				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
 				m_effects.clearParticle(); // clear all particles if there are any remaining on screen 
-
+				m_effects.resetEventTimer();
 			
 			}
 
 
 			m_effects.generateEvent();
 			m_effects.manageEvents(m_ball.getPosition(),m_ball.getVelocity());
+			//m_effects.updateVertcies(); // update all verticies needed for the effects
+			
+			m_effects.update(dt); // update all particles currently on screen 
 			if (m_effects.handleParticleCollisions(m_ball.getShape().getGlobalBounds())) {
 				m_ball.setVelocity(-m_ball.getVelocity());
 			}
-			m_effects.update(dt); // update all particles currently on screen 
-			m_effects.updateVertcies(); // update all verticies needed for the effects
 		
 			
 				

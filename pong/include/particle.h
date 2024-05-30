@@ -7,24 +7,24 @@ class Particle {
 // public atttributes for the particle 
 public:
 	// defining constructor  for particle and ist arguments 
-	Particle(float x, float y, sf::Color colour, float radius , bool hasAlpha,int speedMin = 100 ,int speedMax = 200);
+	Particle(float x, float y, sf::Color colour, float radius , bool hasAlpha,int speedMin,int speedMax,bool collsion);
 	void update(float dt); /// used to update the particles postion in accordance with dt
 	void draw(sf::RenderWindow& window); // draw method that will be used to render the shape attribute of each particle
 	
 	sf::FloatRect getBounds();
 	sf::CircleShape getShape(); // get the circle shape object associated wiht the particle object allowing for manipluation outside of the particle class through built in sfml methods such as move and getPostion
 	float getAlpha(); // used to access the private m_alpha attribute when needed 
-	void setEvent(int eventVal);
+	bool hasCollided(sf::FloatRect bounds);
 	sf::Color getColour();
 	void setVelocity(sf::Vector2f velocityVec);
 	float getSpeed();
-
 	int m_event;
+	
+
 
 private:
 	float m_particleX;
 	float m_particleY;
-	sf::Vector2f m_particlePos;
 	float m_speed; // speed attribute used to control the rate at which the particle will move 
 	bool m_hasAlpha = false; // definng if the alpha value of the colour should be manipluated 
 	float m_alpha = 255.0f; // inital alpha 
