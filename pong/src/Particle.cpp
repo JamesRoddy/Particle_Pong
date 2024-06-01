@@ -3,7 +3,7 @@
 
 
 // a particle class that defines a circular particle with a speed range, alpha value, radius, position, and color,
-Particle::Particle(float startX, float startY, sf::Color colour, float radius, bool hasAlpha, int speedMin , int speedMax,bool collision) {
+Particle::Particle(float startX, float startY, sf::Color colour, float radius, bool hasAlpha, int speedMin , int speedMax ) {
 
 	
 	m_particleX = startX; // set the m_particle X and y attributes of the particle class the the startX and startY psotions passed into the constructor 
@@ -28,8 +28,6 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 }
 
 bool Particle::hasCollided(sf::FloatRect bounds) {
-
-
 
 	if (m_alpha >= 0.0f && m_particleShape.getGlobalBounds().intersects(bounds)) {
 		return true;
@@ -86,6 +84,9 @@ float Particle::getAlpha() {
 float Particle::getSpeed() {
 
 	return m_speed;
+}
+float Particle::getRadius() {
+	return m_particleShape.getRadius();
 }
 
 void Particle::setVelocity(sf::Vector2f velocityVec) {

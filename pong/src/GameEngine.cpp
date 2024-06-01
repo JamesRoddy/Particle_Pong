@@ -1,12 +1,14 @@
 #include "GameEngine.h"
 
 GameEngine::GameEngine(sf::RenderWindow& window)
-// initilasing all of the attributes that are objects of other classes wihtin the game engine.h file 
+// initilasing all of the attributes that are objects of other classes within the game engine.h file 
 	: m_window(window),
 	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),  // initialsing the m_paddle1 class 
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y - 100.f), 10, 100, sf::Color::White),
 	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 400.0f, sf::Color::White),
-	m_effects(window.getSize().x, window.getSize().y)
+	m_effects(window.getSize().x, window.getSize().y),
+	m_powerUpsManager(window.getSize().x,window.getSize().y)
+
 {   
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
 	origin = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
@@ -28,11 +30,12 @@ void GameEngine::draw()
 {
 	// draw all shapes and text to the screen
 	m_window.clear(); // refresh window for each call to draw
+	m_effects.drawShapes(m_window); // draw all current particle effects to the screen 
+	m_powerUpsManager.draw(m_window);
 	m_paddle1.draw(m_window);
 	m_paddle2.draw(m_window);
 	m_ball.draw(m_window);
-	m_effects.drawShapes(m_window); // draw all current particle effects to the screen 
-	/*m_effects.drawVerticies(m_window);*/
+	
 	m_window.draw(m_hud);
 	m_window.display(); // display everything to the screen once it has been rendered 
 }
@@ -45,6 +48,8 @@ void GameEngine::update()
 	{
 	case GameEngine::intro: // if the value of game states has the same value as the enum constant 'intro'(0)
 		ss << "Press the Space\nkey to start";
+		m_effects.resetEventTimer(); // reset the event timers for particle effects
+		m_powerUpsManager.resetTimers();// reset the  timers for power ups 
 		break;
 	case GameEngine::playing: 
 		ss << m_p1Score << " - " << m_p2Score;
@@ -174,19 +179,22 @@ void GameEngine::run()
 				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
 				m_effects.clearParticle(); // clear all particles if there are any remaining on screen 
 				m_effects.resetEventTimer();
-			
+				// reset powerups
+				m_powerUpsManager.clearPowerUps();
+				m_powerUpsManager.resetTimers();
 			}
 
+			m_powerUpsManager.generatePowerUp();
+			m_powerUpsManager.update(dt);
+			m_powerUpsManager.handleCollision(&m_ball,&m_paddle1,&m_paddle2);
+			m_powerUpsManager.manageDurationEffects(&m_ball,dt);
 
 			m_effects.generateEvent();
-			m_effects.manageEvents(m_ball.getPosition(),m_ball.getVelocity());
-			//m_effects.updateVertcies(); // update all verticies needed for the effects
-			
+			m_effects.manageEvents(m_ball.getPosition(),m_ball.getVelocity());// manage when particle event triggers
 			m_effects.update(dt); // update all particles currently on screen 
-			if (m_effects.handleParticleCollisions(m_ball.getShape().getGlobalBounds())) {
-				m_ball.setVelocity(-m_ball.getVelocity());
+			if (m_effects.handleParticleCollisions(m_ball.getShape().getGlobalBounds())) { // handle particle collision
+				m_ball.setVelocity(-m_ball.getVelocity()); // invert ball velocity each collision
 			}
-		
 			
 				
 

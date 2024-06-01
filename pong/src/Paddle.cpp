@@ -24,7 +24,7 @@ void Paddle::reset(sf::Vector2f position) {
 }
 void Paddle::draw(sf::RenderWindow& window)
 {
-	window.draw(m_shape);
+	window.draw(m_shape); //draw the paddle to the screen
 	
 }
 
@@ -73,19 +73,7 @@ void Paddle::trackBall(sf::Vector2f ballPos ,sf::Vector2f ballVelocity,float dt,
 			AiMovement(m_aITarget, windowYVal, dt, ballPos); // move the ai towards the intersection point 
 	}
 	
-	//sf::Vector2f distance = ballPos - m_shape.getPosition();// get vector between the ballPos and the current position of the paddle 
-	//
-	//
-	//if ( distance.y<=0 ) {// if the differnce is neagtive(meaning that the paddle is above the ball)
-
-	//	// we allow the paddle to move upwards towards the ball 
-	//		move(-dt, windowYVal);
-	//}
-	//else{ // else the difference in y is postive meaning the ballPos is below the paddle 	
-	//////  allow the paddle to track the ball and move down to intercept 
-	//   move(dt, windowYVal);
-	//
-	//}
+	
 
 }
 
@@ -144,7 +132,7 @@ float Paddle::getRayIntersectionValue(sf::Vector2f velocityVec, sf::Vector2f bal
 	float frayIntersectionU = ((pathTop.x - ballPos.x) * frayDistance.y - (pathTop.y - ballPos.y) * frayDistance.x) / fdistanceCross; // used to compute the rate we move along the line from the top edge of the screen to the bottom egde of the screen 
 	
 	//  this frayIntersectionU  has been calculated such that we can find the intersection point of the ray and the line 
-	// by interpolating along the line that represents the paddles movement path using the percentage rate u we will eventually reach a point where the interpolated point will meet the ray representing our intersection
+	// by interpolating along the line that represents the paddles movement path using the percentage rate u we will eventually reach a point where the interpolation will meet the ray representing our intersection
 	
 	return frayIntersectionU; // return the percentage that will be passed into the lerp function to get the intersection point  
 		
@@ -169,8 +157,8 @@ sf::Vector2f Paddle::lerpToIntersection(sf::Vector2f start, sf::Vector2f end, fl
 
 }
 
-// getters for the paddle attributes that will return the values of the private attributes for the paddle that would otherwise be inacessible 
-// setters for paddle private attributes 
+// getters  for the paddle attributes that will return the values of the private attributes for the paddle that would otherwise be inacessible 
+//  below also has setters for paddle private attributes allowing for manipulation of their values  
 sf::FloatRect Paddle::getBounds() const
 {
 	return m_shape.getGlobalBounds();
@@ -179,6 +167,9 @@ sf::FloatRect Paddle::getBounds() const
 sf::RectangleShape Paddle::getShape()
 {
 	return m_shape;
+}
+sf::RectangleShape* Paddle::getShapeReference() {
+	return &m_shape;
 }
 
 void Paddle::setSpeed(float fspeed)

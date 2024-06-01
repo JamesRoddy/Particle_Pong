@@ -1,3 +1,5 @@
+
+#pragma once
 #include "Ball.h"
 
 #include<iostream>
@@ -12,7 +14,7 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed each collision
 	maxCollsionAngle = 45.0f; // maximum collsion angle for ball
 	m_maxSpeed = 575.0f; // maximum speed ball can reach
-	
+	m_initialSize = radius;
 	m_shape.setRadius(radius); // set the radius of the m_shape attribute that repsents an object of the inbuilt CircleShape class wihtin sfml this wil ajsut the size of the ball using the float raidus argument passed into the constructor for the ball class 
 	m_shape.setPosition(position);  // set the initial postion of the ball from inside this constructor
 	m_shape.setFillColor(color);
@@ -75,7 +77,7 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds,float dt) {
 	float fminX = paddleBounds.getPosition().x - paddleBounds.getSize().x/2; //get the minmum top left cordinate of the paddle we are checking on the x axis 
 	float fminY = paddleBounds.getPosition().y - paddleBounds.getSize().y/2; // get the minumum top left cordinate of the paddle we are checking on the y axis 
 	
-	// get the minumum value between the balls psotion and the maximum x cordinate the paddle covers ensuring that the surfacePoint of collision stays within the bounds 
+	// get the minimum value between the balls psotion and the maximum x cordinate the paddle covers ensuring that the surfacePoint of collision stays within the bounds 
 	// of the paddle on the x axis then max that with the minimumX cordinate of the paddle this means that if the ball isnt within the paddle we will always get the postion of the surface point at minimum 
 	// or maximum X depending on if the ball is on the left or right of the paddle(same for y)
 	float fsurfacePointX = std::max(fminX,std::min(m_shape.getPosition().x, fminX + paddleBounds.getGlobalBounds().width));  
@@ -117,9 +119,9 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds,float dt) {
 }
 
 float Ball::getRotation(float distanceToCentre, sf::RectangleShape paddleBounds) {
-	// the following code will give a spin/rotation to the balls y velocity depending on how it hits the paddle
+	// the following code will give a spin/rotation to the balls y velocity depending on where it hits the paddle
+	// allowing for more steep and vaired angles the ball can take after hitting the paddle 
 	float relativeDistanceToCentre = distanceToCentre * 2 / paddleBounds.getGlobalBounds().height; // get the surface point distance to the centre of the paddle as a percentage
-	std::cout << relativeDistanceToCentre << std::endl;
 
 	float angle = relativeDistanceToCentre * maxCollsionAngle; // adjust the angle based on the percentage point caluclated(how close collsion point is to centre)
 	float rotationY = rotationY = sin(angle) + cos(angle); // calculate rotation that should be applied to the current velocity vector y; 
@@ -156,11 +158,26 @@ void Ball::resetPos(float newDirection, int newX, int newY ) {
 	
 }
 
+
+
+
+// getters and setters for the balls private properties 
+
 void Ball::setVelocity(sf::Vector2f newVelocity) {
 
 	m_velocity = newVelocity;
 }
 
+void Ball::setSpeed(float newSpeedValue) {
+	m_speed = newSpeedValue;
+}
+float Ball::getSpeed() {
+	return m_speed;
+}
+sf::CircleShape* Ball::getShapeReference() { // get a refernce address to the ball object(used by power ups)
+
+	return &m_shape;
+}
 sf::Vector2f Ball::getVelocity() {
 	return m_velocity;
 }

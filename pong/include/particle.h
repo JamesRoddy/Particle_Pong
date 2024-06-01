@@ -1,5 +1,6 @@
+#pragma once
 #include <SFML/Graphics.hpp>
-#include<vector>
+
 
 // classes that will be used to generate certain particle effects based on events such as the ball colliding with the paddle 
 // in depth explanations for each of these classes and thier methods can be found in the particle.cpp file 
@@ -7,7 +8,7 @@ class Particle {
 // public atttributes for the particle 
 public:
 	// defining constructor  for particle and ist arguments 
-	Particle(float x, float y, sf::Color colour, float radius , bool hasAlpha,int speedMin,int speedMax,bool collsion);
+	Particle(float x, float y, sf::Color colour, float radius, bool hasAlpha, int speedMin , int speedMax );
 	void update(float dt); /// used to update the particles postion in accordance with dt
 	void draw(sf::RenderWindow& window); // draw method that will be used to render the shape attribute of each particle
 	
@@ -18,6 +19,7 @@ public:
 	sf::Color getColour();
 	void setVelocity(sf::Vector2f velocityVec);
 	float getSpeed();
+	float getRadius();
 	int m_event;
 	
 
