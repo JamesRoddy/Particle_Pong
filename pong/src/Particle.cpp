@@ -50,7 +50,7 @@ void Particle::update(float dt) { // method of the particle class used to update
 	}
 	m_particleShape.move(m_velocity * dt); // get the particles shape attribute  and call the predefined move method 
 	// moving the particle's shape  at on offset of its velocity vector attribute multiplied by dt to move it at a consistent rate 
-
+	
 	
 
 }
@@ -71,9 +71,9 @@ sf::CircleShape Particle::getShape() {
 sf::FloatRect Particle::getBounds() {
 	return m_particleShape.getGlobalBounds();
 }
-sf::Color Particle::getColour() {
+float Particle::getSpeed() {
 
-	return m_colour;
+	return m_speed;
 }
 
 float Particle::getAlpha() {
@@ -81,16 +81,10 @@ float Particle::getAlpha() {
 	return m_alpha;
 }
 
-float Particle::getSpeed() {
 
-	return m_speed;
-}
-float Particle::getRadius() {
-	return m_particleShape.getRadius();
-}
 
-void Particle::setVelocity(sf::Vector2f velocityVec) {
-	m_velocity = velocityVec;
+void Particle::setVelocity(sf::Vector2f fVelocityVec) {
+	m_velocity = fVelocityVec;
 }
 
 

@@ -2,11 +2,11 @@
 #include <iostream>
 
 
-powerUpsManager::powerUpsManager(float windowWidth,float windowHeight) {
+powerUpsManager::powerUpsManager(float fWindowWidth,float fWindowHeight) {
 
 	m_powerUpGenTime = sf::seconds(2.0f); // time it takes to spawn new power ups 
-	m_windowWidth = windowWidth; /// window widht and height vairbales used for spawning power ups
-	m_windowHeight = windowHeight;
+	m_windowWidth = fWindowWidth; /// window widht and height vairbales used for spawning power ups
+	m_windowHeight = fWindowHeight;
 	
 }
 
@@ -16,12 +16,14 @@ void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass
 	for (int i = 0; i < m_powerUps.size(); i++) { // for each current power up on the screen
 
 		if (m_powerUps[i].collision(ball->getShapeReference()->getGlobalBounds())) { /// if there is a collsion between a power up and the ball
-			if (!(searchForExistingEffect(m_powerUps[i]))) { // if the powerups current effect cannot be found in the active power upps vector 
-		      
-			 m_powerUps[i].setTimeOfCollision(m_CollisionTimer.getElapsedTime()); // set the colsion time of the power up to the current elapsed time of the m_collsion time object
-			 ball->getVelocity().x < 0.0f ? m_powerUps[i].setPaddle(AI):m_powerUps[i].setPaddle(player); /// give the power up a refernce to the paddle it may need to apply the effect to based on the velocity of the ball
-			 m_activePowerUp.push_back(m_powerUps[i]); // push the power up to the active power up vector
-
+			
+			if (m_powerUps[i].hasBall()) { // if the power up has an effect that will be applied to the ball
+				searchForExistingBallEffect(m_powerUps[i]); // check if the effect of the power up is already active
+			}
+			else {
+				/// give the power up a refernce to the paddle it may need to apply the effect to based on the velocity of the ball
+				ball->getVelocity().x < 0.0f ? m_powerUps[i].setPaddle(AI,-1) : m_powerUps[i].setPaddle(player,1);
+				searchForExistingPaddleEffect(m_powerUps[i]); // check if the effect of the power up already exists
 			}
 			m_powerUps.erase(m_powerUps.begin() + i); // erase the power up from the vector being used to draw them to the screen 
 		}
@@ -31,25 +33,52 @@ void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass
 
 }
 
-bool powerUpsManager::searchForExistingEffect(powerUp &newPowerUp) {
+
+
+void powerUpsManager::searchForExistingBallEffect(powerUp &newPowerUp) {
+	
 
 	for (int i = 0; i < m_activePowerUp.size(); i++) { // for each active power up
-	  if (m_activePowerUp[i].getId() == newPowerUp.getId()) { // if there is a power up currenlty active with the same effect 
-		
-		  m_activePowerUp[i].incrementDuration(); // increment the duration of that current active power up using the duration of the power up who's effect we were searching for
-		  std::cout << m_activePowerUp[i].getDuration().asSeconds() << std::endl;
-	      return true; // return true as we found an effect that matched the power up effect we were searching for
-	 } 
+	  if (m_activePowerUp[i].getId() == newPowerUp.getId()) { // if there is a ball power up currenlty active with the same effect 
+		  
+		  m_activePowerUp[i].incrementDuration(); // increment the duration of that current active power up 
+		  return; // return as we dont need to push the new power up to the active power ups vector
+	  } 
 	}
-	return false; // other wise return false and the power up who's effect id we were searching for gets pushed to the active power ups vector and becomes an active power up
+	//otheriws the power up we were checking becomes a new active power up with an effect duration 
+	newPowerUp.setTimeOfCollision(m_CollisionTimer.getElapsedTime());
+	m_activePowerUp.push_back(newPowerUp);
+
+}
+
+// search for exsitig paddle effects 
+
+void powerUpsManager::searchForExistingPaddleEffect(powerUp& newPowerUp) {
+
+	for (int i = 0; i < m_activePowerUp.size(); i++) { // for each power up
+		// if the effect direction of the power up we are checking is the same as another already in the active power ups vector
+		if (m_activePowerUp[i].getEffectDirection() == newPowerUp.getEffectDirection()) { 
+			std::cout << m_activePowerUp[i].getEffectDirection() << std::endl;
+			m_activePowerUp[i].incrementDuration(); // we increment the duration of the current active power up of the same type
+			return; // we return as we found a power up of the same type 
+		 }
+
+	}
+	// otherwise we push the power up to the active power ups vector setting its effect time before doing so 
+	// as we didnt  find an active power up with the same effect
+	newPowerUp.setTimeOfCollision(m_CollisionTimer.getElapsedTime());
+	m_activePowerUp.push_back(newPowerUp);
 
 
 }
-void powerUpsManager::manageDurationEffects(Ball*ball,float dt) { // used to manage any duration effects power ups may have
+
+
+
+void powerUpsManager::manageDurationEffects(Ball*ball,float fDt) { // used to manage any duration effects power ups may have
 	
 	for (int i = 0; i < m_activePowerUp.size(); i++) { // loop through the active power ups vector
 
-		m_activePowerUp[i].applyEffect(ball,dt); // apply the power up affect to objects
+		m_activePowerUp[i].applyEffect(ball,fDt); // apply the power up affect to objects
 
 		if (m_activePowerUp[i].negateEffect(ball)) { // if the power up has fully neagted its effect
 
@@ -75,7 +104,7 @@ void powerUpsManager::draw(sf::RenderWindow&window) {
 	}
 }
 
-void powerUpsManager::update(float dt) {
+void powerUpsManager::update(float fDt) {
 
 	for (int i = 0; i < m_powerUps.size(); i++) { // loop through the power ups vector
 
@@ -83,7 +112,7 @@ void powerUpsManager::update(float dt) {
 			m_powerUps.erase(m_powerUps.begin() + i); /// erase the power up from the current power ups vector
 			continue;// move to next itteration
 		}
-		m_powerUps[i].updatePowerUpPos(dt); // other wise update the power up
+		m_powerUps[i].updatePowerUpPos(fDt); // other wise update the power up
 
 	}
 

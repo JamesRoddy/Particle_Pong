@@ -11,13 +11,13 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 
 {   
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
-	origin = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
-	m_p1Score = 0;
+	origin = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f); /// used for setting objects postion at the centre of the window
+	m_p1Score = 0; // keep track of player scores
 	m_p2Score = 0;
 	m_gStates = GameStates::intro; // on intialisation set the game states enum vairbale to the value of 0
 	m_font.loadFromFile(".\\assets\\fonts\\digital-7.ttf");  // used to load the specifc font file that will be used when text is rendered to the screen 
 	m_hud.setFont(m_font); // setting the font of the m_hud attribute within the GameEngine class whihc is an object of the Text class 
-	m_hud.setCharacterSize(50);
+	m_hud.setCharacterSize(50); 
 	m_hud.setFillColor(sf::Color::White);
 
 	m_hud.setPosition((m_window.getSize().x / 2.f) - 45.f, 10);
@@ -29,13 +29,15 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 void GameEngine::draw()
 {
 	// draw all shapes and text to the screen
-	m_window.clear(); // refresh window for each call to draw
+	m_window.clear(); // refresh window for each call to draw ready for the next frame
 	m_effects.drawShapes(m_window); // draw all current particle effects to the screen 
-	m_powerUpsManager.draw(m_window);
+	m_effects.drawEventText(m_window);
+	m_powerUpsManager.draw(m_window); // draw all power ups to the screen
+
+	// draw the hud ball and paddles
 	m_paddle1.draw(m_window);
 	m_paddle2.draw(m_window);
 	m_ball.draw(m_window);
-	
 	m_window.draw(m_hud);
 	m_window.display(); // display everything to the screen once it has been rendered 
 }
@@ -44,7 +46,7 @@ void GameEngine::update()
 {
 	// update hud
 	std::stringstream ss; // string stream that will hold all of the text currently being displayed on the screen 
-	switch (m_gStates) // switch case used to dtermine how the hud should change based on the current value of the enum objet m_gamestates 
+	switch (m_gStates) // switch case used to determine how the hud should change based on the current value of the enum objet m_gamestates 
 	{
 	case GameEngine::intro: // if the value of game states has the same value as the enum constant 'intro'(0)
 		ss << "Press the Space\nkey to start";
@@ -56,7 +58,7 @@ void GameEngine::update()
 		break;
 
 	case GameEngine::gameOver:
-		if (m_p1Score > m_p2Score) {
+		if (m_p1Score > m_p2Score) { 
 			ss << "Player 1 wins\n";
 		
 		}
@@ -75,7 +77,7 @@ void GameEngine::update()
 			m_gStates = intro;  // we take them back to the intro state/screen allowing them to play again(rather than just closing the program
 
 			// reset game objects to their original positions
-			m_ball.resetPos(1, m_window.getSize().x / 2, m_window.getSize().y / 2); 
+			m_ball.resetPos( m_window.getSize().x / 2, m_window.getSize().y / 2); 
 			m_paddle1.reset(sf::Vector2f(20, m_window.getSize().y / 2));
 			m_paddle2.reset(sf::Vector2f(m_window.getSize().x - 20.f, m_window.getSize().y - 100.f));
 
@@ -112,10 +114,13 @@ void GameEngine::run()
 		dt = m_clock.restart().asSeconds(); // get the differnce between the last and current frame(delta time)  
 		//alllowing better control of how the game updates interms of moving objects etc(ensuring that it is more consistent across different frame rates)
 
-		sf::Event event;// creating an event object tied to the smfl libaray that allows handling of things such as key presses 
-		while (m_window.pollEvent(event)) // using the window object's pollEvent method as the condition for the while loop continously checking for certain events such as keyboard input or the window closing  
+		sf::Event event;// creating an event object tied to the smfl library that allows handling of things such as key presses 
+		while (m_window.pollEvent(event)) 
 		{
-			if (event.type == sf::Event::Closed) m_window.close();
+			// using the window object's pollEvent method as the condition for the while loop continously 
+			//checking for certain events such as keyboard input or the window closing  
+			
+			if (event.type == sf::Event::Closed) m_window.close(); 
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 				m_window.close();
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && m_gStates!=gameOver)
@@ -145,7 +150,7 @@ void GameEngine::run()
 			// below is a tracking method created for the paddle class which
 			//allows the AI paddle to track the ball based on the vector between the ball and the paddle 
 			/// get the second paddle to track the ball 
-			m_paddle2.trackBall(m_ball.getPosition(), m_ball.getVelocity(), dt, m_window.getSize().y, m_window.getSize().x,m_ball.getShape().getRadius());
+			m_paddle2.trackBall(m_ball.getPosition(), m_ball.getVelocity(), dt, m_window.getSize().y);
 			
 			
 			//// collsion detection  for both paddles 
@@ -163,12 +168,12 @@ void GameEngine::run()
 
 			if (m_ball.getPosition().x > m_window.getSize().x) { // check if the ball has gone passed the paddles position 
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower); // get a new random y postion for the ball to start at 
-				m_ball.resetPos(-1, origin.x, inewPosY); // reset balls postion and speed
+				m_ball.resetPos( origin.x, inewPosY); // reset balls postion and speed
 				m_p1Score++;  // increment the score attribute of the m_paddle1 object(as it just scored)
 			}
 			if (m_ball.getPosition().x < 0) { // similar process as described above but for when the ball passes the left/player paddle 
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower);
-				m_ball.resetPos(1, origin.x, inewPosY); // reset balls postion
+				m_ball.resetPos( origin.x, inewPosY); // reset balls postion
 				m_p2Score++;
 				
 			}
@@ -184,13 +189,13 @@ void GameEngine::run()
 				m_powerUpsManager.resetTimers();
 			}
 
-			m_powerUpsManager.generatePowerUp();
-			m_powerUpsManager.update(dt);
-			m_powerUpsManager.handleCollision(&m_ball,&m_paddle1,&m_paddle2);
-			m_powerUpsManager.manageDurationEffects(&m_ball,dt);
+			m_powerUpsManager.generatePowerUp(); // control when power ups spawn
+			m_powerUpsManager.update(dt); // update power up positions 
+			m_powerUpsManager.handleCollision(&m_ball,&m_paddle1,&m_paddle2); // handle collisions and effect application 
+			m_powerUpsManager.manageDurationEffects(&m_ball,dt); // handle duration effects
 
-			m_effects.generateEvent();
-			m_effects.manageEvents(m_ball.getPosition(),m_ball.getVelocity());// manage when particle event triggers
+			m_effects.generateEvent(); // when particle effect event should trigger
+			m_effects.manageEvents();// manage when particle event triggers
 			m_effects.update(dt); // update all particles currently on screen 
 			if (m_effects.handleParticleCollisions(m_ball.getShape().getGlobalBounds())) { // handle particle collision
 				m_ball.setVelocity(-m_ball.getVelocity()); // invert ball velocity each collision

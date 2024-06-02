@@ -6,19 +6,20 @@
 class powerUpsManager {
 
 public:
-	powerUpsManager(float windowWidth,float windowHeight);
+	powerUpsManager(float fWindowWidth,float fWindowHeight);
 	void generatePowerUp();
 	void handleCollision(Ball*ball,Paddle*player,Paddle*AI);
 	void draw(sf::RenderWindow &window);
 	void clearPowerUps(Ball*ball);
 
 	void resetTimers();
-	void manageDurationEffects(Ball*ball,float dt);
-	void update(float dt);
-	bool searchForExistingEffect(powerUp &newPowerUp);
+	void manageDurationEffects(Ball*ball,float fDt);
+	void update(float fDt);
+	void searchForExistingBallEffect(powerUp &newPowerUp);
+	void searchForExistingPaddleEffect(powerUp& newPowerUp);
 	
 private:
-	
+
 	std::vector<powerUp>m_powerUps; // keep track of what power ups should be drawn and moved on the screen
 	std::vector<powerUp> m_activePowerUp; // keep track of active power up effects
 	static const int powerUpTypes = 3; // number of power up types that can spawn
