@@ -2,7 +2,7 @@
 #include "particle.h"
 
 #include <vector>
-
+#include<sstream>
 // the effectsGenerator class will be used to managed each particle and update/draw it wihtin the window 
 class EffectGenerator {
 public:
@@ -33,8 +33,11 @@ private:
 	sf::Time m_constellationGenerationTime; // used to control when constellations are triggered
 	sf::Time m_currentEvenetTimer; // used to control when events are triggered
 	sf::Time m_eventInitialiseTime; 
+	sf::Time m_displayTime;
 	sf::Time m_eventEndTime ;
-
+	sf::Font m_eventTextFont;
+	sf::Text m_eventText;
+	std::stringstream eventDisplay ;
 	sf::CircleShape m_debug;
 	enum events {END,PARTICLESTORM}; // used to control what event should fire 
 	events m_newEvent;

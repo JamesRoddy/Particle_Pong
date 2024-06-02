@@ -5,11 +5,13 @@
 class Paddle
 {
 private:
-	float m_speed = 400.f; 
+	float m_speed = 400.f;  // original speed for paddle to move by(also used to set velocity)
 	sf::Vector2f m_size; // defining the vairbale object as an object of the built in sfml Vector2f class 
-	sf::RectangleShape m_shape;
-	float m_aISpeedMultiplier;
-	sf::Vector2f m_aITarget;
+	sf::RectangleShape m_shape; // definig the built in sfml rectangle shape object that is associated with the paddle 
+	float m_aISpeedMultiplier; // speed multipler for the ai meaning it willl adjust its speed based on target distance
+	sf::Vector2f m_aITarget; // used to set where the ai should move 
+	float m_initialWidth;
+	float m_initialHeight;
 
 
 
@@ -20,9 +22,11 @@ public:
 	void draw(sf::RenderWindow& window); // drawing paddle to screen
 	void move(float dt, float windowYVal); // moving the player paddle up and down using dt to control the rate of movement and the y value to consrtict the movement of the player
 	void reset(sf::Vector2f position); // used to reset the paddle position across game states
+	sf::Vector2f getIntialSize();
+
 	void trackBall(sf::Vector2f ballPos, sf::Vector2f velocity, float dt, float windowYVal, float fwindowXVal,float ballRadius); // defining track ball method(functionality is defined in paddle.ccp)
 	void AiMovement(sf::Vector2f target,float windowYVal,float dt,sf::Vector2f ballPos); // used to move ai based on a target position
-	
+	void checkBounds(float windowYVal);
 	float getRayIntersectionValue(sf::Vector2f velocity,sf::Vector2f ballPos,float windowYVal,sf::Vector2f lineTop,sf::Vector2f lineBottom); // used for ai movement allowing it to move in a more relatsict fashion i.e it makes use of a target point rather than just the ball position
 	
 

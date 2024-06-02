@@ -180,7 +180,7 @@ void GameEngine::run()
 				m_effects.clearParticle(); // clear all particles if there are any remaining on screen 
 				m_effects.resetEventTimer();
 				// reset powerups
-				m_powerUpsManager.clearPowerUps();
+				m_powerUpsManager.clearPowerUps(&m_ball);
 				m_powerUpsManager.resetTimers();
 			}
 

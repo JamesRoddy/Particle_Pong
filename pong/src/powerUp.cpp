@@ -7,13 +7,14 @@ powerUp::powerUp(float windowWidth,float windowHeight){
 
 
 	
-	m_id = rand() % INCREASEPADDLESIZE; // generate random effect id using the enum "m_effects" declared in the header file for the power up class
+	m_id = rand() % (INCREASEPADDLESIZE + 1); // generate random effect id using the enum "m_effects" declared in the header file for the power up class(adding 1 because the upper bound for rand is exclusive)
 	m_speed = 300.0f; // set speed for powerups allowing them to move around on screen
 	m_windowHeight = windowHeight;// window width and height 
 	m_windowWidth = windowWidth;
 	m_maxTargetHitCount = 6; // total amount of times the power up can hit its movement target before disappearing
 	m_targetHitCount = 0; // track each time the power up successfully moves to its targe
-	
+	m_powerUpScaleFactor = 1.5f;
+	m_ballSpeedMultiplier = 80.0f;
 	m_tickUpTime = sf::seconds(0.001f); // time that will be applied to the power up current duration each frame controllling how fast the duration effect of the power up will fade
 	m_shape.setSize(sf::Vector2f(20.0f, 20.0f));// set the size of the powerup
 	m_shape.setOrigin(m_shape.getSize().x / 2, m_shape.getSize().y / 2); 
@@ -41,16 +42,15 @@ void powerUp::applyEffect(Ball* ball,float dt) {
 	switch (m_id) // control what effect the power up applies via its id that is assigned randomly to one of the enum  constants in the constructor
 	{
 	  case INCREASEPADDLESIZE: 
-		paddleRef->getShapeReference()->setScale(1.5f, 1.5f); // increase paddle scale by 1.5
-		paddleRef->getShapeReference()->setFillColor(m_colour); // set the colour to the colour of the power up
+		  paddleRef->getShapeReference()->setScale(m_powerUpScaleFactor, m_powerUpScaleFactor);
+		  paddleRef->getShapeReference()->setFillColor(m_colour); // set the colour to the colour of the power up
+		
 		//std::cout << paddleRef->getShapeReference()->getSize().y << std::endl;
 		break;
 
 	  case INVERTVELOCITY:
 		ball->setVelocity(-ball->getVelocity()); // invert the velocity of the ball 
-		std::cout << ball->getVelocity().x << std::endl;
 
-		ball->getShapeReference()->setFillColor(m_colour);
 		break;
 	  case INCREASEBALLSPEED:
 		ball->setSpeed(ball->getSpeed() + dt * m_ballSpeedMultiplier); // increase speed of the ball be dt * m_ballSpeedMultipler
@@ -65,17 +65,18 @@ void powerUp::applyEffect(Ball* ball,float dt) {
 
 
 
-bool powerUp::negateEffect(Ball* ball, float dt) {
+bool powerUp::negateEffect(Ball* ball) {
 
-	
+	// used to negate any duration effects after they have finished 
 	if (m_currentEffectTime.asSeconds()  >= m_totalEffectTime.asSeconds()) { // if the power up duration is greater than its total
 		switch (m_id) { // control what effect needs to be negated via the id of the power up
 		case INCREASEPADDLESIZE: 
 			
 			paddleRef->getShapeReference()->setScale(1.0f,1.0f); // decrease scale of paddle assigned to power up if it has the increase size effect
 			paddleRef->getShapeReference()->setFillColor(sf::Color::White);//set the colour of the paddle assigned to the power up back to white 
+
 			break;
-		case INVERTVELOCITY:
+		
 		case INCREASEBALLSPEED:
 			ball->getShapeReference()->setFillColor(sf::Color::White);
 			break;
@@ -89,6 +90,11 @@ bool powerUp::negateEffect(Ball* ball, float dt) {
 
 void powerUp::setPaddle(Paddle* paddleReference) { // used to get a refernce to the paddle the effect needs to be applied to 
 	paddleRef = paddleReference;
+}
+
+
+void powerUp::setTotalEffectTime(sf::Time newEffectTime) {
+	m_totalEffectTime = newEffectTime;
 }
 
 sf::Vector2f  powerUp:: randomTarget() { // will assign a random target to the power up for it to move to each time it hits its current target
@@ -129,9 +135,9 @@ int powerUp::getMaxTargetHitCount() {
 	return m_maxTargetHitCount;
 }
 // used to modify the duration of the power up effect if a power up with the same effect is currently active
-void powerUp::incrementDuration(sf::Time newDuration) { 
+void powerUp::incrementDuration() { 
 
-	m_totalEffectTime += newDuration;
+	m_totalEffectTime+=m_totalEffectTime*0.25f;  /// increase over all effect duration by 25%
 
 }
 // get the time of collsion between the power up and ball

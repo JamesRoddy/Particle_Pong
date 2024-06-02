@@ -17,13 +17,14 @@ public:
 	void updatePowerUpPos(float dt);
 
 	void setType(sf::Color colour, sf::Time effectTime);
-	void incrementDuration(sf::Time newDuration);
+	void incrementDuration();
 
-	bool negateEffect(Ball*ball, float dt);
+	bool negateEffect(Ball*ball);
 	sf::Time getDuration();
 	void setTimeOfCollision(sf::Time collisionTime);
 	sf::Time getTotalEffectTime();
-	
+	void setTotalEffectTime(sf::Time newEffectTime);
+	sf::Vector2f scaleObjectSize(sf::Vector2f intitalSize);
 	void setPaddle(Paddle* newPaddleRef);
 	int getTargetHitCount();
 	int getMaxTargetHitCount();
@@ -36,8 +37,10 @@ private:
 	
 	int m_targetHitCount;
 	int m_maxTargetHitCount;
+
 	Paddle* paddleRef ;
-	float m_ballSpeedMultiplier = 50.0f;
+	float m_powerUpScaleFactor;
+	float m_ballSpeedMultiplier ;
 	float m_speed;
 	float m_windowWidth;
 	float m_windowHeight;

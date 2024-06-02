@@ -11,7 +11,6 @@ private:
 	float maxCollsionAngle ; // maximum rotation angle that can be applied to the ball when it hits paddle
 	sf::CircleShape m_shape; // the ball has an atttribute that is an object of the built in CircleShape class 
 	sf::Vector2f m_velocity; // will determine the direction of movement for the ball
-	float m_initialSize;
 public:
 	Ball(sf::Vector2f position, float radius, float speed, sf::Color color); // constrctor for the ball allowing values to be assgined to its attributes 
 	bool ballCollisionPushBack(sf::RectangleShape paddleBounds,float dt);

@@ -14,7 +14,6 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed each collision
 	maxCollsionAngle = 45.0f; // maximum collsion angle for ball
 	m_maxSpeed = 575.0f; // maximum speed ball can reach
-	m_initialSize = radius;
 	m_shape.setRadius(radius); // set the radius of the m_shape attribute that repsents an object of the inbuilt CircleShape class wihtin sfml this wil ajsut the size of the ball using the float raidus argument passed into the constructor for the ball class 
 	m_shape.setPosition(position);  // set the initial postion of the ball from inside this constructor
 	m_shape.setFillColor(color);
@@ -74,8 +73,8 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds,float dt) {
 	// in order to generate the collsion particles when the ball collides with the paddle 
 	sf::Vector2f fdistanceBetweenBall = paddleBounds.getPosition() - m_shape.getPosition(); // get the vector between the current paddle position and the ball
 
-	float fminX = paddleBounds.getPosition().x - paddleBounds.getSize().x/2; //get the minmum top left cordinate of the paddle we are checking on the x axis 
-	float fminY = paddleBounds.getPosition().y - paddleBounds.getSize().y/2; // get the minumum top left cordinate of the paddle we are checking on the y axis 
+	float fminX = paddleBounds.getGlobalBounds().left; //get the minmum top left cordinate of the paddle we are checking on the x axis 
+	float fminY = paddleBounds.getGlobalBounds().top; // get the minumum top left cordinate of the paddle we are checking on the y axis 
 	
 	// get the minimum value between the balls psotion and the maximum x cordinate the paddle covers ensuring that the surfacePoint of collision stays within the bounds 
 	// of the paddle on the x axis then max that with the minimumX cordinate of the paddle this means that if the ball isnt within the paddle we will always get the postion of the surface point at minimum 

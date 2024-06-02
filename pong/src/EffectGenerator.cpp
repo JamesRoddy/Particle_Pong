@@ -16,6 +16,7 @@ EffectGenerator::EffectGenerator(unsigned int width, unsigned int height) { // e
 void EffectGenerator:: resetEventTimer() { // used to reset the event timer when switching game states
 	m_eventTimer.restart();
     m_currentEvenetTimer = m_currentEvenetTimer.Zero;
+	m_displayTime = m_displayTime.Zero;
 
 }
 void EffectGenerator::clearParticle() { // this method is used to remove all elements from the m_currentParticles vector, this prevents scenarios where particles that were genertaed during different game states carry over into the next state(particles generated during gameplay dont appear on the game over screen)
@@ -90,7 +91,7 @@ void EffectGenerator:: manageEvents(sf::Vector2f position, sf::Vector2f ballVelo
 void EffectGenerator::generateEvent() {
 	// control the rate at which different event effects will fire 
 	m_currentEvenetTimer = m_eventTimer.getElapsedTime(); // get the current elapsed time of the event clock
-
+	m_displayTime = m_eventInitialiseTime - m_currentEvenetTimer;
 	if (m_currentEvenetTimer > m_eventEndTime) { // if the current event timer is greater than the end time 
 		
 		m_eventTimer.restart(); // restart event clock
@@ -102,6 +103,7 @@ void EffectGenerator::generateEvent() {
 		
 	}
 	if (m_currentEvenetTimer > m_eventInitialiseTime) { // generate new event if we have reach our initialisation time
+		
 		m_newEvent = PARTICLESTORM;
 
 

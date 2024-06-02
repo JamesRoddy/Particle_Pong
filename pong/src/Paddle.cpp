@@ -4,10 +4,12 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 {
 	m_size.x = width; // setting thre x attribute of the size vector which in itself is an object of the sfml vector2f class 
 	m_size.y = height;
-	
+	m_initialHeight = width;
+	m_initialHeight = height;
 	// setting the properties of the sf::rectangle object associated with the m_shape attribute of the paddle 
 	
-	m_aISpeedMultiplier = 2.65;
+	m_aISpeedMultiplier = 2.65; // speed multipler for the  paddle ai to move it based on its distance to its tareget
+	
 	m_shape.setSize(m_size); 
 	m_shape.setPosition(position);
 	m_shape.setFillColor(color);
@@ -15,13 +17,7 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 }
 
 
-// used to reset the paddles postion when switching game states for example when the gameOver state is triggered the paddles postion will be reset to its starting point 
-void Paddle::reset(sf::Vector2f position) {
 
-	m_shape.setPosition(position); // call the set postion method  related to the m_shape attribute which will overide its current postion with the postion argument of type sf::vector2f
-
-
-}
 void Paddle::draw(sf::RenderWindow& window)
 {
 	window.draw(m_shape); //draw the paddle to the screen
@@ -30,21 +26,27 @@ void Paddle::draw(sf::RenderWindow& window)
 
 void Paddle::move(float dt, float windowYVal)
 {
-	// modified condtions of the out of bounds detection to ensure that the player and the ai paddle can no longer go off screen or get stuck at the bottom of the screen 
-	if (m_shape.getPosition().y - m_shape.getSize().y / 2 <= 0)  // check if the paddle would be off the top of the screen according to its current postion 
-	{ 
-		m_shape.setPosition(m_shape.getPosition().x, 0 + m_shape.getSize().y / 2); // reset the paddles postion to the top of the screen+ half the paddle width keeping the paddle on screen and pushing them away from the screen edge 
-	}
-	else if (m_shape.getPosition().y + m_shape.getSize().y / 2 >= windowYVal)  // check if the paddle would be off the bottom of the screen according to its current postion 
-	{
-		m_shape.setPosition(m_shape.getPosition().x,windowYVal - m_shape.getSize().y/2);// reset the paddles postion to the bottom y coordinate  of the screen - half the paddle width keeping the paddle on screen and pushing them away from the screen edge 
-	}
+
+	checkBounds(windowYVal);
+
+	
     m_shape.move(0, m_speed * dt); // move the paddle 
 	
 
 }
 
-
+void Paddle::checkBounds(float windowYVal) {
+	// modified condtions of the out of bounds detection to ensure that the player and the ai paddle can no longer go off screen or get stuck at the bottom of the screen 
+	float fapplyScaling = (m_shape.getSize().y / 2) * m_shape.getScale().y;
+	if (m_shape.getPosition().y - fapplyScaling <= 0)  // check if the paddle would be off the top of the screen according to its current postion 
+	{
+		m_shape.setPosition(m_shape.getPosition().x, 0 +  fapplyScaling); // reset the paddles postion to the top of the screen+ half the paddle width keeping the paddle on screen and pushing them away from the screen edge 
+	}
+	else if (m_shape.getPosition().y + fapplyScaling >= windowYVal)  // check if the paddle would be off the bottom of the screen according to its current postion 
+	{
+		m_shape.setPosition(m_shape.getPosition().x, windowYVal - fapplyScaling);// reset the paddles postion to the bottom y coordinate  of the screen - half the paddle width keeping the paddle on screen and pushing them away from the screen edge 
+	}
+}
 
 void Paddle::trackBall(sf::Vector2f ballPos ,sf::Vector2f ballVelocity,float dt, float windowYVal, float windowXVal, float ballRadius) {
 
@@ -89,14 +91,8 @@ void Paddle::AiMovement(sf::Vector2f targetPosition,float windowYVal,float dt,sf
 	fvectorBetween.y /= fdirectionMag; // get the direction the paddle needs to move in by normalizing the vector between the two points
 
 	// ensure that the ai doesnt go out of bounds(similar to the player)
-	if (m_shape.getPosition().y - m_shape.getSize().y / 2 <= 0)  
-	{
-		m_shape.setPosition(m_shape.getPosition().x, 0 + m_shape.getSize().y / 2);  
-	}
-	else if (m_shape.getPosition().y + m_shape.getSize().y / 2 >= windowYVal) 
-	{
-		m_shape.setPosition(m_shape.getPosition().x, windowYVal - m_shape.getSize().y / 2);
-	}
+	 checkBounds(windowYVal);
+ 
 
 	// moving the ai along the normalized direction vector 
 	 
@@ -157,6 +153,13 @@ sf::Vector2f Paddle::lerpToIntersection(sf::Vector2f start, sf::Vector2f end, fl
 
 }
 
+// used to reset the paddles postion when switching game states for example when the gameOver state is triggered the paddles postion will be reset to its starting point 
+void Paddle::reset(sf::Vector2f position) {
+
+	m_shape.setPosition(position); // call the set postion method  related to the m_shape attribute which will overide its current postion with the postion argument of type sf::vector2f
+
+
+}
 // getters  for the paddle attributes that will return the values of the private attributes for the paddle that would otherwise be inacessible 
 //  below also has setters for paddle private attributes allowing for manipulation of their values  
 sf::FloatRect Paddle::getBounds() const
@@ -164,6 +167,9 @@ sf::FloatRect Paddle::getBounds() const
 	return m_shape.getGlobalBounds();
 }
 
+sf::Vector2f Paddle::getIntialSize() {
+	return sf::Vector2f(m_initialWidth, m_initialHeight);
+}
 sf::RectangleShape Paddle::getShape()
 {
 	return m_shape;

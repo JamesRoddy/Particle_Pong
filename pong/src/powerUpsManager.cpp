@@ -36,7 +36,7 @@ bool powerUpsManager::searchForExistingEffect(powerUp &newPowerUp) {
 	for (int i = 0; i < m_activePowerUp.size(); i++) { // for each active power up
 	  if (m_activePowerUp[i].getId() == newPowerUp.getId()) { // if there is a power up currenlty active with the same effect 
 		
-		  m_activePowerUp[i].incrementDuration(newPowerUp.getDuration()); // increment the duration of that current active power up using the duration of the power up who's effect we were searching for
+		  m_activePowerUp[i].incrementDuration(); // increment the duration of that current active power up using the duration of the power up who's effect we were searching for
 		  std::cout << m_activePowerUp[i].getDuration().asSeconds() << std::endl;
 	      return true; // return true as we found an effect that matched the power up effect we were searching for
 	 } 
@@ -51,7 +51,7 @@ void powerUpsManager::manageDurationEffects(Ball*ball,float dt) { // used to man
 
 		m_activePowerUp[i].applyEffect(ball,dt); // apply the power up affect to objects
 
-		if (m_activePowerUp[i].negateEffect(ball,dt)) { // if the power up has fully neagted its effect
+		if (m_activePowerUp[i].negateEffect(ball)) { // if the power up has fully neagted its effect
 
 			m_activePowerUp.erase(m_activePowerUp.begin() + i);// remove the power up from the active power ups vector
 			
@@ -114,7 +114,12 @@ void powerUpsManager::generatePowerUp() {
 
 
 }
-void powerUpsManager::clearPowerUps() { // clear all power ups on the screen and active power ups
+void powerUpsManager::clearPowerUps(Ball*ball) { // clear all power ups on the screen and active power ups
+
+	for (int i = 0; i < m_activePowerUp.size(); i++) {
+		m_activePowerUp[i].setTotalEffectTime(sf::Time::Zero);
+		m_activePowerUp[i].negateEffect(ball);
+	}
 	m_powerUps.clear(); 
 	m_activePowerUp.clear();
 	
