@@ -1,7 +1,6 @@
-
+#pragma once
 #include "effectGenerator.h"
 #include <iostream>
-
 EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // effect generator constructor that takes in the current window width and height 
 	
 	m_windowWidth = fwindowwidth; // assign the passed in width and height arguments to the windowHeight and windowWidth attributes of the effectGenerator  class
@@ -10,15 +9,17 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_eventInitialiseTime = sf::seconds(15); // how long it takes for an event to fire 
 	m_hasEvent = false; // boolean flag for having an event that is used to control the postion of the start index
 	m_hasStartIndex = false;
+
 	m_eventStartIndex = 0; // set initial starting index of the event to 0
 	m_explosionAmount = 4;
-
 	m_eventTextOffset = 75; // set the offset for the event text allowing for control over where it is placed in fX or fY
 	m_eventTextSize = 18;
+
 	m_eventTextFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf"); // loading the font that will be applied to the event time display
 	m_eventText.setFont(m_eventTextFont); //set the font of the m_eventText object
 	m_eventText.setFillColor(sf::Color::White); // set the fill colour
 	m_eventText.setCharacterSize(m_eventTextSize); 
+
 	m_eventText.setPosition((m_windowWidth / 2 - m_eventTextSize*4), m_eventTextOffset); // adjust the text postion so that it is centred and at the top of the screen
 	m_newEvent = END; // used to control what event should fire
 	
@@ -33,16 +34,16 @@ void EffectGenerator::clearParticle() { // this method is used to remove all ele
 
 
 
-bool EffectGenerator::handleParticleCollisions(sf::FloatRect fbounds) { // used to handle collisions between particles
+void EffectGenerator::handleParticleCollisions(Ball *ball) { // used to handle collisions between particles
 	
 	for (int i = 0; i < m_currentParticles.size(); i++) { 
 		
-		if (m_currentParticles[i].hasCollided(fbounds) && m_currentParticles[i].m_event != 0) { // if the particle intersects with the passed in bounds and it has an event attached to it
+		if (m_currentParticles[i].hasCollided(ball) && m_currentParticles[i].getCollision()) { // if the particle intersects with the passed in bounds and it has an event attached to it
+			
+			ball->setVelocity(-ball->getVelocity()*m_currentParticles[i].getSpeedDecrease());
 			m_currentParticles.erase(m_currentParticles.begin() + i); // erase the particle
-			return true;// collison happend
 		}
 	 }
-	return false;
 
 }
 
@@ -52,22 +53,21 @@ bool EffectGenerator::handleParticleCollisions(sf::FloatRect fbounds) { // used 
 void EffectGenerator::generateExplosion() {
 	
 	
-	if (m_currentEvenetTimer - m_explosionGenerationTime >= sf::seconds(2.0f)) { // if the differnce between the m_currentEventTimer and our constellation genertaion timer is 3 seconds 
-		// set the consetllation time to the current ensuring that the differnce is nullified 
-		
+	if (m_currentEvenetTimer - m_explosionGenerationTime >= sf::seconds(2.5f)) { // if the differnce between the m_currentEventTimer and our constellation genertaion timer is 3 seconds 
+		// set the explosion time to the currentEvenetTimer ensuring that the differnce is nullified 
 		m_explosionGenerationTime = m_currentEvenetTimer; 
-		//generating random floating point number for the fRadius of the particles with and upper bound of 10.0f and lower bound of 6.0f
-		float fParticleRandomRadius = generateRandomValue(8.0f,5.0f); 
-		int iRandomAmount = generateRandomValue(10,8); // generating random amount with an upper bound of 10 and lower bound of 6
-			
+		//generating random floating point number for the fRadius of the particles with and upper bound of 8.0f and lower bound of 6.0f
+		float fParticleRandomRadius = generateRandomValue(8.0f,6.0f); 
+		int iRandomAmount = generateRandomValue(8,6); // generating random amount with an upper bound of 8 and lower bound of 6
+		float fPostionX = generateRandomValue(m_windowWidth, m_windowWidth / 4);
+		float fPositionY = generateRandomValue(m_windowHeight, m_windowHeight / 4);
 		for (int i = 0; i < m_explosionAmount; i++) {
 			// generate random initial postion for the explosions withn the bounds of the screen
-			float fPostionX =  generateRandomValue(m_windowWidth,m_windowWidth/4); 
-			float fPositionY = generateRandomValue(m_windowHeight,m_windowHeight/4);
+			
 
 			//generate particles with a speed range and allow for their alpha value to be manipulated
-			 generateParticles(iRandomAmount, fParticleRandomRadius, true, -400, 400, fPostionX, fPositionY);
-			
+			 generateParticles(iRandomAmount, fParticleRandomRadius, true, -400, 400, fPostionX, fPositionY,true);
+			  
 
 		}
 	   
@@ -145,7 +145,7 @@ void EffectGenerator::drawEventText(sf::RenderWindow &window) {
 }
  
 // will be used to generate a number of particles at random postions with a random colour 
-void EffectGenerator::generateParticles(int iNewcount, float fRadius,bool bHasAlpha,int iSpeedMin,int iSpeedMax,float fX, float fY ) {
+void EffectGenerator::generateParticles(int iNewcount, float fRadius,bool bHasAlpha,int iSpeedMin,int iSpeedMax,float fX, float fY,bool bHasCollsion ) {
 
 	// generate random colour range between 255 and 100 ensuring that the particles will be visible even on the lower end of the boundry
 	sf::Color randomColour(
@@ -157,7 +157,7 @@ void EffectGenerator::generateParticles(int iNewcount, float fRadius,bool bHasAl
 	
 	for (int i = 0; i < iNewcount; i++) { // generate number of particles according to iNewcount arg 
 		// create particle object with a random postion and colour, along with the defined fRadius( these particles also have a modifiable alpha value) 
-		Particle newParticles = Particle(fX, fY, randomColour, fRadius, bHasAlpha, iSpeedMin, iSpeedMax);
+		Particle newParticles = Particle(fX, fY, randomColour, fRadius, bHasAlpha, iSpeedMin, iSpeedMax,bHasCollsion);
 		newParticles.m_event = m_newEvent; // the event attribute willl determine how the particle is manipulated on screen
 		
 		m_currentParticles.push_back(newParticles);// push particle objects to the m_currentParticles vector attribute of the effect generator class 
@@ -171,7 +171,7 @@ void EffectGenerator::generateParticles(int iNewcount, float fRadius,bool bHasAl
 	
 }
 // used to generate a burst of particles each time the ball collides with the paddle 
-void EffectGenerator::generateCollsionParticles(sf::Vector2f fPosition, int iDirection) {  // takes in the postion of the collsion and the direction the particles need to fly according to the paddle they hit 
+void EffectGenerator::generateCollsionParticles(sf::Vector2f fPosition, int iDirection,sf::Color objectColour) {  // takes in the postion of the collsion and the direction the particles need to fly according to the paddle they hit 
 
 	float fRadiusUpperBound = 4; // setting an upper bound for generating a random fRadius 
 	float fRadiusLowerBound = 1; /// setting lower bound 
@@ -180,7 +180,7 @@ void EffectGenerator::generateCollsionParticles(sf::Vector2f fPosition, int iDir
 	for (int i = 0; i < 5; i++) { // generate 5 particles on each collsion
 
 		float fradius = generateRandomValue(fRadiusUpperBound,fRadiusLowerBound); // egenrate random fRadius for the particle depeding on upper and lower bound values 
-		Particle newParticle = Particle(fPosition.x, fPosition.y, sf::Color::White, fradius, true, -100, 100); // gernate a new particle object to be pushed to the currentParticle vector arrtibute of the effect geenrator class allowing the particles to be drawn onto the screen and updated 
+		Particle newParticle = Particle(fPosition.x, fPosition.y, objectColour, fradius, true, -100, 100,false); // gernate a new particle object to be pushed to the currentParticle vector arrtibute of the effect geenrator class allowing the particles to be drawn onto the screen and updated 
 		// these particles have a speed range of -100 to 100
 		sf::Vector2f newParicleVelocity(abs(newParticle.getSpeed()) * iDirection, newParticle.getSpeed());
 		

@@ -14,6 +14,9 @@ private:
 	sf::RenderWindow& m_window;  // refernce attribute to the window object that will be passed into the GameEngine constructor(by reference)
 	sf::Font m_font; // creating an attribute that is an object of the font class allowing for loading of font files
 	sf::Text m_hud;  // creating an attribute that is of the Text class that can have a font assigned to it and this object can then be draw to a window my setting its text content using the setString method 
+	sf::SoundBuffer m_gameLooseBuffer;
+	sf::SoundBuffer m_gameWinBuffer;
+	sf::Sound m_gameEndSound;
 	sf::SoundBuffer m_ballBuffer;
 	sf::Sound m_ballSound;
 	sf::Clock m_clock; // creating an object of the SFML Clock class that will be used to generate values such as delta time within the main game loop 

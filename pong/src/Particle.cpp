@@ -1,23 +1,27 @@
+#pragma once
 #include "particle.h"
 #include<iostream>
-
+#include<Ball.h>
 
 // a particle class that defines a circular particle with a speed range, alpha value, radius, position, and color,
-Particle::Particle(float startX, float startY, sf::Color colour, float radius, bool hasAlpha, int speedMin , int speedMax ) {
+Particle::Particle(float startX, float startY, sf::Color colour, float radius, bool hasAlpha, int speedMin , int speedMax,bool bHasCollsion ) {
 
 	
 	m_particleX = startX; // set the m_particle X and y attributes of the particle class the the startX and startY psotions passed into the constructor 
 	m_particleY = startY;
-	
+	m_hasCollsion = bHasCollsion; // determine if the particle is able to collide with other objects 
+
 	m_speed = (rand() % (speedMax - speedMin) + speedMin); // define the speed of the particle by geernating a random value bewteen the speed range min and max(including those numbers)
 	m_velocity.x = (rand() % (speedMax - speedMin) + speedMin); /// set the velcoity vector's x and y to the speed generated 
 	m_velocity.y = (rand() % (speedMax - speedMin) + speedMin); // this vector is what will be used to move each particle on the screen 
-	
 	m_hasAlpha = hasAlpha; // some particles may have their alpha values manipulated therefore this bool attribute 'm_hasAlpha' will be used to determine if the particles alpha should be changed 
 	m_colour = colour;  // set the colour attribute of the particle 
-	m_event = 0; // used to control what effects are applied to the particle 
-	
+	m_event = 0; // used to control what effects are applied to the particle
 
+	m_fadeMultiplier = 120.0f; // used to apply fading to particle at a particualr rate
+	m_alpha = 255.0f; // intial alpha
+	m_alphaCollsionVal = 65.0f;// minumum alpha required for collision
+	m_collionSpeedDecrease = 0.85f; // used to decrease on objects speed when it collides with a particle 
 	// setting the properties of the particle's shape object(in this case the in built sf::CircleShape object)
 	m_particleShape.setRadius(radius); // set the radius of the particle using the radius argument passed into the constructor  
 	m_particleShape.setPosition(m_particleX, m_particleY); //set pos
@@ -27,15 +31,21 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 
 }
 
-bool Particle::hasCollided(sf::FloatRect bounds) {
-
-	if (m_alpha >= 1.25f && m_particleShape.getGlobalBounds().intersects(bounds)) { // if the alpha value is greater than 1.25f and we have an intersection between the particle and the bounds of the ball
+bool Particle::hasCollided(Ball*ball) {
+	// if the alpha value is greater than the minumu alpha required for collsion and we have an intersection between bounds
+	if (m_alpha >= m_alphaCollsionVal && m_particleShape.getGlobalBounds().intersects(ball->getShapeReference()->getGlobalBounds())) { 
 		return true; // return true
 	}
 	
 	return false; // otherwise return false as there was no collsion or the particles alpha wasnt high enough for one ot take place 
-};
+}
 
+bool Particle::getCollision() {
+	return m_hasCollsion;
+}
+float Particle::getSpeedDecrease() {
+	return m_collionSpeedDecrease;
+}
 void Particle::update(float dt) { // method of the particle class used to update the pos of the particles shape and any other arttibutes that need to be updated i.e alpha values
 
 	
@@ -44,8 +54,9 @@ void Particle::update(float dt) { // method of the particle class used to update
 		m_particleShape.setFillColor(m_colour); // set the fill colour of the particles shape to take into account the new alpha value 
 
 		if (!(m_alpha <= 0.0f)) {  // if the alpha values is not smaller than or equal to 0(ensuring the particles dont reappear after fading)
-			m_alpha -= 0.1f; // tick down the alpha value of the particle by a small amount, resulting a fading effect over time 
-
+			
+			m_alpha -= dt*m_fadeMultiplier; // tick down the alpha value of the particle by a small amount, resulting a fading effect over time 
+			
 		}
 	}
 	m_particleShape.move(m_velocity * dt); // get the particles shape attribute  and call the predefined move method 

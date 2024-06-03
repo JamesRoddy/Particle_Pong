@@ -42,12 +42,12 @@ void Ball::move(float fDt, sf::RenderWindow& window) // this method is used to m
 	// adjusting the bounds checking of the ball to better avoid it getting stuck at the top of the screen by taking into accoutn the radius of the ball for both checks 
 	if (m_shape.getPosition().y - m_shape.getRadius() <= 0) {
 
-		m_shape.setPosition(m_shape.getPosition().x, 0 + m_shape.getRadius()); // ensure to move the ball back by half before inverting the velocity 
+		m_shape.setPosition(m_shape.getPosition().x, 0 + m_shape.getRadius()*2); // ensure to move the ball back by half before inverting the velocity 
 		m_velocity.y = -m_velocity.y; // invert the balls velocity making it go a different direction 
 	}
 	else if (m_shape.getPosition().y + m_shape.getRadius()  >= window.getSize().y) {
 
-		m_shape.setPosition(m_shape.getPosition().x, window.getSize().y - m_shape.getRadius());
+		m_shape.setPosition(m_shape.getPosition().x, window.getSize().y - m_shape.getRadius()*2);
 		m_velocity.y = -m_velocity.y; // invert the balls velocity making it go a different y direction 
 	}
 	// both condtions above are used to change the direction of the ball each time it hits the top edge or bottm edge of the screen  in order to create a bouncing effect

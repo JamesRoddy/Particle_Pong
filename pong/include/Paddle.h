@@ -12,7 +12,10 @@ private:
 	sf::Vector2f m_aITarget; // used to set where the ai should move 
 	float m_initialWidth;
 	float m_initialHeight;
-
+	int m_lastScoreCheck;
+	float m_aiSpeedController;
+	float m_maxAiSpeed;
+	float m_minAiSpeed;
 	void AiMovement(sf::Vector2f target, float fWindowYVal, float dt, sf::Vector2f fBallPos); // used to move ai based on a target position
 	void checkBounds(float fWindowYVal); // ensure that paddles are kpet in bounds of screen
 	float getRayIntersectionValue(sf::Vector2f fBalVelocity, sf::Vector2f fBallPos, float fWindowYVal, sf::Vector2f fLineTop, sf::Vector2f lineBottom); // used for ai movement allowing it to move in a more relatsict fashion i.e it makes use of a target point rather than just the ball position
@@ -29,7 +32,7 @@ public:
 	void reset(sf::Vector2f fPosition); // used to reset the paddle position across game states
 
 	void trackBall(sf::Vector2f fBallPos, sf::Vector2f fBallVelocity, float fDt, float fWindowYVal); // defining track ball method(functionality is defined in paddle.ccp)
-	
+	void aiValidateScore(float playerScore,float aiScore,float iMaxScore);
 
 	sf::FloatRect getBounds() const; // used to get the bounds of the shape object assigned to the m_shape attribute 
 	sf::RectangleShape getShape();

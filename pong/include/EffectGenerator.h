@@ -13,16 +13,16 @@ public:
 	
 	void drawShapes(sf::RenderWindow &window); // same as update but used to render each particle to the screen 
 
-	bool handleParticleCollisions(sf::FloatRect fBounds); // handle collsions between ball and particle 
+	void handleParticleCollisions(Ball*ball); // handle collsions between ball and particle 
 	void generateExplosion(); // generate particle explosions on the screen
 	
 	void generateEvent();// manage when events should trigger 
 	void manageEvents(); // spawn events
 	void setEventDisplayText();
 
-	void generateParticles(const int iNewCount, float frRadius, bool bHasAlpha, int iSpeedMin, int iSpeedMax,float fX,float fY); // used to gennerate a number of particles with random properties 
+	void generateParticles(const int iNewCount, float frRadius, bool bHasAlpha, int iSpeedMin, int iSpeedMax,float fX,float fY,bool BhasCollsion); // used to gennerate a number of particles with random properties 
 	void drawEventText(sf::RenderWindow &window);
-	void generateCollsionParticles(sf::Vector2f fCollsionPoint, int fDirection); // used to generate particles when the ball collides with the paddles 
+	void generateCollsionParticles(sf::Vector2f fCollsionPoint, int fDirection,sf::Color objectColour); // used to generate particles when the ball collides with the paddles 
 	
 	int generateRandomValue(int iUpperBound, int iLowerBound); // used to geenrate various random properties such as explosion amounts and particle sizes
 	float generateRandomValue(float iUpperBound, float iLowerBound);

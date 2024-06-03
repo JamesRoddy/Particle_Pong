@@ -19,6 +19,11 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_hud.setFont(m_font); // setting the font of the m_hud attribute within the GameEngine class whihc is an object of the Text class 
 	m_hud.setCharacterSize(50); 
 	m_hud.setFillColor(sf::Color::White);
+	m_ballBuffer.loadFromFile(".\\assets\\audio\\beep.flac");
+	m_ballSound.setBuffer(m_ballBuffer);
+	m_gameWinBuffer.loadFromFile(".\\assets\\audio\\winSound.wav");
+	m_gameLooseBuffer.loadFromFile(".\\assets\\audio\\looseSound.wav");
+
 
 	m_hud.setPosition((m_window.getSize().x / 2.f) - 45.f, 10);
 
@@ -59,12 +64,14 @@ void GameEngine::update()
 		break;
 
 	case GameEngine::gameOver:
-		if (m_p1Score > m_p2Score) { 
-			ss << "Player 1 wins\n";
+		if (m_p1Score > m_p2Score) {
+
+			ss << "You win !\n";
+
 		
 		}
 		else {
-			ss << "Player 2 wins\n";
+			ss << "Computer wins...\n";
 			
 
 		}
@@ -73,8 +80,8 @@ void GameEngine::update()
 		
 		ss << "would you like to\n continue(y/n)\n";  // added continue message during the game over screen
 		
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y)) {  // if the m_gameStates is currently set to the constant "gameOver" and the user presses the Y key
-			
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y)) {  // if the m_gameStates is currently set to the enum constant "gameOver" and the user presses the Y key
+			m_gameEndSound.stop();// ensure the end game sound doesnt continue past the game over screen
 			m_gStates = intro;  // we take them back to the intro state/screen allowing them to play again(rather than just closing the program
 
 			// reset game objects to their original positions
@@ -105,11 +112,7 @@ void GameEngine::update()
 void GameEngine::run()
 {
 	float dt;
-	if (!m_ballBuffer.loadFromFile(".\\assets\\audio\\beep.flac")) {
-		std::cout << "couldn't load sound BallHit" << std::endl;
-		
-	}
-	m_ballSound.setBuffer(m_ballBuffer);
+	
 	while (m_window.isOpen())
 	{
 		dt = m_clock.restart().asSeconds(); // get the differnce between the last and current frame(delta time)  
@@ -157,12 +160,12 @@ void GameEngine::run()
 			//// collsion detection  for both paddles 
 			if (m_ball.ballCollisionPushBack(m_paddle1.getShape(),dt)) { // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap
 				m_ballSound.play();
-				m_effects.generateCollsionParticles(m_ball.getPosition(), 1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
+				m_effects.generateCollsionParticles(m_ball.getPosition(), 1, m_paddle1.getShape().getFillColor()); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 			   
 			}
 			if (m_ball.ballCollisionPushBack(m_paddle2.getShape(),dt)){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
 				m_ballSound.play();
-				m_effects.generateCollsionParticles(m_ball.getPosition(), -1); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
+				m_effects.generateCollsionParticles(m_ball.getPosition(), -1, m_paddle2.getShape().getFillColor()); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 			}
 			
 			// updating scores when the ball passes either paddle 
@@ -171,12 +174,14 @@ void GameEngine::run()
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower); // get a new random y postion for the ball to start at 
 				m_ball.resetPos( origin.x, inewPosY); // reset balls postion and speed
 				m_p1Score++;  // increment the score attribute of the m_paddle1 object(as it just scored)
+				m_paddle2.aiValidateScore(m_p1Score, m_p2Score, m_maxScore);
+
 			}
 			if (m_ball.getPosition().x < 0) { // similar process as described above but for when the ball passes the left/player paddle 
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower);
 				m_ball.resetPos( origin.x, inewPosY); // reset balls postion
 				m_p2Score++;
-				
+				m_paddle2.aiValidateScore(m_p1Score, m_p2Score, m_maxScore);
 			}
 
 			
@@ -185,13 +190,14 @@ void GameEngine::run()
 			m_powerUpsManager.update(dt); // update power up positions 
 			m_powerUpsManager.handleCollision(&m_ball,&m_paddle1,&m_paddle2); // handle collisions and effect application 
 			m_powerUpsManager.manageDurationEffects(&m_ball,dt); // handle duration effects
+			m_powerUpsManager.updatePopUpText(dt);
+
 
 			m_effects.generateEvent(); // when particle effect event should trigger
 			m_effects.manageEvents();// manage when particle event triggers
 			m_effects.update(dt); // update all particles currently on screen 
-			if (m_effects.handleParticleCollisions(m_ball.getShape().getGlobalBounds())) { // handle particle collision
-				m_ball.setVelocity(-m_ball.getVelocity()); // invert ball velocity each collision
-			}
+			m_effects.handleParticleCollisions(&m_ball);
+			
 			
 			// checking for if either paddle has a score equal to the m_maxScore variable
 			if (m_p1Score == m_maxScore || m_p2Score == m_maxScore) { // check if either score attribute attached to the paddle 1 and paddle 2 objects has reached the max score count 
@@ -203,6 +209,9 @@ void GameEngine::run()
 				// reset powerups
 				m_powerUpsManager.clearPowerUps(&m_ball);
 				m_powerUpsManager.resetTimers();
+				// detminign which sound buffer should be allocated to the m_gameEndSound attribute 
+				m_p1Score > m_p2Score ? m_gameEndSound.setBuffer(m_gameWinBuffer) : m_gameEndSound.setBuffer(m_gameLooseBuffer);
+				m_gameEndSound.play();
 			}
 
 			

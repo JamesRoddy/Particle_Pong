@@ -7,9 +7,11 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 	m_initialHeight = width;
 	m_initialHeight = height;
 	// setting the properties of the sf::rectangle object associated with the m_shape attribute of the paddle 
-	
-	m_aISpeedMultiplier = 2.65; // speed multipler for the  paddle ai to move it based on its distance to its tareget
-	
+	m_lastScoreCheck = 0;
+	m_aISpeedMultiplier = 2.65f; // speed multipler for the  paddle ai to move it based on its distance to its target
+	m_aiSpeedController = 1.0f; // speed increment/decrement
+	m_minAiSpeed = 2.30f; // lowest speed ai can reach
+	m_maxAiSpeed = 2.70f; // maximum speed for ai 
 	m_shape.setSize(m_size); 
 	m_shape.setPosition(position);
 	m_shape.setFillColor(color);
@@ -24,12 +26,12 @@ void Paddle::draw(sf::RenderWindow& window)
 	
 }
 
+
 void Paddle::move(float fDt, float fWindowYVal)
 {
 
-	checkBounds(fWindowYVal);
+	checkBounds(fWindowYVal); /// keep the paddle in bounds of the screen
 
-	
     m_shape.move(0, m_speed * fDt); // move the paddle 
 	
 
@@ -76,6 +78,35 @@ void Paddle::trackBall(sf::Vector2f fBallPos ,sf::Vector2f fBallVelocity,float f
 	}
 	
 	
+
+}
+
+
+
+void Paddle::aiValidateScore(float iPlayerScore, float iAiScore,float iMaxScore) {
+
+	
+	/// used to control the ai speed based on the percentage of how close it is to the max score and how close the player is 
+	float fPlayerPercent = iPlayerScore / iMaxScore;
+	float fAiPercent =  iAiScore / iMaxScore;
+
+	std::cout << fPlayerPercent << std::endl;
+	std::cout << fAiPercent << std::endl;
+	// if the player score is greater than when the last check took place and the percentage for the ai is not higher than the player
+	if (iPlayerScore > m_lastScoreCheck  &&!(m_aISpeedMultiplier >= m_maxAiSpeed||fAiPercent>fPlayerPercent)) { 
+		std::cout << "increment" << std::endl;
+
+		m_aISpeedMultiplier += m_aiSpeedController * fPlayerPercent; // increase the ai speed by the ai speed increment multipled by how close the player is to the socre
+
+	}
+	// if we havent hit our minmum speed and the player score is smaller than the ai score 
+	else if (iPlayerScore < iAiScore && !(m_aISpeedMultiplier <= m_minAiSpeed)) {
+		std::cout << "decrement" << std::endl;
+		m_aISpeedMultiplier -= m_aiSpeedController * fAiPercent; // decrmeent the score by the ai speed increment multipled by how close the ai is to max score
+	}
+	std::cout << m_aISpeedMultiplier << std::endl;
+	m_lastScoreCheck = iPlayerScore;
+
 
 }
 

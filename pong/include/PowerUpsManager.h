@@ -15,7 +15,8 @@ public:
 	void resetTimers(); // reset the timers 
 	void manageDurationEffects(Ball*ball,float fDt); // loop through all active power ups and apply/neagte their effects if needed
 	void update(float fDt); // update all power ups
-	void addPowerUpText(unsigned int uiCharacterSize,powerUp &newPowerUp);
+	void addPowerUpText(unsigned int uiCharacterSize,powerUp &newPowerUp); // used to add pop up text to the m_activePowerUpText vector allowing the pop up text to be drawn to the screens
+	void updatePopUpText(float dt);
 	void drawPowerUpText(sf::RenderWindow& window);
 	// used to keep track of all the effects and whihc effects should have their duration increased based on the power up and its effects
 	void searchForExistingBallEffect(powerUp &newPowerUp);
@@ -28,15 +29,16 @@ private:
 	std::vector<sf::Text> m_activePopUpText;
 
 	static const int powerUpTypes = 3; // number of power up types that can spawn
-	sf::Time m_effectDurations[powerUpTypes] = { sf::seconds(0.0f),sf::seconds(2.0f),sf::seconds(6.5f) }; // effect durations associated with powerUps
+	sf::Time m_effectDurations[powerUpTypes] = { sf::seconds(0.0f),sf::seconds(3.0f),sf::seconds(5.0f) }; // effect durations associated with powerUps
 	sf::Color m_powerUpColours[powerUpTypes] = { sf::Color::Magenta,sf::Color::Blue,sf::Color::Red }; // colours assoctaed with powerUps
-	std::string m_powerUpText[powerUpTypes] = { "INVERT","SPEED","BIG MODE" };
+	std::string m_powerUpText[powerUpTypes] = { "INVERT!","SPEED!","BIG MODE!" };
 	sf::Font m_powerUpTextFont;
 	sf::Clock m_eventTimer; // used to get the elapsed time since the game started
 	sf::Clock m_CollisionTimer; // used to provide power ups with a time of collsion allowing for effect duration and negation
 	sf::Time m_currentEventTime; /// keep track of when powerUp should spawn
 	sf::Time m_powerUpGenTime; /// time for when powerups should spawn 
 	
+	float m_textFadeMultiplier;
 	float m_windowWidth;  // window widht and height used to control where power ups spawn 
 	float m_windowHeight;
 	

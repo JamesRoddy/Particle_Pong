@@ -17,6 +17,9 @@ powerUp::powerUp(float fWindowWidth,float fWindowHeight){
 	// used to modify various objects the power up effects are applied to 
 	m_powerUpScaleFactor = 1.5f;
 	m_ballSpeedMultiplier = 65.0f;
+	// determine if the power has a paddle ffect or ball effect 
+	m_hasBallEffect = false;
+	m_hasPaddleEffect = false;
 
 	m_tickUpTime = sf::seconds(0.001f); // time that will be applied to the power up current duration each frame controllling how fast the duration effect of the power up will fade
 	m_shape.setSize(sf::Vector2f(15.0f, 15.0f));// set the size of the powerup
@@ -60,7 +63,6 @@ void powerUp::applyEffect(Ball* ball,float fDt) {
 
 	}
 	m_currentEffectTime += m_tickUpTime; // increase the current effect time of the powerup(until it reaches the total effect time attribute
-	std::cout << m_currentEffectTime.asSeconds() << std::endl;
 	
 }
 
@@ -70,9 +72,8 @@ bool powerUp::negateEffect(Ball* ball) {
 
 	// used to negate any duration effects after they have finished 
 	if (m_currentEffectTime.asSeconds()  >= m_totalEffectTime.asSeconds()) { // if the power up duration is greater than its total
-		std::cout << m_id << std::endl;
-		std::cout << m_currentEffectTime.asSeconds() << std::endl;
-		switch (m_id) { // control what effect needs to be negated via the id of the power up
+		
+	  switch (m_id) { // control what effect needs to be negated via the id of the power up
 		case INCREASEPADDLESIZE: 
 			
 			m_paddleRef->getShapeReference()->setScale(1.0f,1.0f); // decrease scale of paddle assigned to power up if it has the increase size effect

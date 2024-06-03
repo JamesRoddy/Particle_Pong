@@ -2,7 +2,7 @@
 #include "Ball.h"
 #include "Paddle.h"
 #include <SFML/Graphics.hpp>
-
+#include <SFML/Audio.hpp>
 class powerUp{
 
 public: 
@@ -35,16 +35,16 @@ private:
 	sf::Vector2f randomTarget(); // used to set a ranodm target for the power up each time it reaches its current movement target
 	void setEffectTarget(); // used to determine which paddle the power up effect is applied to 
 	enum effects { INVERTVELOCITY, INCREASEBALLSPEED, INCREASEPADDLESIZE }; // a set of enum constants that are used to help keep track of power up effects
-	
+	sf::SoundBuffer m_powerUpSoundBuffer;
+	sf::Sound m_powerUpSoundEffect;
 	// used to detrmine how many times the power up can move before it fades off screen
 	int m_targetHitCount;
 	int m_maxTargetHitCount;
 	sf::Text m_powerUpText; // text that will get set to the pop up text for the power up when it is hit
-	// dtermine what objects the power up effect should be applied to 
-	bool m_hasPaddleEffect = false;
-	bool m_hasBallEffect = false;
-	int m_direction ; // dtermine direection of the ball when the power up object collided with it 
-	
+	// determine what objects the power up effect should be applied to 
+	bool m_hasPaddleEffect;
+	bool m_hasBallEffect;
+	int m_direction; // dtermine direection of the ball when the power up object collided with it 
 	Paddle* m_paddleRef ; // refernce to the paddle any effects need to be applied to 
 	//different scale factors used for power up effects 
 	float m_powerUpScaleFactor;

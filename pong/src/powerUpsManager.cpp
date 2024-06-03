@@ -8,6 +8,7 @@ powerUpsManager::powerUpsManager(float fWindowWidth,float fWindowHeight,std::str
 	m_windowWidth = fWindowWidth; /// window widht and height vairbales used for spawning power ups
 	m_windowHeight = fWindowHeight;
 	m_powerUpTextFont.loadFromFile(sPowerUpFontPath);
+	m_textFadeMultiplier = 0.01f; // a low fade druation to ensure the text is always visble for certain time 
 }
 
 
@@ -25,7 +26,7 @@ void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass
 				ball->getVelocity().x < 0.0f ? m_powerUps[i].setPaddle(AI,-1) : m_powerUps[i].setPaddle(player,1);
 				searchForExistingPaddleEffect(m_powerUps[i]); // check if the effect of the power up already exists
 			}
-			addPowerUpText(20, m_powerUps[i]);
+			addPowerUpText(25, m_powerUps[i]);
 			m_powerUps.erase(m_powerUps.begin() + i); // erase the power up from the vector being used to draw them to the screen 
 		}
 
@@ -40,10 +41,24 @@ void powerUpsManager::drawPowerUpText(sf::RenderWindow &window) {
 		window.draw(m_activePopUpText[i]);
 	}
 	     
-		
-	
-
 }
+
+void powerUpsManager::updatePopUpText(float dt) { // upadte all pop up text on screen
+
+	for (int i = 0; i < m_activePopUpText.size(); i++) { 
+		if (m_activePopUpText[i].getFillColor().a <= 0.0f) { // if the alpha is less then 0
+
+			m_activePopUpText.erase(m_activePopUpText.begin() + i);// erase the text object from the vector
+			continue;
+		}
+		sf::Color newPopColour = m_activePopUpText[i].getFillColor(); // get the fill colour of the text
+		newPopColour.a -= (dt*m_textFadeMultiplier); // tick down the alpha value by dt multipler by our fade multiplier
+		m_activePopUpText[i].setFillColor(newPopColour); // set the new fill colour
+
+
+	}
+}
+
 
 void powerUpsManager::searchForExistingBallEffect(powerUp &newPowerUp) {
 	
