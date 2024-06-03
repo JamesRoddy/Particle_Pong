@@ -30,7 +30,10 @@
     <ClInclude Include="include\EffectGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\spiral.h">
+    <ClInclude Include="include\powerUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PowerUpsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,7 +56,10 @@
     <ClCompile Include="src\EffectGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\spiral.cpp">
+    <ClCompile Include="src\powerUp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\powerUpsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

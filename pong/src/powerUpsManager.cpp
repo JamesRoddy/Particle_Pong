@@ -2,12 +2,12 @@
 #include <iostream>
 
 
-powerUpsManager::powerUpsManager(float fWindowWidth,float fWindowHeight) {
+powerUpsManager::powerUpsManager(float fWindowWidth,float fWindowHeight,std::string sPowerUpFontPath) {
 
-	m_powerUpGenTime = sf::seconds(2.0f); // time it takes to spawn new power ups 
+	m_powerUpGenTime = sf::seconds(4.0f); // time it takes to spawn new power ups 
 	m_windowWidth = fWindowWidth; /// window widht and height vairbales used for spawning power ups
 	m_windowHeight = fWindowHeight;
-	
+	m_powerUpTextFont.loadFromFile(sPowerUpFontPath);
 }
 
 
@@ -25,6 +25,7 @@ void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass
 				ball->getVelocity().x < 0.0f ? m_powerUps[i].setPaddle(AI,-1) : m_powerUps[i].setPaddle(player,1);
 				searchForExistingPaddleEffect(m_powerUps[i]); // check if the effect of the power up already exists
 			}
+			addPowerUpText(20, m_powerUps[i]);
 			m_powerUps.erase(m_powerUps.begin() + i); // erase the power up from the vector being used to draw them to the screen 
 		}
 
@@ -33,7 +34,16 @@ void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass
 
 }
 
+void powerUpsManager::drawPowerUpText(sf::RenderWindow &window) {
 
+	for (int i = 0; i < m_activePopUpText.size(); i++) {
+		window.draw(m_activePopUpText[i]);
+	}
+	     
+		
+	
+
+}
 
 void powerUpsManager::searchForExistingBallEffect(powerUp &newPowerUp) {
 	
@@ -45,8 +55,7 @@ void powerUpsManager::searchForExistingBallEffect(powerUp &newPowerUp) {
 		  return; // return as we dont need to push the new power up to the active power ups vector
 	  } 
 	}
-	//otheriws the power up we were checking becomes a new active power up with an effect duration 
-	newPowerUp.setTimeOfCollision(m_CollisionTimer.getElapsedTime());
+	//otherwise the power up we were checking becomes a new active power up with a ball effect  
 	m_activePowerUp.push_back(newPowerUp);
 
 }
@@ -58,21 +67,27 @@ void powerUpsManager::searchForExistingPaddleEffect(powerUp& newPowerUp) {
 	for (int i = 0; i < m_activePowerUp.size(); i++) { // for each power up
 		// if the effect direction of the power up we are checking is the same as another already in the active power ups vector
 		if (m_activePowerUp[i].getEffectDirection() == newPowerUp.getEffectDirection()) { 
-			std::cout << m_activePowerUp[i].getEffectDirection() << std::endl;
 			m_activePowerUp[i].incrementDuration(); // we increment the duration of the current active power up of the same type
 			return; // we return as we found a power up of the same type 
-		 }
+		}
 
 	}
 	// otherwise we push the power up to the active power ups vector setting its effect time before doing so 
-	// as we didnt  find an active power up with the same effect
-	newPowerUp.setTimeOfCollision(m_CollisionTimer.getElapsedTime());
+	// as we didnt  find an active power up with the same paddle effect
 	m_activePowerUp.push_back(newPowerUp);
 
 
 }
 
+// used to add the pop up text assigned to the power up text vector located in the header file 
+void powerUpsManager::addPowerUpText(unsigned int uiSetCharacterSize,powerUp &newPowerUp) {
 
+	newPowerUp.getPopUpTextRef()->setPosition(newPowerUp.getShape().getPosition());// used to assign the position of the power up text 
+	newPowerUp.getPopUpTextRef()->setCharacterSize(uiSetCharacterSize); // assiging the character size of the power up text
+	newPowerUp.getPopUpTextRef()->setFont(m_powerUpTextFont); // assiging the font to the power up pop up text
+	m_activePopUpText.push_back(newPowerUp.getPopUpTextValue()); // finally we push the value of the power up text attribute to the power up text vector allowing it to be drawn
+
+}
 
 void powerUpsManager::manageDurationEffects(Ball*ball,float fDt) { // used to manage any duration effects power ups may have
 	
@@ -112,7 +127,7 @@ void powerUpsManager::update(float fDt) {
 			m_powerUps.erase(m_powerUps.begin() + i); /// erase the power up from the current power ups vector
 			continue;// move to next itteration
 		}
-		m_powerUps[i].updatePowerUpPos(fDt); // other wise update the power up
+		m_powerUps[i].updatePowerUpPos(fDt); // other wise update the power up position
 
 	}
 
@@ -128,11 +143,11 @@ void powerUpsManager::generatePowerUp() {
 
 		// zero out all other sf::Time objects that are associated with events
 		m_currentEventTime = m_currentEventTime.Zero;
-
-		powerUp newPowerUp = powerUp(m_windowWidth, m_windowHeight); 
-		// set the type of the power up based on its id in relation to the various durations and colours 
-		//stored in the m_effectDurations  array and m_powerUpColours array located in the powerUpsManagerClass
-		newPowerUp.setType(m_powerUpColours[newPowerUp.getId()], m_effectDurations[newPowerUp.getId()]);
+		// passing in the window widht and height to the power up constcrtor along with the font that will be used for the text object attribute the power up has 
+		powerUp newPowerUp = powerUp(m_windowWidth, m_windowHeight);
+		// set the type of the power up based on its id in relation to the various durations,colours,and text 
+		//associated with attributes of the power ups manager object
+		newPowerUp.setType(m_powerUpColours[newPowerUp.getId()], m_effectDurations[newPowerUp.getId()],m_powerUpText[newPowerUp.getId()]);
 		newPowerUp.setSpawn(); // set the spawn location of the power up
 		m_powerUps.push_back(newPowerUp); // push the power up to the current powerups vector allowing it to be drawn and become active
 
@@ -145,12 +160,13 @@ void powerUpsManager::generatePowerUp() {
 }
 void powerUpsManager::clearPowerUps(Ball*ball) { // clear all power ups on the screen and active power ups
 
-	for (int i = 0; i < m_activePowerUp.size(); i++) {
-		m_activePowerUp[i].setTotalEffectTime(sf::Time::Zero);
-		m_activePowerUp[i].negateEffect(ball);
+	for (int i = 0; i < m_activePowerUp.size(); i++) { // for each active power up
+		m_activePowerUp[i].setTotalEffectTime(sf::Time::Zero);// set its total effect time to zero
+		m_activePowerUp[i].negateEffect(ball); // negate the ffect
 	}
-	m_powerUps.clear(); 
+	m_powerUps.clear();  //clear power up vectors
 	m_activePowerUp.clear();
+	m_activePopUpText.clear();
 	
 }
 

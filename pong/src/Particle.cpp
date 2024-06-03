@@ -29,11 +29,11 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 
 bool Particle::hasCollided(sf::FloatRect bounds) {
 
-	if (m_alpha >= 0.0f && m_particleShape.getGlobalBounds().intersects(bounds)) {
-		return true;
+	if (m_alpha >= 1.25f && m_particleShape.getGlobalBounds().intersects(bounds)) { // if the alpha value is greater than 1.25f and we have an intersection between the particle and the bounds of the ball
+		return true; // return true
 	}
 	
-	return false;
+	return false; // otherwise return false as there was no collsion or the particles alpha wasnt high enough for one ot take place 
 };
 
 void Particle::update(float dt) { // method of the particle class used to update the pos of the particles shape and any other arttibutes that need to be updated i.e alpha values

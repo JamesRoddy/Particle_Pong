@@ -33,7 +33,7 @@ private:
 	float m_maxSpeed; // used to control the overall speed limit the ball has 
 	float m_speedIncreaseMultiplier; // used to control at what rate the ball will increase in speed each collision 
 	
-	float maxCollsionAngle; // maximum rotation angle that can be applied to the ball when it hits paddle
+	float m_maxCollsionAngle; // maximum rotation angle that can be applied to the ball when it hits paddle
 	sf::CircleShape m_shape; // the ball has an atttribute that is an object of the built in CircleShape class 
 	sf::Vector2f m_velocity; // will determine the direction of movement for the ball
 

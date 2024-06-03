@@ -11,7 +11,7 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_hasEvent = false; // boolean flag for having an event that is used to control the postion of the start index
 	m_hasStartIndex = false;
 	m_eventStartIndex = 0; // set initial starting index of the event to 0
-    
+	m_explosionAmount = 4;
 
 	m_eventTextOffset = 75; // set the offset for the event text allowing for control over where it is placed in fX or fY
 	m_eventTextSize = 18;
@@ -24,12 +24,7 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	
 }
 
-void EffectGenerator:: resetEventTimer() { // used to reset the event timer when switching game states
-	m_eventTimer.restart();
-    m_currentEvenetTimer = m_currentEvenetTimer.Zero;
-	m_displayTime = m_displayTime.Zero;
 
-}
 void EffectGenerator::clearParticle() { // this method is used to remove all elements from the m_currentParticles vector, this prevents scenarios where particles that were genertaed during different game states carry over into the next state(particles generated during gameplay dont appear on the game over screen)
 	m_currentParticles.clear();
 
@@ -64,15 +59,14 @@ void EffectGenerator::generateExplosion() {
 		//generating random floating point number for the fRadius of the particles with and upper bound of 10.0f and lower bound of 6.0f
 		float fParticleRandomRadius = generateRandomValue(8.0f,5.0f); 
 		int iRandomAmount = generateRandomValue(10,8); // generating random amount with an upper bound of 10 and lower bound of 6
-		int iExplosionAmount = generateRandomValue(8, 4); // generating random number for the amount of particle explosions
 			
-		for (int i = 0; i < iExplosionAmount; i++) {
+		for (int i = 0; i < m_explosionAmount; i++) {
 			// generate random initial postion for the explosions withn the bounds of the screen
 			float fPostionX =  generateRandomValue(m_windowWidth,m_windowWidth/4); 
 			float fPositionY = generateRandomValue(m_windowHeight,m_windowHeight/4);
 
-
-			generateParticles(iRandomAmount, fParticleRandomRadius, true, -400, 400, fPostionX, fPositionY);// generate particles with a speed range and allow for their alpha value to be manipulated 
+			//generate particles with a speed range and allow for their alpha value to be manipulated
+			 generateParticles(iRandomAmount, fParticleRandomRadius, true, -400, 400, fPostionX, fPositionY);
 			
 
 		}
@@ -81,9 +75,6 @@ void EffectGenerator::generateExplosion() {
 		
 	
 }
-
-
-
 
 void EffectGenerator:: manageEvents() {
 	// manage events that fire based on the value of the m_newEvent attribute that is set
@@ -97,8 +88,6 @@ void EffectGenerator:: manageEvents() {
 
 
 }
-
-
 
 void EffectGenerator::generateEvent() {
 	// control the rate at which different event effects will fire 
@@ -118,8 +107,7 @@ void EffectGenerator::generateEvent() {
 		
 	}
 	if (m_currentEvenetTimer > m_eventInitialiseTime) { // generate new event if we have reach our initialisation time
-		m_hasEvent = true;
-		m_displayTime = m_eventEndTime - m_currentEvenetTimer; // change what will be displayed by the m_eventText object to be the duration of the event
+		m_hasEvent = true; // set the flag for having an event to true
 
 		m_newEvent = PARTICLESTORM; // set the event enum to the current event
 
@@ -130,6 +118,17 @@ void EffectGenerator::generateEvent() {
 
 }
 
+void EffectGenerator::resetEventTimer() { // used to reset the event timer when switching game states
+	m_eventTimer.restart();
+
+	m_currentEvenetTimer = m_currentEvenetTimer.Zero;
+	m_displayTime = m_displayTime.Zero;
+	
+	m_hasStartIndex = false;
+	m_hasEvent = false;
+	m_eventText.setString("");
+
+}
 // used to update the m_eventText object that displays how long until an event will fire
 void EffectGenerator:: setEventDisplayText() {
 	std::stringstream ssEventDisplayText; // create temporary local string stream variable that willl be refereshed each time this function is called
@@ -145,7 +144,6 @@ void EffectGenerator::drawEventText(sf::RenderWindow &window) {
 	window.draw(m_eventText);
 }
  
-
 // will be used to generate a number of particles at random postions with a random colour 
 void EffectGenerator::generateParticles(int iNewcount, float fRadius,bool bHasAlpha,int iSpeedMin,int iSpeedMax,float fX, float fY ) {
 
@@ -172,7 +170,6 @@ void EffectGenerator::generateParticles(int iNewcount, float fRadius,bool bHasAl
 	}
 	
 }
-
 // used to generate a burst of particles each time the ball collides with the paddle 
 void EffectGenerator::generateCollsionParticles(sf::Vector2f fPosition, int iDirection) {  // takes in the postion of the collsion and the direction the particles need to fly according to the paddle they hit 
 
@@ -197,9 +194,6 @@ void EffectGenerator::generateCollsionParticles(sf::Vector2f fPosition, int iDir
 
 }
 
-
-
-
 void EffectGenerator::drawShapes(sf::RenderWindow& window) { // this is the main method that will be called by an effect generator object defined in the game engine header file/cpp and is used to draw each particle object currently active on the screen 
 	
 	for (int i = 0; i < m_currentParticles.size(); i++) { // for each particle object in the vector 'm_currentParticles'
@@ -208,6 +202,7 @@ void EffectGenerator::drawShapes(sf::RenderWindow& window) { // this is the main
 	}
 	
 }
+
 float EffectGenerator::generateRandomValue(float fUpperBound, float fLowerBound) {
 
 	return fLowerBound + static_cast<float>(rand()) / static_cast<float>((RAND_MAX / (fUpperBound - fLowerBound)));
@@ -217,6 +212,7 @@ float EffectGenerator::generateRandomValue(float fUpperBound, float fLowerBound)
 int EffectGenerator::generateRandomValue(int iUpperBound, int iLowerBound) {
 	return (rand() % (iUpperBound - iLowerBound) + iLowerBound);
 }
+
 void EffectGenerator::update(float fDt) { // the effect generator is used to manage all of the current particles on screen therefore it only needs to update the particles and check for condtions where they would need to disappear 
 
 	for (int i = 0; i < m_currentParticles.size(); i++) { // loop through all of the current particle objects contained wihtin the vector attribute of the effect geenrator class 

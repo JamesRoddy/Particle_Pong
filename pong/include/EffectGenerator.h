@@ -45,7 +45,7 @@ private:
 	std::stringstream m_eventDisplayText ;
 	unsigned int m_eventTextSize;
 	float m_eventTextOffset;
-
+	int m_explosionAmount; 
 	enum events {END,PARTICLESTORM}; // used to control what event should fire 
 	events m_newEvent;
 	bool m_hasStartIndex;

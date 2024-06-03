@@ -7,7 +7,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y - 100.f), 10, 100, sf::Color::White),
 	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 400.0f, sf::Color::White),
 	m_effects(window.getSize().x, window.getSize().y),
-	m_powerUpsManager(window.getSize().x,window.getSize().y)
+	m_powerUpsManager(window.getSize().x,window.getSize().y, ".\\assets\\fonts\\impact.ttf")
 
 {   
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
@@ -32,8 +32,9 @@ void GameEngine::draw()
 	m_window.clear(); // refresh window for each call to draw ready for the next frame
 	m_effects.drawShapes(m_window); // draw all current particle effects to the screen 
 	m_effects.drawEventText(m_window);
-	m_powerUpsManager.draw(m_window); // draw all power ups to the screen
-
+	
+	m_powerUpsManager.draw(m_window); // draw all power ups to the screen and their pop up text
+	m_powerUpsManager.drawPowerUpText(m_window);
 	// draw the hud ball and paddles
 	m_paddle1.draw(m_window);
 	m_paddle2.draw(m_window);
@@ -178,16 +179,7 @@ void GameEngine::run()
 				
 			}
 
-			// checking for if either paddle has a score equal to the m_maxScore variable
-			if (m_p1Score == m_maxScore || m_p2Score == m_maxScore) { // check if either score attribute attached to the paddle 1 and paddle 2 objects has reached the max score count 
-			   
-				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
-				m_effects.clearParticle(); // clear all particles if there are any remaining on screen 
-				m_effects.resetEventTimer();
-				// reset powerups
-				m_powerUpsManager.clearPowerUps(&m_ball);
-				m_powerUpsManager.resetTimers();
-			}
+			
 
 			m_powerUpsManager.generatePowerUp(); // control when power ups spawn
 			m_powerUpsManager.update(dt); // update power up positions 
@@ -201,7 +193,17 @@ void GameEngine::run()
 				m_ball.setVelocity(-m_ball.getVelocity()); // invert ball velocity each collision
 			}
 			
-				
+			// checking for if either paddle has a score equal to the m_maxScore variable
+			if (m_p1Score == m_maxScore || m_p2Score == m_maxScore) { // check if either score attribute attached to the paddle 1 and paddle 2 objects has reached the max score count 
+
+				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
+				m_effects.clearParticle(); // clear all particles if there are any remaining on screen 
+
+				m_effects.resetEventTimer();
+				// reset powerups
+				m_powerUpsManager.clearPowerUps(&m_ball);
+				m_powerUpsManager.resetTimers();
+			}
 
 			
 		}

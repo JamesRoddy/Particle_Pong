@@ -12,7 +12,7 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_velocity.x = speed;
 	m_velocity.y = speed;
 	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed each collision
-	maxCollsionAngle = 45.0f; // maximum collsion angle for ball
+	m_maxCollsionAngle = 45.0f; // maximum collsion angle that the ball can bounce of the paddle at
 	m_maxSpeed = 575.0f; // maximum speed ball can reach
 	m_shape.setRadius(radius); // set the radius of the m_shape attribute that repsents an object of the inbuilt CircleShape class wihtin sfml this wil ajsut the size of the ball using the float raidus argument passed into the constructor for the ball class 
 	m_shape.setPosition(position);  // set the initial postion of the ball from inside this constructor
@@ -122,7 +122,7 @@ float Ball::getRotation(float fDistanceToCentre, sf::RectangleShape paddleBounds
 	// allowing for more steep and vaired angles the ball can take after hitting the paddle 
 	float fRelativeDistanceToCentre = fDistanceToCentre * 2 / paddleBounds.getGlobalBounds().height; // get the surface point distance to the centre of the paddle as a percentage
 
-	float angle = fRelativeDistanceToCentre * maxCollsionAngle; // adjust the angle based on the percentage point caluclated(how close collsion point is to centre)
+	float angle = fRelativeDistanceToCentre * m_maxCollsionAngle; // adjust the angle based on the percentage point caluclated(how close collsion point is to centre)
 	float fRotationY = fRotationY = sin(angle) + cos(angle); // calculate rotation that should be applied to the current velocity vector fMinY; 
 	if (fRelativeDistanceToCentre < 0) { // base the sign of the rotation of where it hit the paddle
 		fRotationY = -(abs(fRotationY));
