@@ -50,8 +50,15 @@ void EffectGenerator::handleParticleCollisions(Ball *ball) { // used to handle c
 		if (m_currentParticles[i].hasCollided(ball) && m_currentParticles[i].getCollision()) { // if the particle intersects with the passed in bounds and it has an event attached to it
 			// if the ball velocity isnt small  than or equal to the default speed
 			sf::Vector2f fCurrentBallVelocity = ball->getVelocity();
-			if (!(fCurrentBallVelocity.x * m_currentParticles[i].getSpeedDecrease() < ball->getDefaultSpeed())) { 
+
+			if (!(abs(fCurrentBallVelocity.x) * m_currentParticles[i].getSpeedDecrease() < ball->getDefaultSpeed())) { 
+				std::cout << fCurrentBallVelocity.x << std::endl;
+				std::cout << "did decrease" << std::endl;
 				fCurrentBallVelocity *= m_currentParticles[i].getSpeedDecrease();// decrease the balls velocity when it hits a particle
+			}
+			else {
+				std::cout << fCurrentBallVelocity.x << std::endl;
+				std::cout << "didnt decrease" << std::endl;
 			}
 			
 			ball->setVelocity(-fCurrentBallVelocity);

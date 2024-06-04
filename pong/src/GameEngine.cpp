@@ -15,7 +15,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	origin = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f); /// used for setting objects postion at the centre of the window
 	m_p1Score = 0; // keep track of player scores
 	m_p2Score = 0;
-	m_gStates = GameStates::intro; // on intialisation set the game states enum vairbale to the value of 0
+	m_gStates = GameStates::menu; // on intialisation set the game states enum vairbale to the value of 0
 	m_font.loadFromFile(".\\assets\\fonts\\digital-7.ttf");  // used to load the specifc font file that will be used when text is rendered to the screen 
 	m_hud.setFont(m_font); // setting the font of the m_hud attribute within the GameEngine class whihc is an object of the Text class 
 	m_hud.setCharacterSize(50); 
@@ -46,17 +46,30 @@ void GameEngine::draw()
 	// draw all shapes and text to the screen
 	m_window.clear(); // refresh window for each call to draw ready for the next frame
 	m_effects.drawShapes(m_window); // draw all current particle effects to the screen 
-	m_effects.drawEventDisplay(m_window);
+	m_effects.drawEventDisplay(m_window); // draw event hud 
 	
 	m_powerUpsManager.draw(m_window); // draw all power ups to the screen and their pop up text
 	m_powerUpsManager.drawPowerUpText(m_window);
-	// draw the hud ball and paddles
+	// draw the hud ball, paddles, and menu
 	m_paddle1.draw(m_window);
 	m_paddle2.draw(m_window);
 	m_ball.draw(m_window);
 	m_window.draw(m_hud);
-	//m_menu.draw(m_window,m_shouldDrawMenu);
+	m_menu.draw(m_window,m_shouldDrawMenu);
 	m_window.display(); // display everything to the screen once it has been rendered 
+}
+
+void GameEngine::resetGame() {
+	m_gameEndSound.stop();// ensure the end game sound doesnt continue past the game over screen
+
+	// reset game objects to their original positions
+	m_ball.resetPos(m_window.getSize().x / 2, m_window.getSize().y / 2);
+	m_paddle1.reset(sf::Vector2f(20, m_window.getSize().y / 2));
+	m_paddle2.reset(sf::Vector2f(m_window.getSize().x - 20.f, m_window.getSize().y - 100.f));
+
+	m_p1Score = 0;   // also make sure to reset the scores(so it doesnt keep asking them if they want to continue 
+	m_p2Score = 0;  // otherwise the gameStates variable would keep getting set to the  gameOver constant 
+
 }
 
 void GameEngine::update()
@@ -67,22 +80,23 @@ void GameEngine::update()
 	{
 	case menu:
 
-		m_ball.getShape().setFillColor(sf::Color(m_ball.getColour().r, m_ball.getColour().g, m_ball.getColour().b, 0.0f));
-		m_menu.Update();
+		m_ball.getShape().setFillColor(sf::Color::Black);
+		m_menu.Update(m_window);
 
 		if (m_menu.shouldPlay()) {
 			m_gStates = intro;
 			m_shouldDrawMenu = false;
+			m_menu.resetOptionBools();
 		}
 		else if (m_menu.shouldQuit()) {
 			m_window.close();
 		}
 		break;
 	case GameEngine::intro: // if the value of game states has the same value as the enum constant 'intro'(0)
+		m_ball.getShape().setFillColor(sf::Color(m_ball.getColour().r, m_ball.getColour().g, m_ball.getColour().b, 255.0f));
 		ss << "Press the Space\nkey to start";
 		m_effects.resetEventTimer(); // reset the event timers for particle effects
 		m_powerUpsManager.resetTimers();// reset the  timers for power ups 
-		//m_ball.getShape().setFillColor(sf::Color(m_ball.getColour().r, m_ball.getColour().g, m_ball.getColour().b, 255.0f));
 
 		break;
 	case GameEngine::playing: 
@@ -107,21 +121,15 @@ void GameEngine::update()
 		ss << "would you like to\n continue(y/n)\n";  // added continue message during the game over screen
 		
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y)) {  // if the m_gameStates is currently set to the enum constant "gameOver" and the user presses the Y key
-			m_gameEndSound.stop();// ensure the end game sound doesnt continue past the game over screen
 			m_gStates = intro;  // we take them back to the intro state/screen allowing them to play again(rather than just closing the program
-
-			// reset game objects to their original positions
-			m_ball.resetPos( m_window.getSize().x / 2, m_window.getSize().y / 2); 
-			m_paddle1.reset(sf::Vector2f(20, m_window.getSize().y / 2));
-			m_paddle2.reset(sf::Vector2f(m_window.getSize().x - 20.f, m_window.getSize().y - 100.f));
-
-			m_p1Score = 0;   // also make sure to reset the scores(so it doesnt keep asking them if they want to continue 
-			m_p2Score = 0;  // otherwise the gameStates variable would keep getting set to the  gameOver constant 
-
+			resetGame(); // reset object positions
+			
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::N)) { // if the user presses N during the game over screen
+			m_gStates = menu;
+			m_shouldDrawMenu = true;
+			resetGame();
 
-			m_window.close(); // we close the window 
 		}
 		
 
@@ -216,7 +224,7 @@ void GameEngine::run()
 				m_paddle2.aiValidateScore(m_p1Score, m_p2Score, m_maxScore); // revalidate ai speed
 
 			}
-			if (m_ball.getPosition().x < 0-m_ball.getShape().getRadius()) { // similar process as described above but for when the ball passes the left/player paddle 
+			if (m_ball.getPosition().x < 0 - m_ball.getShape().getRadius()) { // similar process as described above but for when the ball passes the left/player paddle 
 				
 				m_scoreSound.play();
 

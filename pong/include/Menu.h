@@ -9,9 +9,10 @@ public:
 	void setMenu();
 	void draw(sf::RenderWindow& window,bool bShouldDraw);
 	void validateOption(int iOptionId);
-	void Update();
+	void Update(sf::Window &window);
 	bool shouldQuit();
 	bool shouldPlay();
+	void resetOptionBools();
 private:
 	
 	static const int iMenuButtonNumber = 2;
@@ -24,7 +25,7 @@ private:
 	sf::Font m_textFont;
 	sf::Color buttonColour = sf::Color(128, 128, 128, 255);
 	sf::Color textColour = sf::Color::White;
-	sf::Color buttonHighLightColour = sf::Color::White;
+	sf::Color buttonHighLightColour = sf::Color::Blue;
 	float m_windowWidth;
 	float m_windowHeight;
 	sf::Vector2f m_buttonSize;

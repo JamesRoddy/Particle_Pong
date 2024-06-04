@@ -81,9 +81,12 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 	sf::Vector2f fNearestPointToSurface = sf::Vector2f(fsurfacePointX - m_shape.getPosition().x, fsurfacePointY - m_shape.getPosition().y); // get the differnce between the surfacePoint of collsion on the paddle and the balls actaul postion
 	float fdistanceToSurfacePoint = sqrt(powf(fNearestPointToSurface.x, 2) + powf(fNearestPointToSurface.y, 2)); // get the maginutude of the vector between the balls postion represented in the bounds of the paddle and the balls actual postion 
 	
-	if (fdistanceToSurfacePoint < m_shape.getRadius()) { // if the distance to the surface point x and y is smaller than the balls current radius meanig that we have an fOverlap 
+	float fOverlap = m_shape.getRadius() - fdistanceToSurfacePoint; // calculate  the amount the ball overlapped which is the differnce bewteen the balls radius and the distance between the surface point as the ball is currenlty overlapping the paddle 
+
+	if (std::isnan(fOverlap)) { fOverlap = 0; std::cout << "nan" << std::endl; }; // if the ball is diretcly on the perimeter of the paddle there is a potential for divide by 0 so we dont regsiter the collision
+	// this condtion above doesnt impact gameplay too much as if the ball remains close to the paddle for an extra frame then collsion will be registered
+	if (fOverlap>0.0f) { // if the distance to the surface point x and y is smaller than the balls current radius meanig that we have an fOverlap 
 		
-		float fOverlap = m_shape.getRadius() - fdistanceToSurfacePoint; // calculate  the amount the ball overlapped which is the differnce bewteen the balls radius and the distance between the surface point as the ball is currenlty overlapping the paddle 
 		sf::Vector2f fNormaliseCollisionVector = sf::Vector2f(fNearestPointToSurface.x / fdistanceToSurfacePoint, fNearestPointToSurface.y / fdistanceToSurfacePoint);
 		// get the collsion normal which is the vector between the centre of the circle and surface point normalsied 
 		

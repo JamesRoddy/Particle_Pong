@@ -59,15 +59,20 @@ void menu::draw(sf::RenderWindow&window, bool bShouldDraw) {
 
 }
 
-void menu::Update() {
+void menu::Update(sf::Window&window) {
 
 	for (int iButtonIndex = 0; iButtonIndex< iMenuButtonNumber; iButtonIndex++) {
 		
-		if (m_buttons[iButtonIndex].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))) {
+		if (m_buttons[iButtonIndex].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window)))) {
 			m_buttons[iButtonIndex].setOutlineColor(buttonHighLightColour);
+			m_buttons[iButtonIndex].setOutlineThickness(25.0f);
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				validateOption(iButtonIndex);
 			}
+		}
+		else {
+			m_buttons[iButtonIndex].setOutlineColor(buttonColour);
+			m_buttons[iButtonIndex].setOutlineThickness(0.0f);
 		}
 
 
@@ -93,5 +98,9 @@ bool menu::shouldPlay() {
 }
 bool menu::shouldQuit() {
 	return m_shouldQuit;
+}
+void menu::resetOptionBools() {
+	m_shouldPlay = false;
+	m_shouldQuit = false;
 }
 

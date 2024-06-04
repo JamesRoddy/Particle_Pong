@@ -49,6 +49,7 @@ private:
 	
 public:
 	GameEngine(sf::RenderWindow& window);
+	void resetGame();
 	void draw();
 	void update();
 	void run();
