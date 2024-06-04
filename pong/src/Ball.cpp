@@ -9,6 +9,7 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	// assigning the attributes to any instance/object created that is of the ball class
 	//  all of the arguments passed into the constructor are assgined to the attributes when it is called 
 	m_speed = speed;
+	m_defaultSpeed = speed;
 	m_velocity.x = speed;
 	m_velocity.y = speed;
 	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed each collision
@@ -29,12 +30,7 @@ void Ball::increaseSpeed(float fDt) { // increase ball speed each collision time
 
 	if (!(m_speed>m_maxSpeed)) { // if we havent reached our max velocity
 			m_speed += fDt * m_speedIncreaseMultiplier; // increase the speed using a multipler otherwise the speed increase wouldnt be noticable during a game due to the value of DT being realtively small 
-		
-	
 	}
-
-	
-
 }
 void Ball::move(float fDt, sf::RenderWindow& window) // this method is used to move the ball based on its current speed and velocity
 {
@@ -112,9 +108,6 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 
     return false; // collsion didn't happen
 
-
-	
-
 }
 
 float Ball::getRotation(float fDistanceToCentre, sf::RectangleShape paddleBounds) {
@@ -150,14 +143,16 @@ void Ball::updateVelocity(float fVal)
 void Ball::resetPos(int iNewX, int iNewY ) {
 
 	m_velocity.y = 0; // set y velocity at 0 allowing for each serve to be in a straight line on the x axis 
-	m_speed = 400.0f;
+	m_speed = m_defaultSpeed;
 	m_velocity.x = -m_speed;// give the ball a slower speed to give the player more time to react when it resets
 	
 	setPosition(iNewX, iNewY); // set the postion of the ball to the centre of the screen once the ball has passed the paddle(half the screen width and half the screen height)
 	
 }
 
-
+float Ball::getDefaultSpeed() {
+	return m_defaultSpeed;
+}
 
 
 // getters and setters for the balls private properties 

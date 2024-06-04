@@ -17,14 +17,16 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_warningShouldScale = true;
 	m_warningTextScalar = 1.5f;
 	m_eventWarningSign.setSize(sf::Vector2f(15.0f, 15.0f));
-	m_eventWarningSign.setFillColor(sf::Color::Red);
+	
+	m_warningSignTexture.loadFromFile(".\\assets\\audio\\eventWarning.jpg");
+	m_eventWarningSign.setTexture(&m_warningSignTexture);
 	m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));
 	m_eventWarningSign.setOrigin(m_eventWarningSign.getSize().x / 2, m_eventWarningSign.getSize().y / 2);
 	m_eventTextFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf"); // loading the font that will be applied to the event time display
 	m_eventText.setFont(m_eventTextFont); //set the font of the m_eventText object
 	m_eventText.setFillColor(sf::Color::White); // set the fill colour
 	m_eventText.setCharacterSize(m_eventTextSize); 
-
+	
 	m_eventText.setPosition((m_windowWidth / 2 - m_eventTextSize*4), m_eventTextOffset); // adjust the text postion so that it is centred and at the top of the screen
 	m_eventWarningSign.setPosition(m_windowWidth/2, (m_eventText.getPosition().y+m_eventTextSize) + m_eventWarningSign.getSize().y);
 	m_newEvent = END; // used to control what event should fire
@@ -35,7 +37,6 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 void EffectGenerator::clearParticle() { // this method is used to remove all elements from the m_currentParticles vector, this prevents scenarios where particles that were genertaed during different game states carry over into the next state(particles generated during gameplay dont appear on the game over screen)
 	m_currentParticles.clear();
 
-	
 }
 
 
@@ -46,7 +47,10 @@ void EffectGenerator::handleParticleCollisions(Ball *ball) { // used to handle c
 		
 		if (m_currentParticles[i].hasCollided(ball) && m_currentParticles[i].getCollision()) { // if the particle intersects with the passed in bounds and it has an event attached to it
 			
-			ball->setVelocity(-ball->getVelocity()*m_currentParticles[i].getSpeedDecrease());
+			if (!ball->getVelocity().x <= ball->getDefaultSpeed()) {
+				ball->setVelocity(-ball->getVelocity() * m_currentParticles[i].getSpeedDecrease());
+			}
+			
 			m_currentParticles.erase(m_currentParticles.begin() + i); // erase the particle
 		}
 	 }

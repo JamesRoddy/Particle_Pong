@@ -25,11 +25,13 @@ public:
 	void setSpeed(float fNewSpeedValue);
 	sf::Vector2f getVelocity();
 	sf::CircleShape getShape(); // returns the m_shape attribute that is an object of class CircleShape(built into sfml)
-	
+	float getDefaultSpeed();
+
 	
 	// determine the private attributes of the ball, these will only be accessible by objects of this class 
 private:
 	float m_speed; // determine how fast the ball moves
+	float m_defaultSpeed;
 	float m_maxSpeed; // used to control the overall speed limit the ball has 
 	float m_speedIncreaseMultiplier; // used to control at what rate the ball will increase in speed each collision 
 	

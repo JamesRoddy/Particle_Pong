@@ -21,18 +21,20 @@ public:
 	bool getCollision(); // get the boolean flag associated with if the particle has collsion
 	float getSpeedDecrease();
 	int m_event;// used to control what effects the particle should have
-	
 
 
 private:
 	float m_particleX;
 	float m_particleY;
+
 	float m_speed; // speed attribute used to control the rate at which the particle will move 
 	bool m_hasAlpha = false; // definng if the alpha value of the colour should be manipluated 
 	float m_alpha ; // inital alpha 
+
 	float m_fadeMultiplier;
 	float m_alphaCollsionVal; // minimum alpha particle must have for collision to take place 
 	float m_collionSpeedDecrease;
+	
 	bool m_hasCollsion ;
 	sf::Color m_colour; // colour attribute used to determine the appearance of the particle 
 	sf::CircleShape m_particleShape; // defining the shape object that will be used to represent the particle(in this case the built in circleShape class is used to create the object) 

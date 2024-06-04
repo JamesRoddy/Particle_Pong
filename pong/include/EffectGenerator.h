@@ -46,7 +46,7 @@ private:
 	float m_eventTextOffset; // any offset in x or y that needs to be applied to the text
 	
 	sf::RectangleShape m_eventWarningSign;
-
+	sf::Texture m_warningSignTexture;
 	int m_explosionAmount; 
 	
 	enum events {END,PARTICLESTORM}; // used to control what event should fire 

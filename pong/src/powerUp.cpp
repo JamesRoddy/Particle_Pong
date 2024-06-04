@@ -13,7 +13,7 @@ powerUp::powerUp(float fWindowWidth,float fWindowHeight){
 	m_direction = 0;
 	m_maxTargetHitCount = 8; // total amount of times the power up can hit its movement target before disappearing
 	m_targetHitCount = 0; // track each time the power up successfully moves to its targe
-	m_durationScalar = 0.15f; // used to increase the duration of the power up allowing effects to stack
+	m_durationScalar = 0.25f; // used to increase the duration of the power up allowing effects to stack
 	// used to modify various objects the power up effects are applied to 
 	m_powerUpScaleFactor = 1.5f;
 	m_ballSpeedMultiplier = 85.0f;
@@ -84,7 +84,7 @@ bool powerUp::negateEffect(Ball* ball) {
 			ball->getShapeReference()->setFillColor(sf::Color::White);// change the colour of the ball back to white 
 			break;
 		}
-
+	    
 		return true; // return true as the effect has been negated and we have hit our total effect time
 	}
 	return false; // otherwise return false as we havent hit our total effect time

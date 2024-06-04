@@ -62,7 +62,6 @@ void Particle::update(float dt) { // method of the particle class used to update
 	m_particleShape.move(m_velocity * dt); // get the particles shape attribute  and call the predefined move method 
 	// moving the particle's shape  at on offset of its velocity vector attribute multiplied by dt to move it at a consistent rate 
 	
-	
 
 }
 void Particle::draw(sf::RenderWindow& window) { // the draw method for the particle that will be called in a foreach loop to draw each particle to the screen(this loop can be located in the effectGenerator class)
@@ -87,7 +86,8 @@ float Particle::getSpeed() {
 	return m_speed;
 }
 
-float Particle::getAlpha() {
+
+float Particle::getAlpha() { 
 
 	return m_alpha;
 }

@@ -57,7 +57,7 @@ void Paddle::trackBall(sf::Vector2f fBallPos ,sf::Vector2f fBallVelocity,float f
 	
 	if (fBallVelocity.x < 0.0f) { // if the ball isnt coming towards the ai we reset its wait time back to 0 and do not continue further 
 	   
-		m_speed = 400.0f;
+		m_speed = 400.0f;// set speed back to default
 		AiMovement(sf::Vector2f(m_shape.getPosition().x,fWindowYVal/2 ),fWindowYVal,fDt,fBallVelocity);// move back to centre with some offset
 		return; // return while velocity is below 0 as the ai doesnt need to move from its reset position
 	}

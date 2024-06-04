@@ -32,7 +32,7 @@ private:
 	sf::Time m_effectDurations[powerUpTypes] = { sf::seconds(0.0f),sf::seconds(3.0f),sf::seconds(6.0f) }; // effect durations associated with powerUps
 	sf::Color m_powerUpColours[powerUpTypes] = { sf::Color::Magenta,sf::Color::Blue,sf::Color::Red }; // colours assoctaed with powerUps
 	
-	std::string m_powerUpText[powerUpTypes] = { "INVERT!","SPEED!","BIG MODE!" };
+	std::string m_powerUpText[powerUpTypes] = { "INVERT!","SPEEDUP!","BIG MODE++" };
 	sf::Font m_powerUpTextFont;
 	
 	sf::Clock m_eventTimer; // used to get the elapsed time since the game started
