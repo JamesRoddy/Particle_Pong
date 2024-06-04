@@ -4,8 +4,6 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 {
 	m_size.x = width; // setting thre x attribute of the size vector which in itself is an object of the sfml vector2f class 
 	m_size.y = height;
-	m_initialHeight = width;
-	m_initialHeight = height;
 	// setting the properties of the sf::rectangle object associated with the m_shape attribute of the paddle 
 	m_lastScoreCheckPlayer = 0;
 	m_lastScoreCheckAi = 0;
@@ -57,7 +55,7 @@ void Paddle::trackBall(sf::Vector2f fBallPos ,sf::Vector2f fBallVelocity,float f
 	
 	if (fBallVelocity.x < 0.0f) { // if the ball isnt coming towards the ai we reset its wait time back to 0 and do not continue further 
 	   
-		m_speed = 400.0f;// set speed back to default
+		m_speed = 250.0f;// reset speed while moving back to centre
 		AiMovement(sf::Vector2f(m_shape.getPosition().x,fWindowYVal/2 ),fWindowYVal,fDt,fBallVelocity);// move back to centre with some offset
 		return; // return while velocity is below 0 as the ai doesnt need to move from its reset position
 	}
@@ -74,7 +72,6 @@ void Paddle::trackBall(sf::Vector2f fBallPos ,sf::Vector2f fBallVelocity,float f
 			sf::Vector2f fDistanceToTarget = m_aITarget - m_shape.getPosition();
 			m_speed = abs(fDistanceToTarget.y) * (m_aISpeedMultiplier); // the AI speed is based on the distance to the target making it move fast or slower depending on how wide the target is
 		
-			
 			AiMovement(m_aITarget, fWindowYVal, fDt, fBallPos); // move the ai towards the intersection point 
 	}
 	
@@ -90,7 +87,7 @@ void Paddle::aiValidateScore(float iPlayerScore, float iAiScore,float iMaxScore)
 	/// used to control the ai speed based on the percentage of how close it is to the max score and how close the player is 
 	float fPlayerPercent = iPlayerScore / iMaxScore;
 	float fAiPercent =  iAiScore / iMaxScore;
-	if (fPlayerPercent >= 0.85f || fPlayerPercent == fAiPercent) { // when the player reaches a score close to the winning or equals out the score
+	if (fPlayerPercent >= 0.75f || fPlayerPercent == fAiPercent) { // when the player reaches a score close to the winning or equals out the score
 		m_aISpeedMultiplier = m_baseAiSpeedMultiplier; // keep the ai speed at a consistent rate as to ensure that the player has a challenge still if they started out on the back foot and are now close to winning or equal
 		return; // return as we dont modify the speed
 	}

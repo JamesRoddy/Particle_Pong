@@ -18,10 +18,10 @@ public:
 	
 	void generateEvent(float fDt);// manage when events should trigger 
 	void manageEvents(); // spawn events
-	void setEventDisplayText(float fDt);
+	void setEventDisplay(float fDt);
 
 	void generateParticles(const int iNewCount, float frRadius, bool bHasAlpha, int iSpeedMin, int iSpeedMax,float fX,float fY,bool BhasCollsion); // used to gennerate a number of particles with random properties 
-	void drawEventText(sf::RenderWindow &window);
+	void drawEventDisplay(sf::RenderWindow &window);
 	void generateCollsionParticles(sf::Vector2f fCollsionPoint, int fDirection,sf::Color objectColour); // used to generate particles when the ball collides with the paddles 
 	
 	void clearParticle(); // clear all particles from the screen
@@ -61,7 +61,7 @@ private:
 	float m_windowHeight;
 	int generateRandomValue(int iUpperBound, int iLowerBound); // used to geenrate various random properties such as explosion amounts and particle sizes
 	float generateRandomValue(float iUpperBound, float iLowerBound);
-	void updateEventWarnings(float fDt);
+	void updateEventWarnings(float fDt); // used to display a warning sign to when an event gets close
 
 
 };

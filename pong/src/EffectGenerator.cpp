@@ -14,14 +14,16 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_explosionAmount = 6;
 	m_eventTextOffset = 75; // set the offset for the event text allowing for control over where it is placed in fX or fY
 	m_eventTextSize = 18;
-	m_warningShouldScale = true;
-	m_warningTextScalar = 1.5f;
-	m_eventWarningSign.setSize(sf::Vector2f(15.0f, 15.0f));
+	m_warningShouldScale = true; // used to control the scaling of the event warning sign 
+	m_warningTextScalar = 1.5f; // scaling factor for the warning sign
+	m_eventWarningSign.setSize(sf::Vector2f(30.0f, 30.0f));
 	
-	m_warningSignTexture.loadFromFile(".\\assets\\textures\\eventWarning.jpg");
+	/// setting the texture of the warning sign 
+	m_warningSignTexture.loadFromFile(".\\assets\\textures\\eventWarning.png");
 	m_eventWarningSign.setTexture(&m_warningSignTexture);
 	m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));
 	m_eventWarningSign.setOrigin(m_eventWarningSign.getSize().x / 2, m_eventWarningSign.getSize().y / 2);
+	
 	m_eventTextFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf"); // loading the font that will be applied to the event time display
 	m_eventText.setFont(m_eventTextFont); //set the font of the m_eventText object
 	m_eventText.setFillColor(sf::Color::White); // set the fill colour
@@ -46,11 +48,13 @@ void EffectGenerator::handleParticleCollisions(Ball *ball) { // used to handle c
 	for (int i = 0; i < m_currentParticles.size(); i++) { 
 		
 		if (m_currentParticles[i].hasCollided(ball) && m_currentParticles[i].getCollision()) { // if the particle intersects with the passed in bounds and it has an event attached to it
-			
-			if (!ball->getVelocity().x <= ball->getDefaultSpeed()) {
-				ball->setVelocity(-ball->getVelocity() * m_currentParticles[i].getSpeedDecrease());
+			// if the ball velocity isnt small  than or equal to the default speed
+			sf::Vector2f fCurrentBallVelocity = ball->getVelocity();
+			if (!(fCurrentBallVelocity.x * m_currentParticles[i].getSpeedDecrease() < ball->getDefaultSpeed())) { 
+				fCurrentBallVelocity *= m_currentParticles[i].getSpeedDecrease();// decrease the balls velocity when it hits a particle
 			}
 			
+			ball->setVelocity(-fCurrentBallVelocity);
 			m_currentParticles.erase(m_currentParticles.begin() + i); // erase the particle
 		}
 	 }
@@ -67,10 +71,13 @@ void EffectGenerator::generateExplosion() {
 		// set the explosion time to the currentEvenetTimer ensuring that the differnce is nullified 
 		m_explosionGenerationTime = m_currentEvenetTimer; 
 		//generating random floating point number for the fRadius of the particles with and upper bound of 8.0f and lower bound of 6.0f
+		
 		float fParticleRandomRadius = generateRandomValue(8.0f,6.0f); 
 		int iRandomAmount = generateRandomValue(8,6); // generating random amount with an upper bound of 8 and lower bound of 6
+		// genertaing ranomd position for the particle explosion
 		float fPostionX = generateRandomValue(m_windowWidth, m_windowWidth / 4);
 		float fPositionY = generateRandomValue(m_windowHeight, m_windowHeight / 4);
+		
 		for (int i = 0; i < m_explosionAmount; i++) {
 			// generate random initial postion for the explosions withn the bounds of the screen
 			//generate particles with a speed range and allow for their alpha value to be manipulated
@@ -121,9 +128,8 @@ void EffectGenerator::generateEvent(float fDt) {
 		m_hasEvent = true; // set the flag for having an event to true
 		m_newEvent = PARTICLESTORM; // set the event enum to the current event
 
-
 	}
-	setEventDisplayText(fDt);
+	setEventDisplay(fDt);
 	
 
 
@@ -132,15 +138,12 @@ void EffectGenerator::generateEvent(float fDt) {
 void EffectGenerator::updateEventWarnings(float fDt) {
 
 	sf::Vector2f currentScale = m_eventWarningSign.getScale();//. current scale of warning sign 
-	std::cout << currentScale.x << std::endl;
 	if (m_warningShouldScale && currentScale.x <=1.0f) { // if the warning sign should scale and 
-		std::cout << "should scale" << std::endl;
+		
 		m_eventWarningSign.setScale(currentScale.x + fDt * m_warningTextScalar, currentScale.y + fDt * m_warningTextScalar); // increase scale of warning sign
 		return; // return out of the function as we dont need to descale the warning sign if it hasnt reached its full scale
 
 	}
-	std::cout << "shouldnt scale" << std::endl;
-
 	m_warningShouldScale = false; // if we have reached a scale where the warning sign is at full size
 	m_eventWarningSign.setScale(currentScale.x - fDt * m_warningTextScalar, currentScale.y - fDt * m_warningTextScalar);// scale the object down
 	
@@ -161,21 +164,25 @@ void EffectGenerator::resetEventTimer() { // used to reset the event timer and e
 	// set bools for controlling events to false
 	m_hasStartIndex = false;
 	m_hasEvent = false;
+	// change the event hud back to default
 	m_eventText.setString("");// set event text to blanck
 	m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));// set warning sign scale to 0
 
 }
 // used to update the m_eventText object that displays how long until an event will fire
-void EffectGenerator:: setEventDisplayText(float fDt) {
+void EffectGenerator::setEventDisplay(float fDt) {
 	std::stringstream ssEventDisplayText; // create temporary local string stream variable that willl be refereshed each time this function is called
 	if (!m_hasEvent) {
 		ssEventDisplayText << "particle storm in " << m_displayTime.asSeconds() << "\n"; // if we dont have an event displaye the current time until the event
-		if (m_displayTime.asSeconds() <= 5.0f) updateEventWarnings(fDt);
+		if (m_displayTime.asSeconds() <= 5.0f) {  // if the differnce between the current event timer and the intialise timer is less than 5.0f
+			updateEventWarnings(fDt);// update and display the warning sign
+		
+		}
 		
 	}
 	else {
-
-		m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));
+		
+		m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f)); // other wise scale the warning sign back down 
 
 	}
 	
@@ -183,7 +190,7 @@ void EffectGenerator:: setEventDisplayText(float fDt) {
 
 }
 //draw the event text to the window to be rendered 
-void EffectGenerator::drawEventText(sf::RenderWindow &window) {
+void EffectGenerator::drawEventDisplay(sf::RenderWindow &window) {
 	window.draw(m_eventText);
 	window.draw(m_eventWarningSign);
 }
@@ -246,7 +253,7 @@ void EffectGenerator::drawShapes(sf::RenderWindow& window) { // this is the main
 	}
 	
 }
-
+// used to generate ranodm values for things such as particle spawn locations and the raidus for particles
 float EffectGenerator::generateRandomValue(float fUpperBound, float fLowerBound) {
 
 	return fLowerBound + static_cast<float>(rand()) / static_cast<float>((RAND_MAX / (fUpperBound - fLowerBound)));

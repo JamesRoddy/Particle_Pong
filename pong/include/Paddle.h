@@ -11,8 +11,6 @@ private:
 	float m_aISpeedMultiplier; // speed multipler for the ai meaning it willl adjust its speed based on target distance
 	float m_baseAiSpeedMultiplier;
 	sf::Vector2f m_aITarget; // used to set where the ai should move 
-	float m_initialWidth;
-	float m_initialHeight;
 	// keep track of previous scores used to control ai speed
 	int m_lastScoreCheckPlayer;
 	int m_lastScoreCheckAi; 

@@ -7,7 +7,8 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y - 100.f), 10, 100, sf::Color::White),
 	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 400.0f, sf::Color::White),
 	m_effects(window.getSize().x, window.getSize().y),
-	m_powerUpsManager(window.getSize().x,window.getSize().y, ".\\assets\\fonts\\impact.ttf")
+	m_powerUpsManager(window.getSize().x, window.getSize().y, ".\\assets\\fonts\\impact.ttf"),
+	m_menu(window.getSize().x, window.getSize().y, sf::Vector2f(50.f, 50.f), 25)
 
 {   
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
@@ -19,12 +20,21 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_hud.setFont(m_font); // setting the font of the m_hud attribute within the GameEngine class whihc is an object of the Text class 
 	m_hud.setCharacterSize(50); 
 	m_hud.setFillColor(sf::Color::White);
+	
+	// loading sound effects and setting buffers for various sounds such as scoring and ball collision
 	m_ballBuffer.loadFromFile(".\\assets\\audio\\beep.flac");
 	m_ballSound.setBuffer(m_ballBuffer);
+
 	m_gameWinBuffer.loadFromFile(".\\assets\\audio\\winSound.wav");
 	m_gameLooseBuffer.loadFromFile(".\\assets\\audio\\looseSound.wav");
 
+	m_scoreSoundBuffer.loadFromFile(".\\assets\\audio\\scoreSound.wav");
+	m_scoreSound.setBuffer(m_scoreSoundBuffer);
 
+	m_gameLoopMusic.openFromFile(".\\assets\\audio\\gameLoopMusic.wav");
+	m_gameLoopMusic.setVolume(75.0f);
+
+	m_shouldDrawMenu = true;
 	m_hud.setPosition((m_window.getSize().x / 2.f) - 45.f, 10);
 
 	m_paddle1.setSpeed(1000.f);
@@ -36,7 +46,7 @@ void GameEngine::draw()
 	// draw all shapes and text to the screen
 	m_window.clear(); // refresh window for each call to draw ready for the next frame
 	m_effects.drawShapes(m_window); // draw all current particle effects to the screen 
-	m_effects.drawEventText(m_window);
+	m_effects.drawEventDisplay(m_window);
 	
 	m_powerUpsManager.draw(m_window); // draw all power ups to the screen and their pop up text
 	m_powerUpsManager.drawPowerUpText(m_window);
@@ -45,6 +55,7 @@ void GameEngine::draw()
 	m_paddle2.draw(m_window);
 	m_ball.draw(m_window);
 	m_window.draw(m_hud);
+	//m_menu.draw(m_window,m_shouldDrawMenu);
 	m_window.display(); // display everything to the screen once it has been rendered 
 }
 
@@ -54,10 +65,25 @@ void GameEngine::update()
 	std::stringstream ss; // string stream that will hold all of the text currently being displayed on the screen 
 	switch (m_gStates) // switch case used to determine how the hud should change based on the current value of the enum objet m_gamestates 
 	{
+	case menu:
+
+		m_ball.getShape().setFillColor(sf::Color(m_ball.getColour().r, m_ball.getColour().g, m_ball.getColour().b, 0.0f));
+		m_menu.Update();
+
+		if (m_menu.shouldPlay()) {
+			m_gStates = intro;
+			m_shouldDrawMenu = false;
+		}
+		else if (m_menu.shouldQuit()) {
+			m_window.close();
+		}
+		break;
 	case GameEngine::intro: // if the value of game states has the same value as the enum constant 'intro'(0)
 		ss << "Press the Space\nkey to start";
 		m_effects.resetEventTimer(); // reset the event timers for particle effects
 		m_powerUpsManager.resetTimers();// reset the  timers for power ups 
+		//m_ball.getShape().setFillColor(sf::Color(m_ball.getColour().r, m_ball.getColour().g, m_ball.getColour().b, 255.0f));
+
 		break;
 	case GameEngine::playing: 
 		ss << m_p1Score << " - " << m_p2Score;
@@ -121,13 +147,14 @@ void GameEngine::run()
 		sf::Event event;// creating an event object tied to the smfl library that allows handling of things such as key presses 
 		while (m_window.pollEvent(event)) 
 		{
-			// using the window object's pollEvent method as the condition for the while loop continously 
+			// using the window object's pollEvent method as the condition for the while loop continuesly 
 			//checking for certain events such as keyboard input or the window closing  
 			
 			if (event.type == sf::Event::Closed) m_window.close(); 
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 				m_window.close();
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && m_gStates!=gameOver)
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && m_gStates == intro )
+				
 				m_gStates = GameStates::playing;
 		}
 		
@@ -137,10 +164,13 @@ void GameEngine::run()
 
 		if (m_gStates == 1 ) { // check if the game should be running using the m_gStates enum variable
 			
+			if (m_gameLoopMusic.getStatus() == sf::Music::Stopped) {// if the status is currently stopped i.e we are first enetring the loop
+				m_gameLoopMusic.play(); // play the game loop music
+				m_gameLoopMusic.setLoop(true); // set music to loop 
+			}
 			// allow the user to move the left paddle with both arrow keys and W/S
 			if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){ // using the SFML isKeyPressed method from the keyBoard class to detect when a specifc key is pressed based on the enum for the key passed in
 				m_paddle1.move(-dt , m_window.getSize().y); // if the condtion above is true move the player up
-			
 			
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
@@ -176,18 +206,25 @@ void GameEngine::run()
 			
 			// updating scores when the ball passes either paddle 
 
-			if (m_ball.getPosition().x > m_window.getSize().x) { // check if the ball has gone passed the paddles position 
+			if (m_ball.getPosition().x > m_window.getSize().x + m_ball.getShape().getRadius()) { // check if the ball has gone passed the paddles position 
+				
+				
+				m_scoreSound.play(); // play the score sound effect
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower); // get a new random y postion for the ball to start at 
 				m_ball.resetPos( origin.x, inewPosY); // reset balls postion and speed
 				m_p1Score++;  // increment the score attribute of the m_paddle1 object(as it just scored)
-				m_paddle2.aiValidateScore(m_p1Score, m_p2Score, m_maxScore);
+				m_paddle2.aiValidateScore(m_p1Score, m_p2Score, m_maxScore); // revalidate ai speed
 
 			}
-			if (m_ball.getPosition().x < 0) { // similar process as described above but for when the ball passes the left/player paddle 
+			if (m_ball.getPosition().x < 0-m_ball.getShape().getRadius()) { // similar process as described above but for when the ball passes the left/player paddle 
+				
+				m_scoreSound.play();
+
 				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower);
 				m_ball.resetPos( origin.x, inewPosY); // reset balls postion
 				m_p2Score++;
-				m_paddle2.aiValidateScore(m_p1Score, m_p2Score, m_maxScore);
+				
+				m_paddle2.aiValidateScore(m_p1Score, m_p2Score, m_maxScore); // have the ai re validate the score adjusting its speed to the current status of the game
 			}
 
 			
@@ -209,8 +246,10 @@ void GameEngine::run()
 			if (m_p1Score == m_maxScore || m_p2Score == m_maxScore) { // check if either score attribute attached to the paddle 1 and paddle 2 objects has reached the max score count 
 
 				m_gStates = gameOver; // if so set the current value of m_gamestates to the constant "gameOver" defined in the enum type gameStates(in the GameEngine header file)
+				m_gameLoopMusic.stop();
+				
 				m_effects.clearParticle(); // clear all particles if there are any remaining on screen 
-
+				
 				m_effects.resetEventTimer();
 				// reset powerups
 				m_powerUpsManager.clearPowerUps(&m_ball);

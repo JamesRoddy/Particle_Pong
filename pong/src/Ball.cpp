@@ -12,7 +12,7 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_defaultSpeed = speed;
 	m_velocity.x = speed;
 	m_velocity.y = speed;
-	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed each collision
+	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed 
 	m_maxCollsionAngle = 45.0f; // maximum collsion angle that the ball can bounce of the paddle at
 	m_maxSpeed = 575.0f; // maximum speed ball can reach
 	m_shape.setRadius(radius); // set the radius of the m_shape attribute that repsents an object of the inbuilt CircleShape class wihtin sfml this wil ajsut the size of the ball using the float raidus argument passed into the constructor for the ball class 
@@ -39,7 +39,7 @@ void Ball::move(float fDt, sf::RenderWindow& window) // this method is used to m
 	if (m_shape.getPosition().y - m_shape.getRadius() <= 0) {
 
 		m_shape.setPosition(m_shape.getPosition().x, 0 + m_shape.getRadius()*2); // ensure to move the ball back by half before inverting the velocity 
-		m_velocity.y = -m_velocity.y; // invert the balls velocity making it go a different direction 
+		m_velocity.y = -m_velocity.y; // invert the balls velocity making it go in the opposite direction 
 	}
 	else if (m_shape.getPosition().y + m_shape.getRadius()  >= window.getSize().y) {
 
@@ -126,7 +126,7 @@ float Ball::getRotation(float fDistanceToCentre, sf::RectangleShape paddleBounds
 	return fRotationY;
 }
 
-// this mehtod will set the psotion of the m_shape object( assgine dot the built in CircleShape class) based on the passed in float arguments(x,fMinY)
+// this mehtod will set the psotion of the m_shape object( assigned to the built in CircleShape class) based on the passed in float arguments(x,fMinY)
 void Ball::setPosition(float fX, float fY)
 {
 	m_shape.setPosition(fX, fY); 
@@ -175,6 +175,9 @@ sf::CircleShape* Ball::getShapeReference() { // get a refernce address to the ba
 }
 sf::Vector2f Ball::getVelocity() {
 	return m_velocity;
+}
+sf::Color Ball::getColour() {
+	return m_shape.getFillColor();
 }
 // allows access to the private m_shape attribute that is conatined wihtin the ball class(and assgine to any object of the ball class)
 sf::CircleShape Ball::getShape()

@@ -5,12 +5,13 @@
 powerUpsManager::powerUpsManager(float fWindowWidth,float fWindowHeight,std::string sPowerUpFontPath) {
 
 	m_powerUpGenTime = sf::seconds(2.0f); // time it takes to spawn new power ups 
-	m_windowWidth = fWindowWidth; /// window widht and height vairbales used for spawning power ups
+	m_windowWidth = fWindowWidth; /// window widht and height vairabales used for spawning power ups
 	m_windowHeight = fWindowHeight;
 	m_powerUpTextFont.loadFromFile(sPowerUpFontPath);
 	m_textFadeMultiplier = 0.01f; // a low fade druation to ensure the text is always visble for certain time 
 	m_powerUpSoundBuffer.loadFromFile(".\\assets\\audio\\powerUp.wav");
 	m_powerUpSoundEffect.setBuffer(m_powerUpSoundBuffer);
+
 }
 
 
@@ -18,7 +19,7 @@ void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass
 {
 	for (int i = 0; i < m_powerUps.size(); i++) { // for each current power up on the screen
 
-		if (m_powerUps[i].collision(ball->getShapeReference()->getGlobalBounds())) { /// if there is a collsion between a power up and the ball
+		if (m_powerUps[i].collision(ball->getShapeReference()->getGlobalBounds()) ) { /// if there is a collsion between a power up and the ball
 			
 			if (m_powerUps[i].hasBall()) { // if the power up has an effect that will be applied to the ball
 				searchForExistingBallEffect(m_powerUps[i]); // check if the effect of the power up is already active
@@ -40,14 +41,14 @@ void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass
 }
 
 void powerUpsManager::drawPowerUpText(sf::RenderWindow &window) {
-
+	// drawing pop up text to screen
 	for (int i = 0; i < m_activePopUpText.size(); i++) {
 		window.draw(m_activePopUpText[i]);
 	}
 	     
 }
 
-void powerUpsManager::updatePopUpText(float dt) { // upadte all pop up text on screen
+void powerUpsManager::updatePopUpText(float dt) { // update all pop up text on screen
 
 	for (int i = 0; i < m_activePopUpText.size(); i++) { 
 		if (m_activePopUpText[i].getFillColor().a <= 0.0f) { // if the alpha is less then 0
@@ -55,9 +56,9 @@ void powerUpsManager::updatePopUpText(float dt) { // upadte all pop up text on s
 			m_activePopUpText.erase(m_activePopUpText.begin() + i);// erase the text object from the vector
 			continue;
 		}
-		sf::Color newPopColour = m_activePopUpText[i].getFillColor(); // get the fill colour of the text
-		newPopColour.a -= (dt*m_textFadeMultiplier); // tick down the alpha value by dt multipler by our fade multiplier
-		m_activePopUpText[i].setFillColor(newPopColour); // set the new fill colour
+		sf::Color newPopUpColour = m_activePopUpText[i].getFillColor(); // get the fill colour of the text
+		newPopUpColour.a -= (dt*m_textFadeMultiplier); // tick down the alpha value by dt multipler by our fade multiplier
+		m_activePopUpText[i].setFillColor(newPopUpColour); // set the new fill colour
 
 
 	}

@@ -118,7 +118,7 @@ sf::Vector2f  powerUp:: randomTarget() { // will assign a random target to the p
 
 void  powerUp::setEffectTarget() { // used to determine what object the power up effect should apply to
 
-	switch (m_id) {
+	switch (m_id) { 
 
 	case INCREASEPADDLESIZE:
 		m_hasPaddleEffect = true;
@@ -139,18 +139,18 @@ void powerUp::drawPowerUp(sf::RenderWindow& window) {
   
 bool powerUp::collision(sf::FloatRect fBounds) {
 	// used to check collsion between power ups and the ball
-	if (m_shape.getGlobalBounds().intersects(fBounds)) { 
+	if (m_shape.getGlobalBounds().intersects(fBounds) && m_shape.getPosition().y >= 0 + m_shape.getSize().y/2) { 
 		return true;
 	}
 	return false;
 
 }
 
-// getting max maz target hit count and current movement target hit count for the power ups 
-int  powerUp::getTargetHitCount() { 
+// getting maximum target hit count and current movement target hit count for the power ups 
+int const powerUp::getTargetHitCount() { 
 	return m_targetHitCount;
 }
-int powerUp::getMaxTargetHitCount() {
+int powerUp::getMaxTargetHitCount () {
 	return m_maxTargetHitCount;
 }
 // used to modify the duration of the power up effect if a power up with the same effect is currently active

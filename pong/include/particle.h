@@ -35,7 +35,7 @@ private:
 	float m_alphaCollsionVal; // minimum alpha particle must have for collision to take place 
 	float m_collionSpeedDecrease;
 	
-	bool m_hasCollsion ;
+	bool m_hasCollsion;
 	sf::Color m_colour; // colour attribute used to determine the appearance of the particle 
 	sf::CircleShape m_particleShape; // defining the shape object that will be used to represent the particle(in this case the built in circleShape class is used to create the object) 
 	sf::Vector2f m_velocity; // defining a sf::vector2f obejct that will be used to manipluate the postion of the sf::circleShape assigined to the m_particleShape attribute 
