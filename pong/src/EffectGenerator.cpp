@@ -18,7 +18,7 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_warningTextScalar = 1.5f;
 	m_eventWarningSign.setSize(sf::Vector2f(15.0f, 15.0f));
 	
-	m_warningSignTexture.loadFromFile(".\\assets\\audio\\eventWarning.jpg");
+	m_warningSignTexture.loadFromFile(".\\assets\\textures\\eventWarning.jpg");
 	m_eventWarningSign.setTexture(&m_warningSignTexture);
 	m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));
 	m_eventWarningSign.setOrigin(m_eventWarningSign.getSize().x / 2, m_eventWarningSign.getSize().y / 2);
