@@ -9,13 +9,19 @@ private:
 	sf::Vector2f m_size; // defining the vairbale object as an object of the built in sfml Vector2f class 
 	sf::RectangleShape m_shape; // definig the built in sfml rectangle shape object that is associated with the paddle 
 	float m_aISpeedMultiplier; // speed multipler for the ai meaning it willl adjust its speed based on target distance
+	float m_baseAiSpeedMultiplier;
 	sf::Vector2f m_aITarget; // used to set where the ai should move 
 	float m_initialWidth;
 	float m_initialHeight;
-	int m_lastScoreCheck;
+	// keep track of previous scores used to control ai speed
+	int m_lastScoreCheckPlayer;
+	int m_lastScoreCheckAi; 
+	// used to adjust ai speed based on score
 	float m_aiSpeedController;
 	float m_maxAiSpeed;
 	float m_minAiSpeed;
+
+	
 	void AiMovement(sf::Vector2f target, float fWindowYVal, float dt, sf::Vector2f fBallPos); // used to move ai based on a target position
 	void checkBounds(float fWindowYVal); // ensure that paddles are kpet in bounds of screen
 	float getRayIntersectionValue(sf::Vector2f fBalVelocity, sf::Vector2f fBallPos, float fWindowYVal, sf::Vector2f fLineTop, sf::Vector2f lineBottom); // used for ai movement allowing it to move in a more relatsict fashion i.e it makes use of a target point rather than just the ball position

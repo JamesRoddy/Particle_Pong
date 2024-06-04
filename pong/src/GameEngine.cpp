@@ -158,13 +158,19 @@ void GameEngine::run()
 			
 			
 			//// collsion detection  for both paddles 
-			if (m_ball.ballCollisionPushBack(m_paddle1.getShape(),dt)) { // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap
-				m_ballSound.play();
+			if (m_ball.ballCollisionPushBack(m_paddle1.getShape())) { // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap
+				
+				if (m_ballSound.getStatus() == sf::Sound::Stopped) {// if the collison sound is not currenlty playing
+					m_ballSound.play();// initiate the sound 
+				}
 				m_effects.generateCollsionParticles(m_ball.getPosition(), 1, m_paddle1.getShape().getFillColor()); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 			   
 			}
-			if (m_ball.ballCollisionPushBack(m_paddle2.getShape(),dt)){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
-				m_ballSound.play();
+			if (m_ball.ballCollisionPushBack(m_paddle2.getShape())){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
+				
+				if (m_ballSound.getStatus() == sf::Sound::Stopped) {  
+					m_ballSound.play(); 
+				}
 				m_effects.generateCollsionParticles(m_ball.getPosition(), -1, m_paddle2.getShape().getFillColor()); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 			}
 			
@@ -193,7 +199,7 @@ void GameEngine::run()
 			m_powerUpsManager.updatePopUpText(dt);
 
 
-			m_effects.generateEvent(); // when particle effect event should trigger
+			m_effects.generateEvent(dt); // when particle effect event should trigger
 			m_effects.manageEvents();// manage when particle event triggers
 			m_effects.update(dt); // update all particles currently on screen 
 			m_effects.handleParticleCollisions(&m_ball);

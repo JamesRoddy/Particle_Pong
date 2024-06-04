@@ -7,7 +7,7 @@ class Ball
 public:
 	Ball(sf::Vector2f fPosition, float fRadius, float fSpeed, sf::Color color); // constrctor for the ball allowing values to be assgined to its attributes 
 	
-	bool ballCollisionPushBack(sf::RectangleShape paddleBounds,float fDt);
+	bool ballCollisionPushBack(sf::RectangleShape paddleBounds);
 	void increaseSpeed(float fDt); // method to increase the balls speed over time 
 	float getRotation(float fDistanceToCentre, sf::RectangleShape PaddleBounds); // used to determine how the balll should bounce of the paddle
 	

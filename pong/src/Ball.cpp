@@ -65,7 +65,7 @@ sf::Vector2f Ball::getPosition()
 
 
 
-bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds,float dt) {
+bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 
 
 	// this code is a rectangle to circle intersection algorithm and has been implmented for better accuracy of collsion 

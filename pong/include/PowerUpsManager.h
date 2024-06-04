@@ -29,15 +29,19 @@ private:
 	std::vector<sf::Text> m_activePopUpText;
 
 	static const int powerUpTypes = 3; // number of power up types that can spawn
-	sf::Time m_effectDurations[powerUpTypes] = { sf::seconds(0.0f),sf::seconds(3.0f),sf::seconds(5.0f) }; // effect durations associated with powerUps
+	sf::Time m_effectDurations[powerUpTypes] = { sf::seconds(0.0f),sf::seconds(3.0f),sf::seconds(6.0f) }; // effect durations associated with powerUps
 	sf::Color m_powerUpColours[powerUpTypes] = { sf::Color::Magenta,sf::Color::Blue,sf::Color::Red }; // colours assoctaed with powerUps
+	
 	std::string m_powerUpText[powerUpTypes] = { "INVERT!","SPEED!","BIG MODE!" };
 	sf::Font m_powerUpTextFont;
+	
 	sf::Clock m_eventTimer; // used to get the elapsed time since the game started
 	sf::Clock m_CollisionTimer; // used to provide power ups with a time of collsion allowing for effect duration and negation
 	sf::Time m_currentEventTime; /// keep track of when powerUp should spawn
 	sf::Time m_powerUpGenTime; /// time for when powerups should spawn 
 	
+	sf::SoundBuffer m_powerUpSoundBuffer;
+	sf::Sound m_powerUpSoundEffect;
 	float m_textFadeMultiplier;
 	float m_windowWidth;  // window widht and height used to control where power ups spawn 
 	float m_windowHeight;

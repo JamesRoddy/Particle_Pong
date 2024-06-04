@@ -7,14 +7,16 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 	m_initialHeight = width;
 	m_initialHeight = height;
 	// setting the properties of the sf::rectangle object associated with the m_shape attribute of the paddle 
-	m_lastScoreCheck = 0;
-	m_aISpeedMultiplier = 2.65f; // speed multipler for the  paddle ai to move it based on its distance to its target
+	m_lastScoreCheckPlayer = 0;
+	m_lastScoreCheckAi = 0;
+	m_aISpeedMultiplier = 2.65f; // speed multipler for the  paddle ai to move it based on its distance to its target this variable will also be modfied based on score
+	m_baseAiSpeedMultiplier = 2.65f; // used to reset ai speed
 	m_aiSpeedController = 1.0f; // speed increment/decrement
-	m_minAiSpeed = 2.30f; // lowest speed ai can reach
-	m_maxAiSpeed = 2.70f; // maximum speed for ai 
-	m_shape.setSize(m_size); 
-	m_shape.setPosition(position);
-	m_shape.setFillColor(color);
+	m_minAiSpeed = 2.35f; // lowest speed ai can reach
+	m_maxAiSpeed = 2.85f; // maximum speed for ai 
+	m_shape.setSize(m_size); // set the local size of the paddle
+	m_shape.setPosition(position); // setting intitial pos
+	m_shape.setFillColor(color); 
 	m_shape.setOrigin(m_shape.getSize() / 2.f);
 }
 
@@ -54,8 +56,7 @@ void Paddle::trackBall(sf::Vector2f fBallPos ,sf::Vector2f fBallVelocity,float f
 
 	
 	if (fBallVelocity.x < 0.0f) { // if the ball isnt coming towards the ai we reset its wait time back to 0 and do not continue further 
-	    
-	
+	   
 		m_speed = 400.0f;
 		AiMovement(sf::Vector2f(m_shape.getPosition().x,fWindowYVal/2 ),fWindowYVal,fDt,fBallVelocity);// move back to centre with some offset
 		return; // return while velocity is below 0 as the ai doesnt need to move from its reset position
@@ -89,24 +90,28 @@ void Paddle::aiValidateScore(float iPlayerScore, float iAiScore,float iMaxScore)
 	/// used to control the ai speed based on the percentage of how close it is to the max score and how close the player is 
 	float fPlayerPercent = iPlayerScore / iMaxScore;
 	float fAiPercent =  iAiScore / iMaxScore;
-
+	if (fPlayerPercent >= 0.85f || fPlayerPercent == fAiPercent) { // when the player reaches a score close to the winning or equals out the score
+		m_aISpeedMultiplier = m_baseAiSpeedMultiplier; // keep the ai speed at a consistent rate as to ensure that the player has a challenge still if they started out on the back foot and are now close to winning or equal
+		return; // return as we dont modify the speed
+	}
 	std::cout << fPlayerPercent << std::endl;
 	std::cout << fAiPercent << std::endl;
 	// if the player score is greater than when the last check took place and the percentage for the ai is not higher than the player
-	if (iPlayerScore > m_lastScoreCheck  &&!(m_aISpeedMultiplier >= m_maxAiSpeed||fAiPercent>fPlayerPercent)) { 
+	if (iPlayerScore > m_lastScoreCheckPlayer  &&!(m_aISpeedMultiplier >= m_maxAiSpeed || fAiPercent>=fPlayerPercent)) { 
 		std::cout << "increment" << std::endl;
 
 		m_aISpeedMultiplier += m_aiSpeedController * fPlayerPercent; // increase the ai speed by the ai speed increment multipled by how close the player is to the socre
 
 	}
-	// if we havent hit our minmum speed and the player score is smaller than the ai score 
-	else if (iPlayerScore < iAiScore && !(m_aISpeedMultiplier <= m_minAiSpeed)) {
+	// if we havent hit our minmum speed and the player score is smaller than the ai score and the player score percentage isnt greater than or equal to the ai
+	else if (iAiScore > m_lastScoreCheckAi && !(m_aISpeedMultiplier <= m_minAiSpeed || fPlayerPercent>=fAiPercent)) {
 		std::cout << "decrement" << std::endl;
 		m_aISpeedMultiplier -= m_aiSpeedController * fAiPercent; // decrmeent the score by the ai speed increment multipled by how close the ai is to max score
 	}
 	std::cout << m_aISpeedMultiplier << std::endl;
-	m_lastScoreCheck = iPlayerScore;
-
+	// reassign  new scores
+	m_lastScoreCheckPlayer = iPlayerScore;
+	m_lastScoreCheckAi = iAiScore;
 
 }
 
@@ -188,7 +193,7 @@ sf::Vector2f Paddle::lerpToIntersection(sf::Vector2f fStart, sf::Vector2f fEnd, 
 void Paddle::reset(sf::Vector2f fPosition) {
 
 	m_shape.setPosition(fPosition); // call the set postion method  related to the m_shape attribute which will overide its current postion with the postion argument of type sf::vector2f
-
+	m_baseAiSpeedMultiplier = m_baseAiSpeedMultiplier; // reset the ai speed 
 
 }
 // getters  for the paddle attributes that will return the values of the private attributes for the paddle that would otherwise be inacessible 

@@ -4,11 +4,13 @@
 
 powerUpsManager::powerUpsManager(float fWindowWidth,float fWindowHeight,std::string sPowerUpFontPath) {
 
-	m_powerUpGenTime = sf::seconds(4.0f); // time it takes to spawn new power ups 
+	m_powerUpGenTime = sf::seconds(2.0f); // time it takes to spawn new power ups 
 	m_windowWidth = fWindowWidth; /// window widht and height vairbales used for spawning power ups
 	m_windowHeight = fWindowHeight;
 	m_powerUpTextFont.loadFromFile(sPowerUpFontPath);
 	m_textFadeMultiplier = 0.01f; // a low fade druation to ensure the text is always visble for certain time 
+	m_powerUpSoundBuffer.loadFromFile(".\\assets\\audio\\powerUp.wav");
+	m_powerUpSoundEffect.setBuffer(m_powerUpSoundBuffer);
 }
 
 
@@ -26,7 +28,9 @@ void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass
 				ball->getVelocity().x < 0.0f ? m_powerUps[i].setPaddle(AI,-1) : m_powerUps[i].setPaddle(player,1);
 				searchForExistingPaddleEffect(m_powerUps[i]); // check if the effect of the power up already exists
 			}
-			addPowerUpText(25, m_powerUps[i]);
+			
+			addPowerUpText(25, m_powerUps[i]); // add pop up text to the postion that the power up was
+			m_powerUpSoundEffect.play(); // play the sound effect assoctaited with power ups
 			m_powerUps.erase(m_powerUps.begin() + i); // erase the power up from the vector being used to draw them to the screen 
 		}
 

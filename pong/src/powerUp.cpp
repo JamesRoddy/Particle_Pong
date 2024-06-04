@@ -16,7 +16,7 @@ powerUp::powerUp(float fWindowWidth,float fWindowHeight){
 	m_durationScalar = 0.15f; // used to increase the duration of the power up allowing effects to stack
 	// used to modify various objects the power up effects are applied to 
 	m_powerUpScaleFactor = 1.5f;
-	m_ballSpeedMultiplier = 65.0f;
+	m_ballSpeedMultiplier = 85.0f;
 	// determine if the power has a paddle ffect or ball effect 
 	m_hasBallEffect = false;
 	m_hasPaddleEffect = false;

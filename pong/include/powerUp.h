@@ -35,8 +35,7 @@ private:
 	sf::Vector2f randomTarget(); // used to set a ranodm target for the power up each time it reaches its current movement target
 	void setEffectTarget(); // used to determine which paddle the power up effect is applied to 
 	enum effects { INVERTVELOCITY, INCREASEBALLSPEED, INCREASEPADDLESIZE }; // a set of enum constants that are used to help keep track of power up effects
-	sf::SoundBuffer m_powerUpSoundBuffer;
-	sf::Sound m_powerUpSoundEffect;
+	
 	// used to detrmine how many times the power up can move before it fades off screen
 	int m_targetHitCount;
 	int m_maxTargetHitCount;

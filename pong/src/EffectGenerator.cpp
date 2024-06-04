@@ -9,18 +9,24 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_eventInitialiseTime = sf::seconds(15); // how long it takes for an event to fire 
 	m_hasEvent = false; // boolean flag for having an event that is used to control the postion of the start index
 	m_hasStartIndex = false;
-
+	
 	m_eventStartIndex = 0; // set initial starting index of the event to 0
-	m_explosionAmount = 4;
+	m_explosionAmount = 6;
 	m_eventTextOffset = 75; // set the offset for the event text allowing for control over where it is placed in fX or fY
 	m_eventTextSize = 18;
-
+	m_warningShouldScale = true;
+	m_warningTextScalar = 1.5f;
+	m_eventWarningSign.setSize(sf::Vector2f(15.0f, 15.0f));
+	m_eventWarningSign.setFillColor(sf::Color::Red);
+	m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));
+	m_eventWarningSign.setOrigin(m_eventWarningSign.getSize().x / 2, m_eventWarningSign.getSize().y / 2);
 	m_eventTextFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf"); // loading the font that will be applied to the event time display
 	m_eventText.setFont(m_eventTextFont); //set the font of the m_eventText object
 	m_eventText.setFillColor(sf::Color::White); // set the fill colour
 	m_eventText.setCharacterSize(m_eventTextSize); 
 
 	m_eventText.setPosition((m_windowWidth / 2 - m_eventTextSize*4), m_eventTextOffset); // adjust the text postion so that it is centred and at the top of the screen
+	m_eventWarningSign.setPosition(m_windowWidth/2, (m_eventText.getPosition().y+m_eventTextSize) + m_eventWarningSign.getSize().y);
 	m_newEvent = END; // used to control what event should fire
 	
 }
@@ -63,8 +69,6 @@ void EffectGenerator::generateExplosion() {
 		float fPositionY = generateRandomValue(m_windowHeight, m_windowHeight / 4);
 		for (int i = 0; i < m_explosionAmount; i++) {
 			// generate random initial postion for the explosions withn the bounds of the screen
-			
-
 			//generate particles with a speed range and allow for their alpha value to be manipulated
 			 generateParticles(iRandomAmount, fParticleRandomRadius, true, -400, 400, fPostionX, fPositionY,true);
 			  
@@ -89,7 +93,7 @@ void EffectGenerator:: manageEvents() {
 
 }
 
-void EffectGenerator::generateEvent() {
+void EffectGenerator::generateEvent(float fDt) {
 	// control the rate at which different event effects will fire 
 	m_currentEvenetTimer = m_eventTimer.getElapsedTime(); // get the current elapsed time of the event clock
 	m_displayTime = m_eventInitialiseTime - m_currentEvenetTimer; // set the initial display time to the differnece between our eventInitialise time and our current event time 
@@ -100,40 +104,75 @@ void EffectGenerator::generateEvent() {
 		m_hasStartIndex = false; // set the boollean flag for having a starting index for the event to false meaning that when a new event is generated we only loop through particles that we need to in terms of their index
 		m_hasEvent = false; // set the boolean flag for an event existing to false
 		// zero out all other sf::Time objects that are associated with events
+		
 		m_currentEvenetTimer =  m_currentEvenetTimer.Zero;
 		m_explosionGenerationTime =  m_explosionGenerationTime.Zero;
-
+		
 		m_newEvent = END; // set the m_newEvent enum to END 
+		
 		
 	}
 	if (m_currentEvenetTimer > m_eventInitialiseTime) { // generate new event if we have reach our initialisation time
+		
 		m_hasEvent = true; // set the flag for having an event to true
-
 		m_newEvent = PARTICLESTORM; // set the event enum to the current event
 
 
 	}
-	setEventDisplayText();
+	setEventDisplayText(fDt);
+	
 
 
 }
 
-void EffectGenerator::resetEventTimer() { // used to reset the event timer when switching game states
-	m_eventTimer.restart();
+void EffectGenerator::updateEventWarnings(float fDt) {
 
+	sf::Vector2f currentScale = m_eventWarningSign.getScale();//. current scale of warning sign 
+	std::cout << currentScale.x << std::endl;
+	if (m_warningShouldScale && currentScale.x <=1.0f) { // if the warning sign should scale and 
+		std::cout << "should scale" << std::endl;
+		m_eventWarningSign.setScale(currentScale.x + fDt * m_warningTextScalar, currentScale.y + fDt * m_warningTextScalar); // increase scale of warning sign
+		return; // return out of the function as we dont need to descale the warning sign if it hasnt reached its full scale
+
+	}
+	std::cout << "shouldnt scale" << std::endl;
+
+	m_warningShouldScale = false; // if we have reached a scale where the warning sign is at full size
+	m_eventWarningSign.setScale(currentScale.x - fDt * m_warningTextScalar, currentScale.y - fDt * m_warningTextScalar);// scale the object down
+	
+	m_eventWarningSign.getScale().x <= 0.0f ? m_warningShouldScale = true : m_warningShouldScale = false;// check for when the scale hits zero and set should scale to true if it does
+	
+
+	
+
+
+}
+
+
+void EffectGenerator::resetEventTimer() { // used to reset the event timer and event hud when switching game states
+	m_eventTimer.restart();// restart event clock
+	// zero out timers associated with events
 	m_currentEvenetTimer = m_currentEvenetTimer.Zero;
 	m_displayTime = m_displayTime.Zero;
-	
+	// set bools for controlling events to false
 	m_hasStartIndex = false;
 	m_hasEvent = false;
-	m_eventText.setString("");
+	m_eventText.setString("");// set event text to blanck
+	m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));// set warning sign scale to 0
 
 }
 // used to update the m_eventText object that displays how long until an event will fire
-void EffectGenerator:: setEventDisplayText() {
+void EffectGenerator:: setEventDisplayText(float fDt) {
 	std::stringstream ssEventDisplayText; // create temporary local string stream variable that willl be refereshed each time this function is called
 	if (!m_hasEvent) {
 		ssEventDisplayText << "particle storm in " << m_displayTime.asSeconds() << "\n"; // if we dont have an event displaye the current time until the event
+		if (m_displayTime.asSeconds() <= 5.0f) updateEventWarnings(fDt);
+		
+	}
+	else {
+
+		m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));
+
 	}
 	
 	m_eventText.setString(ssEventDisplayText.str()); // Update the current string assigned to the m_eventText object with the new event time
@@ -142,6 +181,7 @@ void EffectGenerator:: setEventDisplayText() {
 //draw the event text to the window to be rendered 
 void EffectGenerator::drawEventText(sf::RenderWindow &window) {
 	window.draw(m_eventText);
+	window.draw(m_eventWarningSign);
 }
  
 // will be used to generate a number of particles at random postions with a random colour 
