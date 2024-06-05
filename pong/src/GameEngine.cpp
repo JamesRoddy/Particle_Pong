@@ -8,7 +8,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 400.0f, sf::Color::White),
 	m_effects(window.getSize().x, window.getSize().y),
 	m_powerUpsManager(window.getSize().x, window.getSize().y, ".\\assets\\fonts\\impact.ttf"),
-	m_menu(window.getSize().x, window.getSize().y, sf::Vector2f(200.f, 100.f), 25)
+	m_menu(window.getSize().x, window.getSize().y, sf::Vector2f(200.f, 100.f), 25, sf::Color::White, 1.5f)
 
 {   
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
@@ -31,6 +31,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_scoreSoundBuffer.loadFromFile(".\\assets\\audio\\scoreSound.wav");
 	m_scoreSound.setBuffer(m_scoreSoundBuffer);
 
+	m_introMusic.openFromFile(".\\assets\\audio\\introMusic.wav");
 	m_gameLoopMusic.openFromFile(".\\assets\\audio\\gameLoopMusic.wav");
 	m_gameLoopMusic.setVolume(75.0f);
 
@@ -61,7 +62,7 @@ void GameEngine::draw()
 
 void GameEngine::resetGame() {
 	m_gameEndSound.stop();// ensure the end game sound doesnt continue past the game over screen
-
+	
 	// reset game objects to their original positions
 	m_ball.resetPos(m_window.getSize().x / 2, m_window.getSize().y / 2);
 	m_paddle1.reset(sf::Vector2f(20, m_window.getSize().y / 2));
@@ -152,25 +153,27 @@ void GameEngine::run()
 	while (m_window.isOpen())
 	{
 		dt = m_clock.restart().asSeconds(); // get the differnce between the last and current frame(delta time)  
-		//alllowing better control of how the game updates interms of moving objects etc(ensuring that it is more consistent across different frame rates)
+		//allowing better control of how the game updates interms of moving objects etc(ensuring that it is more consistent across different frame rates)
 
 		sf::Event event;// creating an event object tied to the smfl library that allows handling of things such as key presses 
 		while (m_window.pollEvent(event)) 
 		{
 			// using the window object's pollEvent method as the condition for the while loop continuesly 
-			//checking for certain events such as keyboard input or the window closing  
+			//checking for certain events such as keyboard input or the window closing  {
 			
 			if (event.type == sf::Event::Closed) m_window.close(); 
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) // close the window using escape
 				m_window.close();
+
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && m_gStates == intro )
-				
 				m_gStates = GameStates::playing;
 		}
 		
 
 
 		// ADD YOUR CODE HERE !!!
+
+		
 
 		if (m_gStates == 1 ) { // check if the game should be running using the m_gStates enum variable
 			
@@ -187,7 +190,7 @@ void GameEngine::run()
 				m_paddle1.move(dt, m_window.getSize().y);// if the condtion above is true move the player down
 				
 			}
-
+			
 			// get the ball to  move 
 			m_ball.move(dt, m_window); 
 			m_ball.increaseSpeed(dt);
@@ -271,7 +274,6 @@ void GameEngine::run()
 
 			
 		}
-		
 		// update hud
 		update();
 		// draw shapes to screen

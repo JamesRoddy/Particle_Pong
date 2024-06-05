@@ -1,22 +1,25 @@
 #include "Menu.h"
-
+#include <iostream>
 
 // menu constrctor/initialiser that takes in the window widht and height along with button/text size for menu objects
-menu::menu(float fWidth, float fHeight, sf::Vector2f fButtonSize, unsigned int iTextCharSize) { 
+menu::menu(float fWidth, float fHeight, sf::Vector2f fButtonSize, unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing) { 
 
 	m_windowHeight = fHeight; // setting width/height attributes
 	m_windowWidth = fWidth; 
 	m_buttonSize = fButtonSize; 
 	m_textCharacterSize = iTextCharSize;
-	m_spacing = 1.5f; // set spacing for buttons
+	m_spacing = fButtonSpacing; // set spacing for buttons
 	m_textFont.loadFromFile(".\\assets\\fonts\\impact.ttf"); // load the font that will be used for the menu text objects
 	m_buttonHighLightColour = sf::Color::White; // setting highlight colour
 	m_outlineThickness = 10.0f;
-	m_textColour = sf::Color::White;
+	m_textColour = textColour;
 	m_buttonColour = sf::Color(128, 128, 128, 255); // background colour for buttons
 	m_headerCharacterSize = 50;
-	m_headerFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf");
 
+	m_headerFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf");
+	m_navigationBuffer.loadFromFile(".\\assets\\audio\\menuNavigateSound.wav");
+	m_navigationSound.setBuffer(m_navigationBuffer);
+	m_navSoundActive = false;
 	setHeaderText();
 	setMenuObjects(); // intialise menu and all button/text object postions and properties
 }
@@ -96,14 +99,15 @@ void menu::draw(sf::RenderWindow &window, bool bShouldDraw) {
 
 void menu::Update(sf::Window&window) {
 
+	bool bShouldPlaySound = false;
 	for (int iButtonIndex = 0; iButtonIndex < m_menuButtonNumber; iButtonIndex++) {
 		
 		if (m_buttons[iButtonIndex].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window)))) {
 			
 			m_buttons[iButtonIndex].setOutlineColor(m_buttonHighLightColour); // set the hover highlight colour
-			
 			m_buttons[iButtonIndex].setOutlineThickness(10.0f); // set the outline thickness
-			
+			bShouldPlaySound = true;
+		
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) { // if we capture mouse input while user is hoverning mouse of the button selected
 				validateOption(iButtonIndex); //validate the option based on the current index according to the enum "options"
 			}
@@ -113,9 +117,21 @@ void menu::Update(sf::Window&window) {
 			m_buttons[iButtonIndex].setOutlineColor(m_buttonColour);
 			m_buttons[iButtonIndex].setOutlineThickness(0.0f);
 		}
+	}
+
+	playNavSound(bShouldPlaySound);
 
 
 
+
+}
+void menu::playNavSound(bool bSoundPlaying) {
+	if (bSoundPlaying && !m_navSoundActive) {
+		m_navigationSound.play();
+		m_navSoundActive = true;
+	}
+	else if (!bSoundPlaying) {
+		m_navSoundActive = false;
 	}
 }
 

@@ -29,7 +29,7 @@ private:
 	std::vector<sf::Text> m_activePopUpText;
 
 	static const int iPowerUpTypes = 3; // number of power up types that can spawn
-	sf::Time m_effectDurations[iPowerUpTypes] = { sf::seconds(0.0f),sf::seconds(4.0f),sf::seconds(6.0f) }; // effect durations associated with powerUps
+	sf::Time m_effectDurations[iPowerUpTypes] = { sf::seconds(0.0f),sf::seconds(4.0f),sf::seconds(8.0f) }; // effect durations associated with powerUps
 	sf::Color m_powerUpColours[iPowerUpTypes] = { sf::Color::Magenta,sf::Color::Blue,sf::Color::Red }; // colours assoctaed with powerUps
 	
 	std::string m_powerUpText[iPowerUpTypes] = { "INVERT!","SPEEDUP!","BIG MODE++" }; // store pop up text for power ups

@@ -20,6 +20,7 @@ private:
 	sf::SoundBuffer m_gameWinBuffer;
 	sf::Sound m_gameEndSound; // used to switch between win and loose music depending on the player score at the end of the game
 	sf::Music m_gameLoopMusic;
+	sf::Music m_introMusic;
 	sf::SoundBuffer m_scoreSoundBuffer;
 	sf::Sound m_scoreSound;
 

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "SFML/Graphics.hpp"
-
+#include "SFML/Audio.hpp"
 class menu {
 
 public:
-	menu(float fWindowWidth, float fWindowHeight,sf::Vector2f fButtonSize,unsigned int iTextCharSize );
+	menu(float fWindowWidth, float fWindowHeight,sf::Vector2f fButtonSize,unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing );
 	
 	void draw(sf::RenderWindow& window,bool bShouldDraw);
 	void validateOption(int iOptionId);
@@ -13,6 +13,7 @@ public:
 	bool shouldQuit();
 	bool shouldPlay();
 	void resetOptionBools();
+	void playNavSound(bool bSoundPlaying);
 private:
 	void setMenuObjects();
 	void setHeaderText();
@@ -31,7 +32,9 @@ private:
 	sf::Color m_buttonColour = sf::Color(128, 128, 128, 255);// colour used for menu buttons
 	sf::Color m_textColour = sf::Color::White; // text colour 
 	sf::Color m_buttonHighLightColour; // used to change button hihglight on mouse hover 
-
+	sf::SoundBuffer m_navigationBuffer;
+	sf::Sound m_navigationSound;
+	bool m_navSoundActive;
 	float m_outlineThickness;
 	float m_windowWidth;
 	float m_windowHeight;

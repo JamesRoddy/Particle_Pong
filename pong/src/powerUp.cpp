@@ -138,8 +138,8 @@ void powerUp::drawPowerUp(sf::RenderWindow& window) {
 }
   
 bool powerUp::collision(sf::FloatRect fBounds) {
-	// used to check collsion between power ups and the ball
-	if (m_shape.getGlobalBounds().intersects(fBounds) && m_shape.getPosition().y >= 0 + m_shape.getSize().y/2) { 
+	// used to check collsion between power ups and the ball and that the power up is on screen
+	if (m_shape.getGlobalBounds().intersects(fBounds) && m_shape.getPosition().y > 0 + m_shape.getSize().y) { 
 		return true;
 	}
 	return false;
