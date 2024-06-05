@@ -5,12 +5,12 @@
 powerUpsManager::powerUpsManager(float fWindowWidth,float fWindowHeight,std::string sPowerUpFontPath) {
 
 	m_powerUpGenTime = sf::seconds(2.0f); // time it takes to spawn new power ups 
-	m_windowWidth = fWindowWidth; /// window widht and height vairabales used for spawning power ups
+	m_windowWidth = fWindowWidth; /// window width and height variables used for spawning power ups
 	m_windowHeight = fWindowHeight;
 	m_powerUpTextFont.loadFromFile(sPowerUpFontPath);
 	m_textFadeMultiplier = 0.01f; // a low fade druation to ensure the text is always visble for certain time 
-	m_powerUpSoundBuffer.loadFromFile(".\\assets\\audio\\powerUp.wav");
-	m_powerUpSoundEffect.setBuffer(m_powerUpSoundBuffer);
+	m_powerUpSoundBuffer.loadFromFile(".\\assets\\audio\\powerUp.wav"); // sound buffer for power ups
+	m_powerUpSoundEffect.setBuffer(m_powerUpSoundBuffer); // setting buffer to the m_powerUpSoundBuffer attribute after loading it from the file
 
 }
 
@@ -103,8 +103,8 @@ void powerUpsManager::searchForExistingPaddleEffect(powerUp& newPowerUp) {
 void powerUpsManager::addPowerUpText(unsigned int uiSetCharacterSize,powerUp &newPowerUp) {
 
 	newPowerUp.getPopUpTextRef()->setPosition(newPowerUp.getShape().getPosition());// used to assign the position of the power up text 
-	newPowerUp.getPopUpTextRef()->setCharacterSize(uiSetCharacterSize); // assiging the character size of the power up text
-	newPowerUp.getPopUpTextRef()->setFont(m_powerUpTextFont); // assiging the font to the power up pop up text
+	newPowerUp.getPopUpTextRef()->setCharacterSize(uiSetCharacterSize); // assigning the character size of the power up text
+	newPowerUp.getPopUpTextRef()->setFont(m_powerUpTextFont); // assigning the font to the power up pop up text
 	m_activePopUpText.push_back(newPowerUp.getPopUpTextValue()); // finally we push the value of the power up text attribute to the power up text vector allowing it to be drawn
 
 }
@@ -147,7 +147,7 @@ void powerUpsManager::update(float fDt) {
 			m_powerUps.erase(m_powerUps.begin() + i); /// erase the power up from the current power ups vector
 			continue;// move to next itteration
 		}
-		m_powerUps[i].updatePowerUpPos(fDt); // other wise update the power up position
+		m_powerUps[i].updatePowerUpPos(fDt); // otherwise update the power up position
 
 	}
 
@@ -155,7 +155,7 @@ void powerUpsManager::update(float fDt) {
 
 void powerUpsManager::generatePowerUp() {
 
-	m_currentEventTime = m_eventTimer.getElapsedTime(); // set the current event timer to the total elapsded time of the sf::clock object used to manage when power ups should spawn
+	m_currentEventTime = m_eventTimer.getElapsedTime(); // set the current event timer to the total elapsed time of the sf::clock object used to manage when power ups should spawn
 	
 	if (m_currentEventTime > m_powerUpGenTime) { // if the current event timer is greater than the end time 
 

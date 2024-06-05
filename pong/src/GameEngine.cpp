@@ -8,7 +8,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 400.0f, sf::Color::White),
 	m_effects(window.getSize().x, window.getSize().y),
 	m_powerUpsManager(window.getSize().x, window.getSize().y, ".\\assets\\fonts\\impact.ttf"),
-	m_menu(window.getSize().x, window.getSize().y, sf::Vector2f(50.f, 50.f), 25)
+	m_menu(window.getSize().x, window.getSize().y, sf::Vector2f(200.f, 100.f), 25)
 
 {   
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
@@ -79,21 +79,23 @@ void GameEngine::update()
 	switch (m_gStates) // switch case used to determine how the hud should change based on the current value of the enum objet m_gamestates 
 	{
 	case menu:
-
-		m_ball.getShape().setFillColor(sf::Color::Black);
-		m_menu.Update(m_window);
+		m_window.setMouseCursorVisible(true); // set mouse cursor to be visisble during menu state
+		m_ball.getShapeReference()->setFillColor(sf::Color::Black); // ensure that the ball isnt drawn over the menu
+		m_menu.Update(m_window);// update the menu fregistering mouse controls and options
 
 		if (m_menu.shouldPlay()) {
-			m_gStates = intro;
-			m_shouldDrawMenu = false;
-			m_menu.resetOptionBools();
+			
+			m_window.setMouseCursorVisible(false); // set mouse cursor to no longer be visible past the menu state
+			m_gStates = intro; // if bool shouldPlay attribiute inside the menu object has been set to true we set the state to intro
+			m_shouldDrawMenu = false; // we also set should draw menu to false ensuriong that it isnt drawn on the next frame
+			m_menu.resetOptionBools(); // reset any option bools ensuring that they are all false when returning back to the menu after playing
 		}
-		else if (m_menu.shouldQuit()) {
-			m_window.close();
+		else if (m_menu.shouldQuit()) { // if the menu option selected was quit
+			m_window.close(); // terminate the window 
 		}
 		break;
 	case GameEngine::intro: // if the value of game states has the same value as the enum constant 'intro'(0)
-		m_ball.getShape().setFillColor(sf::Color(m_ball.getColour().r, m_ball.getColour().g, m_ball.getColour().b, 255.0f));
+		m_ball.getShapeReference()->setFillColor(sf::Color::White);
 		ss << "Press the Space\nkey to start";
 		m_effects.resetEventTimer(); // reset the event timers for particle effects
 		m_powerUpsManager.resetTimers();// reset the  timers for power ups 
@@ -104,13 +106,13 @@ void GameEngine::update()
 		break;
 
 	case GameEngine::gameOver:
-		if (m_p1Score > m_p2Score) {
+		if (m_p1Score > m_p2Score) { // if player 1 score is greater than the ai score
 
-			ss << "You win !\n";
+			ss << "You win !\n"; // using the insertion opertaor refershe the string stream used for controlling the huf with the new input message
 
 		
 		}
-		else {
+		else { // otherwise similar process to above but with computer win message
 			ss << "Computer wins...\n";
 			
 
@@ -126,9 +128,9 @@ void GameEngine::update()
 			
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::N)) { // if the user presses N during the game over screen
-			m_gStates = menu;
-			m_shouldDrawMenu = true;
-			resetGame();
+			m_gStates = menu; // take the player back to the menu
+			m_shouldDrawMenu = true; // set the bool for drawning the menu to true
+			resetGame(); // reset all object positions
 
 		}
 		
@@ -206,7 +208,7 @@ void GameEngine::run()
 			}
 			if (m_ball.ballCollisionPushBack(m_paddle2.getShape())){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
 				
-				if (m_ballSound.getStatus() == sf::Sound::Stopped) {  
+				if (m_ballSound.getStatus() == sf::Sound::Stopped) {  // if the collison sound isnt currently playing
 					m_ballSound.play(); 
 				}
 				m_effects.generateCollsionParticles(m_ball.getPosition(), -1, m_paddle2.getShape().getFillColor()); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
