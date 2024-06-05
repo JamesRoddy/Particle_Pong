@@ -2,10 +2,10 @@
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
-class menu {
+class Menu {
 
 public:
-	menu(float fWindowWidth, float fWindowHeight,sf::Vector2f fButtonSize,unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing );
+	Menu(float fWindowWidth, float fWindowHeight,sf::Vector2f fButtonSize,unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing );
 	
 	void draw(sf::RenderWindow& window,bool bShouldDraw);
 	void validateOption(int iOptionId);

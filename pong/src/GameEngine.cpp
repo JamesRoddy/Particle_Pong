@@ -30,10 +30,12 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 
 	m_scoreSoundBuffer.loadFromFile(".\\assets\\audio\\scoreSound.wav");
 	m_scoreSound.setBuffer(m_scoreSoundBuffer);
-
+	
+	// loading music used in the menu and during gameplay
 	m_introMusic.openFromFile(".\\assets\\audio\\introMusic.wav");
-	m_gameLoopMusic.openFromFile(".\\assets\\audio\\gameLoopMusic.wav");
-	m_gameLoopMusic.setVolume(75.0f);
+	m_introMusic.setVolume(75.0f);
+	m_gameLoopMusic.openFromFile(".\\assets\\audio\\gameLoopMusic.wav"); 
+	m_gameLoopMusic.setVolume(75.0f); // lower the volume slighlty so it doesnt drown out other sound effects
 
 	m_shouldDrawMenu = true;
 	m_hud.setPosition((m_window.getSize().x / 2.f) - 45.f, 10);
@@ -83,6 +85,10 @@ void GameEngine::update()
 		m_window.setMouseCursorVisible(true); // set mouse cursor to be visisble during menu state
 		m_ball.getShapeReference()->setFillColor(sf::Color::Black); // ensure that the ball isnt drawn over the menu
 		m_menu.Update(m_window);// update the menu fregistering mouse controls and options
+		if (m_introMusic.getStatus() == sf::Music::Stopped) { // if the intro music isnt playing or was previously stopped
+			m_introMusic.play(); // initate the intro music
+			m_introMusic.setLoop(true); // set the intro music to loop while in the intro state and the menu state
+		}
 
 		if (m_menu.shouldPlay()) {
 			
@@ -103,13 +109,16 @@ void GameEngine::update()
 
 		break;
 	case GameEngine::playing: 
+		if (m_introMusic.getStatus() != sf::Music::Stopped) { // stop the intro music when we switch to the playing state
+			m_introMusic.stop();
+		}
 		ss << m_p1Score << " - " << m_p2Score;
 		break;
 
 	case GameEngine::gameOver:
 		if (m_p1Score > m_p2Score) { // if player 1 score is greater than the ai score
 
-			ss << "You win !\n"; // using the insertion opertaor refershe the string stream used for controlling the huf with the new input message
+			ss << "You win !\n"; // using the insertion operator refershe the string stream used for controlling the huf with the new input message
 
 		
 		}
@@ -177,6 +186,7 @@ void GameEngine::run()
 
 		if (m_gStates == 1 ) { // check if the game should be running using the m_gStates enum variable
 			
+
 			if (m_gameLoopMusic.getStatus() == sf::Music::Stopped) {// if the status is currently stopped i.e we are first enetring the loop
 				m_gameLoopMusic.play(); // play the game loop music
 				m_gameLoopMusic.setLoop(true); // set music to loop 
@@ -203,7 +213,7 @@ void GameEngine::run()
 			//// collsion detection  for both paddles 
 			if (m_ball.ballCollisionPushBack(m_paddle1.getShape())) { // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap
 				
-				if (m_ballSound.getStatus() == sf::Sound::Stopped) {// if the collison sound is not currenlty playing
+				if (m_ballSound.getStatus() != sf::Sound::Playing) {// if the collison sound is not currenlty playing
 					m_ballSound.play();// initiate the sound 
 				}
 				m_effects.generateCollsionParticles(m_ball.getPosition(), 1, m_paddle1.getShape().getFillColor()); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
@@ -211,7 +221,7 @@ void GameEngine::run()
 			}
 			if (m_ball.ballCollisionPushBack(m_paddle2.getShape())){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
 				
-				if (m_ballSound.getStatus() == sf::Sound::Stopped) {  // if the collison sound isnt currently playing
+				if (m_ballSound.getStatus() != sf::Sound::Playing) {  // if the collison sound isnt currently playing
 					m_ballSound.play(); 
 				}
 				m_effects.generateCollsionParticles(m_ball.getPosition(), -1, m_paddle2.getShape().getFillColor()); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)

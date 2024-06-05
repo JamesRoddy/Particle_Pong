@@ -1,6 +1,6 @@
 #pragma once
 #include "particle.h"
-
+#include <SFML/Audio.hpp>
 #include <vector>
 #include<sstream>
 // the effectsGenerator class will be used to managed each particle and update/draw it wihtin the window 
@@ -38,7 +38,8 @@ private:
 	sf::Time m_displayTime; // used to dispaly the time until/duration of the event
 	sf::Time m_eventEndTime ;// used to control when events end
 	// displaying the time until/duration of events
-	
+	sf::SoundBuffer m_warningSoundBuffer;
+	sf::Sound m_warningSound;
 	sf::Font m_eventTextFont; // font for the event text display
 	sf::Text m_eventText; // the text object that willl be assigned the font and event text
 	std::stringstream m_eventDisplayText ; // string stream that will be set to the text object
@@ -59,7 +60,9 @@ private:
 	bool m_warningShouldScale;
 	float m_windowWidth;// attributes used to keep track of windows width and height so particles arent drawn of screen 
 	float m_windowHeight;
-	int generateRandomValue(int iUpperBound, int iLowerBound); // used to geenrate various random properties such as explosion amounts and particle sizes
+    
+
+	int generateRandomValue(int iUpperBound, int iLowerBound); // used to generate various random properties such as explosion amounts and particle sizes
 	float generateRandomValue(float iUpperBound, float iLowerBound);
 	void updateEventWarnings(float fDt); // used to display a warning sign to when an event gets close
 

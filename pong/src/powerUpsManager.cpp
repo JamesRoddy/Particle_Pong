@@ -2,20 +2,20 @@
 #include <iostream>
 
 
-powerUpsManager::powerUpsManager(float fWindowWidth,float fWindowHeight,std::string sPowerUpFontPath) {
+PowerUpsManager::PowerUpsManager(float fWindowWidth,float fWindowHeight,std::string sPowerUpFontPath) {
 
 	m_powerUpGenTime = sf::seconds(2.0f); // time it takes to spawn new power ups 
 	m_windowWidth = fWindowWidth; /// window width and height variables used for spawning power ups
 	m_windowHeight = fWindowHeight;
 	m_powerUpTextFont.loadFromFile(sPowerUpFontPath);
 	m_textFadeMultiplier = 0.01f; // a low fade druation to ensure the text is always visble for certain time 
-	m_powerUpSoundBuffer.loadFromFile(".\\assets\\audio\\powerUp.wav"); // sound buffer for power ups
+	m_powerUpSoundBuffer.loadFromFile(".\\assets\\audio\\PowerUp.wav"); // sound buffer for power ups
 	m_powerUpSoundEffect.setBuffer(m_powerUpSoundBuffer); // setting buffer to the m_powerUpSoundBuffer attribute after loading it from the file
 
 }
 
 
-void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass refernce to objects that power up effects are applied to
+void PowerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass refernce to objects that power up effects are applied to
 {
 	for (int i = 0; i < m_powerUps.size(); i++) { // for each current power up on the screen
 
@@ -40,7 +40,7 @@ void powerUpsManager::handleCollision(Ball*ball,Paddle*player,Paddle*AI) // pass
 
 }
 
-void powerUpsManager::drawPowerUpText(sf::RenderWindow &window) {
+void PowerUpsManager::drawPowerUpText(sf::RenderWindow &window) {
 	// drawing pop up text to screen
 	for (int i = 0; i < m_activePopUpText.size(); i++) {
 		window.draw(m_activePopUpText[i]);
@@ -48,7 +48,7 @@ void powerUpsManager::drawPowerUpText(sf::RenderWindow &window) {
 	     
 }
 
-void powerUpsManager::updatePopUpText(float dt) { // update all pop up text on screen
+void PowerUpsManager::updatePopUpText(float dt) { // update all pop up text on screen
 
 	for (int i = 0; i < m_activePopUpText.size(); i++) { 
 		if (m_activePopUpText[i].getFillColor().a <= 0.0f) { // if the alpha is less then 0
@@ -65,7 +65,7 @@ void powerUpsManager::updatePopUpText(float dt) { // update all pop up text on s
 }
 
 
-void powerUpsManager::searchForExistingBallEffect(powerUp &newPowerUp) {
+void PowerUpsManager::searchForExistingBallEffect(PowerUp &newPowerUp) {
 	
 
 	for (int i = 0; i < m_activePowerUp.size(); i++) { // for each active power up
@@ -82,7 +82,7 @@ void powerUpsManager::searchForExistingBallEffect(powerUp &newPowerUp) {
 
 // search for exsitig paddle effects 
 
-void powerUpsManager::searchForExistingPaddleEffect(powerUp& newPowerUp) {
+void PowerUpsManager::searchForExistingPaddleEffect(PowerUp& newPowerUp) {
 
 	for (int i = 0; i < m_activePowerUp.size(); i++) { // for each power up
 		// if the effect direction of the power up we are checking is the same as another already in the active power ups vector
@@ -100,7 +100,7 @@ void powerUpsManager::searchForExistingPaddleEffect(powerUp& newPowerUp) {
 }
 
 // used to add the pop up text assigned to the power up text vector located in the header file 
-void powerUpsManager::addPowerUpText(unsigned int uiSetCharacterSize,powerUp &newPowerUp) {
+void PowerUpsManager::addPowerUpText(unsigned int uiSetCharacterSize,PowerUp &newPowerUp) {
 
 	newPowerUp.getPopUpTextRef()->setPosition(newPowerUp.getShape().getPosition());// used to assign the position of the power up text 
 	newPowerUp.getPopUpTextRef()->setCharacterSize(uiSetCharacterSize); // assigning the character size of the power up text
@@ -109,7 +109,7 @@ void powerUpsManager::addPowerUpText(unsigned int uiSetCharacterSize,powerUp &ne
 
 }
 
-void powerUpsManager::manageDurationEffects(Ball*ball,float fDt) { // used to manage any duration effects power ups may have
+void PowerUpsManager::manageDurationEffects(Ball*ball,float fDt) { // used to manage any duration effects power ups may have
 	
 	for (int i = 0; i < m_activePowerUp.size(); i++) { // loop through the active power ups vector
 
@@ -126,20 +126,20 @@ void powerUpsManager::manageDurationEffects(Ball*ball,float fDt) { // used to ma
 
 
 }
-void powerUpsManager::resetTimers() { // reset powerUpManager timers
+void PowerUpsManager::resetTimers() { // reset powerUpManager timers
 	m_eventTimer.restart();
 	m_CollisionTimer.restart();
 	m_currentEventTime = m_currentEventTime.Zero;
 }
 
 // draw all power ups currenlytin the m_powerups vector to the screen
-void powerUpsManager::draw(sf::RenderWindow&window) {
+void PowerUpsManager::draw(sf::RenderWindow&window) {
 	for (int i = 0; i < m_powerUps.size(); i++) {
 		m_powerUps[i].drawPowerUp(window);
 	}
 }
 
-void powerUpsManager::update(float fDt) {
+void PowerUpsManager::update(float fDt) {
 
 	for (int i = 0; i < m_powerUps.size(); i++) { // loop through the power ups vector
 
@@ -153,7 +153,7 @@ void powerUpsManager::update(float fDt) {
 
 }
 
-void powerUpsManager::generatePowerUp() {
+void PowerUpsManager::generatePowerUp() {
 
 	m_currentEventTime = m_eventTimer.getElapsedTime(); // set the current event timer to the total elapsed time of the sf::clock object used to manage when power ups should spawn
 	
@@ -164,7 +164,7 @@ void powerUpsManager::generatePowerUp() {
 		// zero out all other sf::Time objects that are associated with events
 		m_currentEventTime = m_currentEventTime.Zero;
 		// passing in the window widht and height to the power up constcrtor along with the font that will be used for the text object attribute the power up has 
-		powerUp newPowerUp = powerUp(m_windowWidth, m_windowHeight);
+		PowerUp newPowerUp = PowerUp(m_windowWidth, m_windowHeight);
 		// set the type of the power up based on its id in relation to the various durations,colours,and text 
 		//associated with attributes of the power ups manager object
 		newPowerUp.setType(m_powerUpColours[newPowerUp.getId()], m_effectDurations[newPowerUp.getId()],m_powerUpText[newPowerUp.getId()]);
@@ -178,7 +178,7 @@ void powerUpsManager::generatePowerUp() {
 
 
 }
-void powerUpsManager::clearPowerUps(Ball*ball) { // clear all power ups on the screen and active power ups
+void PowerUpsManager::clearPowerUps(Ball*ball) { // clear all power ups on the screen and active power ups
 
 	for (int i = 0; i < m_activePowerUp.size(); i++) { // for each active power up
 		m_activePowerUp[i].setTotalEffectTime(sf::Time::Zero);// set its total effect time to zero

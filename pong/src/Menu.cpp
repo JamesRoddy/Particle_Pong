@@ -1,8 +1,8 @@
 #include "Menu.h"
 #include <iostream>
 
-// menu constrctor/initialiser that takes in the window widht and height along with button/text size for menu objects
-menu::menu(float fWidth, float fHeight, sf::Vector2f fButtonSize, unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing) { 
+// Menu constrctor/initialiser that takes in the window widht and height along with button/text size for Menu objects
+Menu::Menu(float fWidth, float fHeight, sf::Vector2f fButtonSize, unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing) { 
 
 	m_windowHeight = fHeight; // setting width/height attributes
 	m_windowWidth = fWidth; 
@@ -29,7 +29,7 @@ menu::menu(float fWidth, float fHeight, sf::Vector2f fButtonSize, unsigned int i
 
 
 
-void menu::setHeaderText() {
+void Menu::setHeaderText() {
 
 	m_header.setFont(m_headerFont);
 	m_header.setFillColor(m_textColour);
@@ -45,9 +45,9 @@ void menu::setHeaderText() {
 
 
 
-void menu::setMenuObjects() {
+void Menu::setMenuObjects() {
 
-	for (int i = 0; i < m_menuButtonNumber; i++) { // for the number of  buttons in the menu
+	for (int i = 0; i < m_menuButtonNumber; i++) { // for the number of  buttons in the Menu
 		// set the properties of the sf rectangle shape asscoiated with each button
 		m_buttons[i].setFillColor(m_buttonColour); 
 		m_buttons[i].setOrigin(m_buttonSize / 2.f);
@@ -84,7 +84,7 @@ void menu::setMenuObjects() {
 
 }
 
-void menu::draw(sf::RenderWindow &window, bool bShouldDraw) {
+void Menu::draw(sf::RenderWindow &window, bool bShouldDraw) {
 	if (bShouldDraw) {
 		window.draw(m_header);
 		for (int i = 0; i < m_menuButtonNumber; i++) {
@@ -97,7 +97,7 @@ void menu::draw(sf::RenderWindow &window, bool bShouldDraw) {
 
 }
 
-void menu::Update(sf::Window&window) {
+void Menu::Update(sf::Window&window) {
 
 	bool bShouldPlaySound = false;
 	for (int iButtonIndex = 0; iButtonIndex < m_menuButtonNumber; iButtonIndex++) {
@@ -125,7 +125,7 @@ void menu::Update(sf::Window&window) {
 
 
 }
-void menu::playNavSound(bool bSoundPlaying) {
+void Menu::playNavSound(bool bSoundPlaying) {
 	if (bSoundPlaying && !m_navSoundActive) {
 		m_navigationSound.play();
 		m_navSoundActive = true;
@@ -135,7 +135,7 @@ void menu::playNavSound(bool bSoundPlaying) {
 	}
 }
 
-void menu::validateOption(int optionId) {
+void Menu::validateOption(int optionId) {
   
 	switch (optionId) {
 	case PLAY:
@@ -148,13 +148,13 @@ void menu::validateOption(int optionId) {
 
 }
 
-bool menu::shouldPlay() {
+bool Menu::shouldPlay() {
 	return m_shouldPlay;
 }
-bool menu::shouldQuit() {
+bool Menu::shouldQuit() {
 	return m_shouldQuit;
 }
-void menu::resetOptionBools() {
+void Menu::resetOptionBools() {
 	m_shouldPlay = false;
 	m_shouldQuit = false;
 }

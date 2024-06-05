@@ -30,8 +30,8 @@ private:
 
 	// all   attributes that are objects of another class that will  need to be instantiated when an object of the GameEngine class is created  
 	EffectGenerator m_effects;  
-	powerUpsManager m_powerUpsManager;
-	menu m_menu;
+	PowerUpsManager m_powerUpsManager;
+	Menu m_menu;
 	Paddle m_paddle1;
 	Paddle m_paddle2;
 	Ball m_ball;

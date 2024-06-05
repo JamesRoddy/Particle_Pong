@@ -14,6 +14,7 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_explosionAmount = 6;
 	m_eventTextOffset = 75; // set the offset for the event text allowing for control over where it is placed in fX or fY
 	m_eventTextSize = 18;
+	
 	m_warningShouldScale = true; // used to control the scaling of the event warning sign 
 	m_warningTextScalar = 1.5f; // scaling factor for the warning sign
 	m_eventWarningSign.setSize(sf::Vector2f(30.0f, 30.0f));
@@ -23,15 +24,17 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_eventWarningSign.setTexture(&m_warningSignTexture);
 	m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));
 	m_eventWarningSign.setOrigin(m_eventWarningSign.getSize().x / 2, m_eventWarningSign.getSize().y / 2);
+	m_warningSoundBuffer.loadFromFile(".\\assets\\audio\\eventWarningSound.wav");
+	m_warningSound.setBuffer(m_warningSoundBuffer);
 	
 	m_eventTextFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf"); // loading the font that will be applied to the event time display
 	m_eventText.setFont(m_eventTextFont); //set the font of the m_eventText object
-	m_eventText.setFillColor(sf::Color::White); // set the fill colour
+	m_eventText.setFillColor(sf::Color::Red); // set the fill colour
 	m_eventText.setCharacterSize(m_eventTextSize); 
-	
 	m_eventText.setPosition((m_windowWidth / 2 - m_eventTextSize*4), m_eventTextOffset); // adjust the text postion so that it is centred and at the top of the screen
 	m_eventWarningSign.setPosition(m_windowWidth/2, (m_eventText.getPosition().y+m_eventTextSize) + m_eventWarningSign.getSize().y);
 	m_newEvent = END; // used to control what event should fire
+
 	
 }
 
@@ -179,16 +182,19 @@ void EffectGenerator::resetEventTimer() { // used to reset the event timer and e
 // used to update the m_eventText object that displays how long until an event will fire
 void EffectGenerator::setEventDisplay(float fDt) {
 	std::stringstream ssEventDisplayText; // create temporary local string stream variable that willl be refereshed each time this function is called
+	
 	if (!m_hasEvent) {
 		ssEventDisplayText << "particle storm in " << m_displayTime.asSeconds() << "\n"; // if we dont have an event displaye the current time until the event
 		if (m_displayTime.asSeconds() <= 5.0f) {  // if the differnce between the current event timer and the intialise timer is less than 5.0f
+			
+
+
 			updateEventWarnings(fDt);// update and display the warning sign
 		
 		}
 		
 	}
 	else {
-		
 		m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f)); // other wise scale the warning sign back down 
 
 	}

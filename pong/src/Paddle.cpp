@@ -10,7 +10,7 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 	m_aISpeedMultiplier = 2.65f; // speed multipler for the  paddle ai to move it based on its distance to its target this variable will also be modfied based on score
 	m_baseAiSpeedMultiplier = 2.65f; // used to reset ai speed
 	m_aiSpeedController = 1.0f; // speed increment/decrement
-	m_minAiSpeed = 2.35f; // lowest speed ai can reach
+	m_minAiSpeed = 2.45f; // lowest speed ai can reach
 	m_maxAiSpeed = 2.85f; // maximum speed for ai 
 	m_shape.setSize(m_size); // set the local size of the paddle
 	m_shape.setPosition(position); // setting intitial pos
@@ -87,8 +87,9 @@ void Paddle::aiValidateScore(float iPlayerScore, float iAiScore,float iMaxScore)
 	/// used to control the ai speed based on the percentage of how close it is to the max score and how close the player is 
 	float fPlayerPercent = iPlayerScore / iMaxScore;
 	float fAiPercent =  iAiScore / iMaxScore;
-	if (fPlayerPercent >= 0.75f || fPlayerPercent == fAiPercent) { // when the player reaches a score close to the winning or equals out the score
+	if (fPlayerPercent >= 0.65f || fPlayerPercent == fAiPercent) { // when the player reaches a score close to the winning or equals out the score
 		m_aISpeedMultiplier = m_baseAiSpeedMultiplier; // keep the ai speed at a consistent rate as to ensure that the player has a challenge still if they started out on the back foot and are now close to winning or equal
+		std::cout << m_aISpeedMultiplier << std::endl;
 		return; // return as we dont modify the speed
 	}
 	std::cout << fPlayerPercent << std::endl;

@@ -3,11 +3,11 @@
 #include "Paddle.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-class powerUp{
+class PowerUp{
 
 public: 
 	
-	powerUp(float fWindowWidth, float fWindowHeight); // intial constcor for power up that sets its properties for the power up object
+	PowerUp(float fWindowWidth, float fWindowHeight); // intial constcor for power up that sets its properties for the power up object
 	void drawPowerUp(sf::RenderWindow& window); // draw power ups to screen
 	bool collision(sf::FloatRect fBounds); // used to detect collsion between power up and ball
 	void applyEffect(Ball*ball, float fDt); // apply the power up effects to objects 
