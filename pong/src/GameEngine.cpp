@@ -36,7 +36,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_introMusic.setVolume(75.0f);
 	m_gameLoopMusic.openFromFile(".\\assets\\audio\\gameLoopMusic.wav"); 
 	m_gameLoopMusic.setVolume(75.0f); // lower the volume slighlty so it doesnt drown out other sound effects
-
+	
 	m_shouldDrawMenu = true;
 	m_hud.setPosition((m_window.getSize().x / 2.f) - 45.f, 10);
 
@@ -216,7 +216,7 @@ void GameEngine::run()
 				if (m_ballSound.getStatus() != sf::Sound::Playing) {// if the collison sound is not currenlty playing
 					m_ballSound.play();// initiate the sound 
 				}
-				m_effects.generateCollsionParticles(m_ball.getPosition(), 1, m_paddle1.getShape().getFillColor()); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
+				m_effects.generateCollsionParticles(m_ball.getPosition(), 1, m_paddle1.getShape().getFillColor(),5); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 			   
 			}
 			if (m_ball.ballCollisionPushBack(m_paddle2.getShape())){ // if the global bounds of the paddle contain the balls position meaning that the two bounding rectangles would over lap 
@@ -224,7 +224,7 @@ void GameEngine::run()
 				if (m_ballSound.getStatus() != sf::Sound::Playing) {  // if the collison sound isnt currently playing
 					m_ballSound.play(); 
 				}
-				m_effects.generateCollsionParticles(m_ball.getPosition(), -1, m_paddle2.getShape().getFillColor()); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
+				m_effects.generateCollsionParticles(m_ball.getPosition(), -1, m_paddle2.getShape().getFillColor(),5); // generate particles when the ball collides with the paddle defining the postion they start at and the direction of movement(negative or positive)
 			}
 			
 			// updating scores when the ball passes either paddle 

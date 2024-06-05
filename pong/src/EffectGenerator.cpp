@@ -186,13 +186,9 @@ void EffectGenerator::setEventDisplay(float fDt) {
 	if (!m_hasEvent) {
 		ssEventDisplayText << "particle storm in " << m_displayTime.asSeconds() << "\n"; // if we dont have an event displaye the current time until the event
 		if (m_displayTime.asSeconds() <= 5.0f) {  // if the differnce between the current event timer and the intialise timer is less than 5.0f
-			
-
-
 			updateEventWarnings(fDt);// update and display the warning sign
-		
+
 		}
-		
 	}
 	else {
 		m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f)); // other wise scale the warning sign back down 
@@ -235,13 +231,13 @@ void EffectGenerator::generateParticles(int iNewcount, float fRadius,bool bHasAl
 	
 }
 // used to generate a burst of particles each time the ball collides with the paddle 
-void EffectGenerator::generateCollsionParticles(sf::Vector2f fPosition, int iDirection,sf::Color objectColour) {  // takes in the postion of the collsion and the direction the particles need to fly according to the paddle they hit 
+void EffectGenerator::generateCollsionParticles(sf::Vector2f fPosition, int iDirection,sf::Color objectColour,int iAmount) {  // takes in the postion of the collsion and the direction the particles need to fly according to the paddle they hit 
 
 	float fRadiusUpperBound = 4; // setting an upper bound for generating a random fRadius 
 	float fRadiusLowerBound = 1; /// setting lower bound 
 	
 	
-	for (int i = 0; i < 5; i++) { // generate 5 particles on each collsion
+	for (int i = 0; i < iAmount; i++) { // generate  particles on each collsion accodirng to the integer argument passed in "iAmount"
 
 		float fradius = generateRandomValue(fRadiusUpperBound,fRadiusLowerBound); // egenrate random fRadius for the particle depeding on upper and lower bound values 
 		Particle newParticle = Particle(fPosition.x, fPosition.y, objectColour, fradius, true, -100, 100,false); // gernate a new particle object to be pushed to the currentParticle vector arrtibute of the effect geenrator class allowing the particles to be drawn onto the screen and updated 

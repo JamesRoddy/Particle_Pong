@@ -22,7 +22,7 @@ public:
 
 	void generateParticles(const int iNewCount, float frRadius, bool bHasAlpha, int iSpeedMin, int iSpeedMax,float fX,float fY,bool BhasCollsion); // used to gennerate a number of particles with random properties 
 	void drawEventDisplay(sf::RenderWindow &window);
-	void generateCollsionParticles(sf::Vector2f fCollsionPoint, int fDirection,sf::Color objectColour); // used to generate particles when the ball collides with the paddles 
+	void generateCollsionParticles(sf::Vector2f fCollsionPoint, int fDirection,sf::Color objectColour,int iAmount); // used to generate particles when the ball collides with the paddles 
 	
 	void clearParticle(); // clear all particles from the screen
 	void resetEventTimer();
