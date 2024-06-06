@@ -11,9 +11,9 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 	m_particleY = startY;
 	m_hasCollsion = bHasCollsion; // determine if the particle is able to collide with other objects 
 
-	m_speed = (rand() % (speedMax - speedMin) + speedMin); // define the speed of the particle by geernating a random value bewteen the speed range min and max(including those numbers)
-	m_velocity.x = (rand() % (speedMax - speedMin) + speedMin); /// set the velcoity vector's x and y to the speed generated 
-	m_velocity.y = (rand() % (speedMax - speedMin) + speedMin); // this vector is what will be used to move each particle on the screen 
+	m_speed = float((rand() % (speedMax - speedMin) + speedMin)); // define the speed of the particle by geernating a random value bewteen the speed range min and max(including those numbers)
+	m_velocity.x = float((rand() % (speedMax - speedMin) + speedMin)); /// set the velcoity vector's x and y to the speed generated 
+	m_velocity.y = float((rand() % (speedMax - speedMin) + speedMin)); // this vector is what will be used to move each particle on the screen 
 	m_hasAlpha = hasAlpha; // some particles may have their alpha values manipulated therefore this bool attribute 'm_hasAlpha' will be used to determine if the particles alpha should be changed 
 	m_colour = colour;  // set the colour attribute of the particle 
 	m_event = 0; // used to control what effects are applied to the particle
@@ -21,7 +21,7 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 	m_fadeMultiplier = 120.0f; // used to apply fading to particle at a particualr rate
 	m_alpha = 255.0f; // intial alpha
 	m_alphaCollsionVal = 65.0f;// minumum alpha required for collision
-	m_collionSpeedDecrease = 0.85f; // used to decrease on objects speed when it collides with a particle 
+	m_collionSpeedDecrease = 0.90f; // used to decrease on objects speed when it collides with a particle 
 	// setting the properties of the particle's shape object(in this case the in built sf::CircleShape object)
 	m_particleShape.setRadius(radius); // set the radius of the particle using the radius argument passed into the constructor  
 	m_particleShape.setPosition(m_particleX, m_particleY); //set pos

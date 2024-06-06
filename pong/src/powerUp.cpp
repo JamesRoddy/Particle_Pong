@@ -6,11 +6,11 @@
 PowerUp::PowerUp(float fWindowWidth,float fWindowHeight){
 
 
-	m_id = rand() % (INCREASEPADDLESIZE + 1); // generate random effect id using the enum "m_effects" declared in the header file for the power up class(adding 1 because the upper bound for rand is exclusive)
+	m_id = rand()%(INCREASEPADDLESIZE+1); // generate random effect id using the enum "m_effects" declared in the header file for the power up class(adding 1 because the upper bound for rand is exclusive)
 	m_speed = 300.0f; // set speed for powerups allowing them to move around on screen
 	m_windowHeight = fWindowHeight;// window width and height 
 	m_windowWidth = fWindowWidth;
-	m_direction = 0; // detremine which paddle duration effects should be applied to 
+	m_direction = 0; // determine which paddle duration effects should be applied to 
 	m_maxTargetHitCount = 8; // total amount of times the power up can hit its movement target before disappearing
 	m_targetHitCount = 0; // track each time the power up successfully moves to its targe
 	m_durationScalar = 0.25f; // used to increase the duration of the power up allowing effects to stack
@@ -57,7 +57,10 @@ void PowerUp::applyEffect(Ball* ball,float fDt) {
 		break;
 	  
 	  case INCREASEBALLSPEED:
-		ball->setSpeed(ball->getSpeed() + fDt * m_ballSpeedMultiplier); // increase speed of the ball be fDt * m_ballSpeedMultipler
+        
+	
+		ball->setSpeed(ball->getSpeed() + fDt * m_ballSpeedMultiplier); // increase  speed
+		ball->getVelocity().x<0.0f? ball->setVelocity(-ball->getSpeed()) : ball->setVelocity(ball->getSpeed()); // increase speed of the ball be fDt * m_ballSpeedMultipler
 		ball->getShapeReference()->setFillColor(m_colour);
 		break;
 
@@ -82,6 +85,7 @@ bool PowerUp::negateEffect(Ball* ball) {
 		
 		case INCREASEBALLSPEED:  
 			ball->getShapeReference()->setFillColor(sf::Color::White);// change the colour of the ball back to white 
+			std::cout << ball->getVelocity().x << std::endl;
 			break;
 		}
 	    
@@ -147,14 +151,14 @@ bool PowerUp::collision(sf::FloatRect fBounds) {
 }
 
 // getting maximum target hit count and current movement target hit count for the power ups 
-int const PowerUp::getTargetHitCount() { 
+int PowerUp::getTargetHitCount() const { 
 	return m_targetHitCount;
 }
-int PowerUp::getMaxTargetHitCount () {
+int PowerUp::getMaxTargetHitCount () const {
 	return m_maxTargetHitCount;
 }
 // used to modify the duration of the power up effect if a power up with the same effect is currently active
-void PowerUp::incrementDuration() { 
+void PowerUp::incrementDuration()  { 
 
 	m_currentEffectTime-=m_totalEffectTime * m_durationScalar;  /// we decrease the current effect time by the total effect time multiplied by our power up duration scalar
 
@@ -165,10 +169,10 @@ sf::Text *PowerUp::getPopUpTextRef() {
 sf::Text PowerUp::getPopUpTextValue() {
 	return m_powerUpText;
 }
-bool PowerUp::hasBall() {
+bool PowerUp::hasBall() const {
 	return m_hasBallEffect;
 }
-int PowerUp::getEffectDirection() {
+int PowerUp::getEffectDirection() const {
 	return m_direction;
 }
 sf::RectangleShape PowerUp::getShape() {
@@ -186,7 +190,7 @@ void PowerUp::setType(sf::Color colour,sf::Time effectTime,std::string powerUpTe
 	m_totalEffectTime = effectTime;
 }
 
-int PowerUp::getId() { // get id of the power up
+int PowerUp::getId() const { // get id of the power up
 	return m_id;
 }
 void PowerUp::updatePowerUpPos(float fDt) { // used to update the power up and move it around the screen

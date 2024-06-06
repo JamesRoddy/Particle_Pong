@@ -12,6 +12,7 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_defaultSpeed = speed;
 	m_velocity.x = speed;
 	m_velocity.y = speed;
+	m_velocityIncrease = 0.0f;
 	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed 
 	m_maxCollsionAngle = 45.0f; // maximum collsion angle that the ball can bounce of the paddle at
 	m_maxSpeed = 575.0f; // maximum speed ball can reach
@@ -27,27 +28,27 @@ void Ball::draw(sf::RenderWindow& window)
 
 }
 void Ball::increaseSpeed(float fDt) { // increase ball speed each collision time through calling this method
-
-	if (!(m_speed>m_maxSpeed)) { // if we havent reached our max velocity
-			m_speed += fDt * m_speedIncreaseMultiplier; // increase the speed using a multipler otherwise the speed increase wouldnt be noticable during a game due to the value of DT being realtively small 
+	// as each time the paddle is hit the ball velcity will be recalculated and the speed increase will be taken into account
+	if (!(m_speed>m_maxSpeed)) { // if we havent reached our max speed
+  			m_speed += fDt * m_speedIncreaseMultiplier; // increase the speed using a multipler otherwise the speed increase wouldnt be noticable during a game due to the value of DT being realtively small 
+	        
 	}
 }
 void Ball::move(float fDt, sf::RenderWindow& window) // this method is used to move the ball based on its current speed and velocity
 {
 
 	// adjusting the bounds checking of the ball to better avoid it getting stuck at the top of the screen by taking into accoutn the radius of the ball for both checks 
-	if (m_shape.getPosition().y - m_shape.getRadius() <= 0) {
+	if (m_shape.getPosition().y - m_shape.getRadius()*2 <= 0) {
 
 		m_shape.setPosition(m_shape.getPosition().x, 0 + m_shape.getRadius()*2); // ensure to move the ball back by half before inverting the velocity 
 		m_velocity.y = -m_velocity.y; // invert the balls velocity making it go in the opposite direction 
 	}
-	else if (m_shape.getPosition().y + m_shape.getRadius()  >= window.getSize().y) {
+	else if (m_shape.getPosition().y + m_shape.getRadius()*2  >= window.getSize().y) {
 
 		m_shape.setPosition(m_shape.getPosition().x, window.getSize().y - m_shape.getRadius()*2);
 		m_velocity.y = -m_velocity.y; // invert the balls velocity making it go a different y direction 
 	}
 	// both condtions above are used to change the direction of the ball each time it hits the top edge or bottm edge of the screen  in order to create a bouncing effect
-	
 	m_shape.move(m_velocity * fDt); // call the move method associtated with the CircleShape class that the m_shape attribute is an object of which will move the shape by an offest of the velocity attribute(an sf::vector2f object) multiplied by delta time(an argument passed into this method) 
 }
 
@@ -141,15 +142,22 @@ void Ball::updateVelocity(float fVal)
 	if (m_velocity.y == 0) { // if the ball has recently reset(y vel is set to 0 when this happens) and a collsion has occurred meaning we need to invert the velocity
 		m_velocity.y = m_speed; // set the y velocity back to the current speed 
 	}
-	m_velocity.x = m_speed * fVal;
+
+	m_velocity.x =  m_speed  * fVal;
+	
+	std::cout << m_speed << std::endl;
+	std::cout << m_velocity.x << std::endl;
+
 }
-void Ball::resetPos(int iNewX, int iNewY ) {
+void Ball::resetPos(float fNewX, float fNewY ) {
 
 	m_velocity.y = 0; // set y velocity at 0 allowing for each serve to be in a straight line on the x axis 
-	m_speed = m_defaultSpeed;
-	m_velocity.x = -m_speed;// give the ball a slower speed to give the player more time to react when it resets
+	/*m_velocityIncrease = 0.0f;*/
+	m_speed = m_defaultSpeed; // when the ball reset we give it a slower speed 
 	
-	setPosition(iNewX, iNewY); // set the postion of the ball to the centre of the screen once the ball has passed the paddle(half the screen width and half the screen height)
+	m_velocity.x = -m_speed;// give the ball a slower speed to give the player more time to react when it resets
+
+	setPosition(fNewX, fNewY); // set the postion of the ball to the centre of the screen once the ball has passed the paddle(half the screen width and half the screen height)
 	
 }
 
@@ -168,8 +176,15 @@ float Ball::getSpeed() {
 	return m_speed;
 }
 
+
+
 void Ball::setSpeed(float fNewSpeedValue) {
 	m_speed = fNewSpeedValue;
+}
+void Ball::setVelocity(float fNewVelocityIncrease) {
+
+	m_velocity.x = fNewVelocityIncrease;
+	std::cout << m_velocity.x << std::endl;
 }
 
 sf::CircleShape* Ball::getShapeReference() { // get a refernce address to the ball object(used by power ups)

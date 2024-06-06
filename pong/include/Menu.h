@@ -7,11 +7,11 @@ class Menu {
 public:
 	Menu(float fWindowWidth, float fWindowHeight,sf::Vector2f fButtonSize,unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing );
 	
-	void draw(sf::RenderWindow& window,bool bShouldDraw);
+	void draw(sf::RenderWindow& window,bool bShouldDraw) const;
 	void validateOption(int iOptionId);
 	void Update(sf::Window &window);
-	bool shouldQuit();
-	bool shouldPlay();
+	bool shouldQuit() const;
+	bool shouldPlay() const;
 	void resetOptionBools();
 	void playNavSound(bool bSoundPlaying);
 private:

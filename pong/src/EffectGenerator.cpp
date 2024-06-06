@@ -55,13 +55,12 @@ void EffectGenerator::handleParticleCollisions(Ball *ball) { // used to handle c
 			sf::Vector2f fCurrentBallVelocity = ball->getVelocity();
 
 			if (!(abs(fCurrentBallVelocity.x) * m_currentParticles[i].getSpeedDecrease() < ball->getDefaultSpeed())) { 
-				std::cout << fCurrentBallVelocity.x << std::endl;
-				std::cout << "did decrease" << std::endl;
+			    
 				fCurrentBallVelocity *= m_currentParticles[i].getSpeedDecrease();// decrease the balls velocity when it hits a particle
+				ball->setSpeed(ball->getSpeed() * m_currentParticles[i].getSpeedDecrease()); // also dampen speed
 			}
 			else {
-				std::cout << fCurrentBallVelocity.x << std::endl;
-				std::cout << "didnt decrease" << std::endl;
+				
 			}
 			
 			ball->setVelocity(-fCurrentBallVelocity);
@@ -148,12 +147,18 @@ void EffectGenerator::generateEvent(float fDt) {
 void EffectGenerator::updateEventWarnings(float fDt) {
 
 	sf::Vector2f currentScale = m_eventWarningSign.getScale();//. current scale of warning sign 
-	if (m_warningShouldScale && currentScale.x <=1.0f) { // if the warning sign should scale and 
+	if (m_warningShouldScale && currentScale.x <=1.0f) { // if the warning sign should scale and our current scale factor is below or equal to 1
 		
 		m_eventWarningSign.setScale(currentScale.x + fDt * m_warningTextScalar, currentScale.y + fDt * m_warningTextScalar); // increase scale of warning sign
 		return; // return out of the function as we dont need to descale the warning sign if it hasnt reached its full scale
 
 	}
+
+	if (currentScale.x >= 1.0f) {
+		std::cout << currentScale.x << std::endl;;
+		m_warningSound.play(); // sync up the audio sound with the scaling of the warning sign for when it reach maxiumum scale
+	}
+
 	m_warningShouldScale = false; // if we have reached a scale where the warning sign is at full size
 	m_eventWarningSign.setScale(currentScale.x - fDt * m_warningTextScalar, currentScale.y - fDt * m_warningTextScalar);// scale the object down
 	
@@ -225,7 +230,7 @@ void EffectGenerator::generateParticles(int iNewcount, float fRadius,bool bHasAl
 	if (!m_hasStartIndex) { // if we are generating 
 		m_hasStartIndex = true;
 		// get the current starting postion of the event based on the index of the first particle that was pushed to the vector above 
-		m_eventStartIndex = m_currentParticles.size() - iNewcount; 
+		m_eventStartIndex = static_cast<int>( m_currentParticles.size() -  iNewcount); 
 	
 	}
 	

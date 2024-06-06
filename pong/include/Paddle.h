@@ -12,8 +12,8 @@ private:
 	float m_baseAiSpeedMultiplier;
 	sf::Vector2f m_aITarget; // used to set where the ai should move 
 	// keep track of previous scores used to control ai speed
-	int m_lastScoreCheckPlayer;
-	int m_lastScoreCheckAi; 
+	float m_lastScoreCheckPlayer;
+	float m_lastScoreCheckAi; 
 	// used to adjust ai speed based on score
 	float m_aiSpeedController;
 	float m_maxAiSpeed;

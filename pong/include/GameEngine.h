@@ -39,8 +39,8 @@ private:
 	sf::Vector2f origin; /// attribute to store the centre of the window when the GameEngine class is initialised used to reset the postion of objects such as the ball when it goes off screen
 	int m_p1Score; // used to keep track of the score for each paddle 
 	int m_p2Score;
-	int m_screenRandomBoundLower = m_window.getSize().y/2 + 50; // random range for spawn point of the ball each time the player or AI scores 
-	int m_screenRandomBoundUpper = m_window.getSize().y/2 - 50;
+	float m_screenRandomBoundLower = m_window.getSize().y/2.0f + 50.0f; // random range for spawn point of the ball each time the player or AI scores 
+	float m_screenRandomBoundUpper = m_window.getSize().y/2.0f - 50.0f;
 	bool m_shouldDrawMenu;
 	static const int m_maxScore = 8; // a constant vairiable that defines the maximum score(the value of this variable cannot be edited/changed aside from where it is defined)
 	enum GameStates {intro, playing, gameOver,menu};// an enum type is defined that is used to control what should be dislayed to the player and the overall state of the game 

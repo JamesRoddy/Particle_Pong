@@ -233,21 +233,21 @@ void GameEngine::run()
 				
 				
 				m_scoreSound.play(); // play the score sound effect
-				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower); // get a new random y postion for the ball to start at 
-				m_ball.resetPos( origin.x, inewPosY); // reset balls postion and speed
+				float fnewPosY = m_screenRandomBoundLower + static_cast<float>(rand())  / static_cast<float>((RAND_MAX / (m_screenRandomBoundUpper - m_screenRandomBoundLower)));
+				m_ball.resetPos(origin.x, fnewPosY); // reset balls postion
 				m_p1Score++;  // increment the score attribute of the m_paddle1 object(as it just scored)
-				m_paddle2.aiValidateScore(m_p1Score, m_p2Score, m_maxScore); // revalidate ai speed
+				m_paddle2.aiValidateScore(float(m_p1Score),float( m_p2Score),float( m_maxScore)); // revalidate ai speed
 
 			}
 			if (m_ball.getPosition().x < 0 - m_ball.getShape().getRadius()) { // similar process as described above but for when the ball passes the left/player paddle 
 				
 				m_scoreSound.play();
 
-				int inewPosY = (rand() % (m_screenRandomBoundUpper - m_screenRandomBoundLower) + m_screenRandomBoundLower);
-				m_ball.resetPos( origin.x, inewPosY); // reset balls postion
+				float fnewPosY = m_screenRandomBoundLower + static_cast<float>(rand())  / static_cast<float>((RAND_MAX / (m_screenRandomBoundUpper - m_screenRandomBoundLower)));
+				m_ball.resetPos( origin.x, fnewPosY); // reset balls postion
 				m_p2Score++;
 				
-				m_paddle2.aiValidateScore(m_p1Score, m_p2Score, m_maxScore); // have the ai re validate the score adjusting its speed to the current status of the game
+				m_paddle2.aiValidateScore(float(m_p1Score), float(m_p2Score), float(m_maxScore)); // have the ai re validate the score adjusting its speed to the current status of the game
 			}
 
 			

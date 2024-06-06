@@ -21,12 +21,12 @@ public:
 	void setTotalEffectTime(sf::Time newEffectTime); // used to set the total effect time of the power up when needed
 	void setPaddle(Paddle* newPaddleRef, int iDirection); // used to set the paddleReference attribute  to point to the memeory loctaion of either the paddle or the ai based on the ball direction
 	
-	int getEffectDirection(); // get the direction the ball was going on collision with the power up
-	int const getTargetHitCount(); // get the current target hit count of the power up
-	int  getMaxTargetHitCount(); // get the maxiumum number of successfull movements a power up can make before being erased
-	bool hasBall(); /// used to determine if the power up effect is being applied to the paddle or the ball in the power up manager class 
+	int getEffectDirection() const; // get the direction the ball was going on collision with the power up
+	int getTargetHitCount() const; // get the current target hit count of the power up
+	int  getMaxTargetHitCount() const; // get the maxiumum number of successfull movements a power up can make before being erased
+	bool hasBall() const; /// used to determine if the power up effect is being applied to the paddle or the ball in the power up manager class 
 	void setSpawn(); // set the spawn location of the power up within a specifc bound area
-	int getId();  // get the id of the power up that is used to determine its effects in the power up manager class
+	int getId() const;  // get the id of the power up that is used to determine its effects in the power up manager class
 	sf::RectangleShape getShape();
 	sf::Text *getPopUpTextRef(); // used to maniplate the pop up text of the power up
 	sf::Text getPopUpTextValue();

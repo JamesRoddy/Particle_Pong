@@ -84,10 +84,11 @@ void Menu::setMenuObjects() {
 
 }
 
-void Menu::draw(sf::RenderWindow &window, bool bShouldDraw) {
-	if (bShouldDraw) {
-		window.draw(m_header);
-		for (int i = 0; i < m_menuButtonNumber; i++) {
+///draw method for the menu
+void Menu::draw(sf::RenderWindow &window, bool bShouldDraw) const {
+	if (bShouldDraw) { // a boolean is passed into this method to determine whetehr or not the menu should draw
+		window.draw(m_header); // draw the title text
+		for (int i = 0; i < m_menuButtonNumber; i++) { // draw each menu button and its associated text
 			window.draw(m_buttons[i]);
 			window.draw(m_textObjects[i]);
 
@@ -101,7 +102,7 @@ void Menu::Update(sf::Window&window) {
 
 	bool bShouldPlaySound = false;
 	for (int iButtonIndex = 0; iButtonIndex < m_menuButtonNumber; iButtonIndex++) {
-		
+		// if the current button we are checking contains the mouse coordinates relative to the window 
 		if (m_buttons[iButtonIndex].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window)))) {
 			
 			m_buttons[iButtonIndex].setOutlineColor(m_buttonHighLightColour); // set the hover highlight colour
@@ -125,17 +126,17 @@ void Menu::Update(sf::Window&window) {
 
 
 }
-void Menu::playNavSound(bool bSoundPlaying) {
-	if (bSoundPlaying && !m_navSoundActive) {
-		m_navigationSound.play();
-		m_navSoundActive = true;
+void Menu::playNavSound(bool bSoundPlaying) { // used to dtermine if the menu selection sound should play
+	if (bSoundPlaying && !m_navSoundActive) { // if the sound should play and hasnt already activated 
+		m_navigationSound.play(); // inititae the sound
+		m_navSoundActive = true; // the sound has already played so we set the boolean flag for it being actie to true
 	}
-	else if (!bSoundPlaying) {
-		m_navSoundActive = false;
+	else if (!bSoundPlaying) { // otherwise if the sound shouldnt play meaning the user isnt hovering overa any buttons
+		m_navSoundActive = false; // we set the boolean flag for playing the navigation sound to false 
 	}
 }
 
-void Menu::validateOption(int optionId) {
+void Menu::validateOption(int optionId) { // used to determine how the menu reacts once the user clicks a button
   
 	switch (optionId) {
 	case PLAY:
@@ -148,10 +149,11 @@ void Menu::validateOption(int optionId) {
 
 }
 
-bool Menu::shouldPlay() {
+// methods to get the various booleans associated with menu options 
+bool Menu::shouldPlay() const {
 	return m_shouldPlay;
 }
-bool Menu::shouldQuit() {
+bool Menu::shouldQuit() const {
 	return m_shouldQuit;
 }
 void Menu::resetOptionBools() {
