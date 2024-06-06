@@ -136,7 +136,7 @@ void  PowerUp::setEffectTarget() { // used to determine what object the power up
 
 }
 
-void PowerUp::drawPowerUp(sf::RenderWindow& window) { 
+void PowerUp::drawPowerUp(sf::RenderWindow& window) const { 
 
 	window.draw(m_shape); // draw the power ups to the screen
 }

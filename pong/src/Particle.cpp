@@ -40,10 +40,10 @@ bool Particle::hasCollided(Ball*ball) {
 	return false; // otherwise return false as there was no collsion or the particles alpha wasnt high enough for one ot take place 
 }
 
-bool Particle::getCollision() {
+bool Particle::getCollision() const {
 	return m_hasCollsion;
 }
-float Particle::getSpeedDecrease() {
+float Particle::getSpeedDecrease() const {
 	return m_collionSpeedDecrease;
 }
 void Particle::update(float dt) { // method of the particle class used to update the pos of the particles shape and any other arttibutes that need to be updated i.e alpha values
@@ -64,7 +64,7 @@ void Particle::update(float dt) { // method of the particle class used to update
 	
 
 }
-void Particle::draw(sf::RenderWindow& window) { // the draw method for the particle that will be called in a foreach loop to draw each particle to the screen(this loop can be located in the effectGenerator class)
+void Particle::draw(sf::RenderWindow& window) const { // the draw method for the particle that will be called in a foreach loop to draw each particle to the screen(this loop can be located in the effectGenerator class)
 
 	window.draw(m_particleShape); // call the draw method through the refernce argument to the window to draw the particles shape(an attribute of the particle class)
 	
@@ -81,13 +81,13 @@ sf::CircleShape Particle::getShape() {
 sf::FloatRect Particle::getBounds() {
 	return m_particleShape.getGlobalBounds();
 }
-float Particle::getSpeed() {
+float Particle::getSpeed() const {
 
 	return m_speed;
 }
 
 
-float Particle::getAlpha() { 
+float Particle::getAlpha() const { 
 
 	return m_alpha;
 }

@@ -22,7 +22,7 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_shape.setOrigin(m_shape.getRadius() / 2, m_shape.getRadius() / 2);
 }
 
-void Ball::draw(sf::RenderWindow& window)
+void Ball::draw(sf::RenderWindow& window) const
 {
 	window.draw(m_shape);
 
@@ -114,7 +114,7 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 
 }
 
-float Ball::getRotation(float fDistanceToCentre, sf::RectangleShape paddleBounds) {
+float Ball::getRotation(float fDistanceToCentre, sf::RectangleShape paddleBounds) const {
 	// the following code will give a spin/rotation to the balls fMinY velocity depending on where it hits the paddle
 	// allowing for more steep and vaired angles the ball can take after hitting the paddle 
 	float fRelativeDistanceToCentre = fDistanceToCentre * 2 / paddleBounds.getGlobalBounds().height; // get the surface point distance to the centre of the paddle as a percentage
@@ -161,7 +161,7 @@ void Ball::resetPos(float fNewX, float fNewY ) {
 	
 }
 
-float Ball::getDefaultSpeed() {
+float Ball::getDefaultSpeed() const {
 	return m_defaultSpeed;
 }
 
@@ -172,7 +172,7 @@ void Ball::setVelocity(sf::Vector2f fNewVelocity) {
 
 	m_velocity = fNewVelocity;
 }
-float Ball::getSpeed() {
+float Ball::getSpeed() const {
 	return m_speed;
 }
 
@@ -191,7 +191,7 @@ sf::CircleShape* Ball::getShapeReference() { // get a refernce address to the ba
 
 	return &m_shape;
 }
-sf::Vector2f Ball::getVelocity() {
+sf::Vector2f Ball::getVelocity() const {
 	return m_velocity;
 }
 sf::Color Ball::getColour() {

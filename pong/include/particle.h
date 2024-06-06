@@ -10,16 +10,16 @@ public:
 	// defining constructor  for particle and ist arguments 
 	Particle(float fX, float fY, sf::Color colour, float fRadius, bool bHasAlpha, int iSpeedMin , int iSpeedMax,bool bHasCollision );
 	void update(float fDt); /// used to update the particles postion in accordance with dt
-	void draw(sf::RenderWindow& window); // draw method that will be used to render the shape attribute of each particle
+	void draw(sf::RenderWindow& window) const; // draw method that will be used to render the shape attribute of each particle
 	
 	sf::FloatRect getBounds();
 	sf::CircleShape getShape(); // get the circle shape object associated wiht the particle object allowing for manipluation outside of the particle class through built in sfml methods such as move and getPostion
-	float getAlpha(); // used to access the private m_alpha attribute when needed 
-	float getSpeed();
+	float getAlpha() const; // used to access the private m_alpha attribute when needed 
+	float getSpeed() const;
 	bool hasCollided(Ball*ball);
 	void setVelocity(sf::Vector2f fVelocityVec);
-	bool getCollision(); // get the boolean flag associated with if the particle has collsion
-	float getSpeedDecrease();
+	bool getCollision() const; // get the boolean flag associated with if the particle has collsion
+	float getSpeedDecrease() const;
 	int m_event;// used to control what effects the particle should have
 
 

@@ -24,8 +24,10 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_eventWarningSign.setTexture(&m_warningSignTexture);
 	m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));
 	m_eventWarningSign.setOrigin(m_eventWarningSign.getSize().x / 2, m_eventWarningSign.getSize().y / 2);
+	
+	// loading the warning sound and assgining it to the m_warningSoundBuffer attribute of the effect generator class
 	m_warningSoundBuffer.loadFromFile(".\\assets\\audio\\eventWarningSound.wav");
-	m_warningSound.setBuffer(m_warningSoundBuffer);
+	m_warningSound.setBuffer(m_warningSoundBuffer); // used to assging the buffer to the m_warning sound object
 	
 	m_eventTextFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf"); // loading the font that will be applied to the event time display
 	m_eventText.setFont(m_eventTextFont); //set the font of the m_eventText object
@@ -204,7 +206,7 @@ void EffectGenerator::setEventDisplay(float fDt) {
 
 }
 //draw the event text to the window to be rendered 
-void EffectGenerator::drawEventDisplay(sf::RenderWindow &window) {
+void EffectGenerator::drawEventDisplay(sf::RenderWindow &window) const {
 	window.draw(m_eventText);
 	window.draw(m_eventWarningSign);
 }

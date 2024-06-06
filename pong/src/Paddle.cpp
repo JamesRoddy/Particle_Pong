@@ -20,7 +20,7 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 
 
 
-void Paddle::draw(sf::RenderWindow& window)
+void Paddle::draw(sf::RenderWindow& window) const
 {
 	window.draw(m_shape); //draw the paddle to the screen
 	

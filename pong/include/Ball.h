@@ -9,9 +9,9 @@ public:
 	
 	bool ballCollisionPushBack(sf::RectangleShape paddleBounds);
 	void increaseSpeed(float fDt); // method to increase the balls speed over time 
-	float getRotation(float fDistanceToCentre, sf::RectangleShape PaddleBounds); // used to determine how the balll should bounce of the paddle
+	float getRotation(float fDistanceToCentre, sf::RectangleShape PaddleBounds) const; // used to determine how the balll should bounce of the paddle
 	
-	void draw(sf::RenderWindow& window); // method to redner the ball to the window using a refernce argument ot the current sf::render window object 
+	void draw(sf::RenderWindow& window) const; // method to redner the ball to the window using a refernce argument ot the current sf::render window object 
 	void move(float fDt, sf::RenderWindow& window); // method used to move the ball and keep it in the bounds of the screen 
 	
 	sf::CircleShape* getShapeReference();
@@ -22,11 +22,11 @@ public:
 	void updateVelocity(float fVal); // used to switch the direction of the ball
 	void setVelocity(sf::Vector2f fNewVelcoity);
 	void setVelocity(float fNewVelocityIncrease);
-	float getSpeed();
+	float getSpeed() const;
 	void setSpeed(float fNewSpeedValue);
-	sf::Vector2f getVelocity();
+	sf::Vector2f getVelocity() const;
 	sf::CircleShape getShape(); // returns the m_shape attribute that is an object of class CircleShape(built into sfml)
-	float getDefaultSpeed();
+	float getDefaultSpeed() const;
 
 	
 	// determine the private attributes of the ball, these will only be accessible by objects of this class 

@@ -31,7 +31,7 @@ public:
 	// defing paddle methods that will be visible across every file 
 	Paddle(sf::Vector2f fPosition, float fWidth, float fHeight, sf::Color color); // defining consructor/initialiser function for the paddle class(including its parameters)
 
-	void draw(sf::RenderWindow& window); // drawing paddle to screen
+	void draw(sf::RenderWindow& window) const; // drawing paddle to screen
 	void move(float fDt, float fWindowYVal); // moving the player paddle up and down using dt to control the rate of movement and the y value to consrtict the movement of the player
 	void reset(sf::Vector2f fPosition); // used to reset the paddle position across game states
 

@@ -21,7 +21,7 @@ public:
 	void setEventDisplay(float fDt);
 
 	void generateParticles(const int iNewCount, float frRadius, bool bHasAlpha, int iSpeedMin, int iSpeedMax,float fX,float fY,bool BhasCollsion); // used to gennerate a number of particles with random properties 
-	void drawEventDisplay(sf::RenderWindow &window);
+	void drawEventDisplay(sf::RenderWindow &window) const;
 	void generateCollsionParticles(sf::Vector2f fCollsionPoint, int fDirection,sf::Color objectColour,int iAmount); // used to generate particles when the ball collides with the paddles 
 	
 	void clearParticle(); // clear all particles from the screen
@@ -35,13 +35,17 @@ private:
 	sf::Time m_currentEvenetTimer; // keep track of current elpased time
 	
 	sf::Time m_eventInitialiseTime; // used to control at what point events are initialised
-	sf::Time m_displayTime; // used to dispaly the time until/duration of the event
-	sf::Time m_eventEndTime ;// used to control when events end
-	// displaying the time until/duration of events
-	sf::SoundBuffer m_warningSoundBuffer;
+	sf::Time m_displayTime; // used to display the time until an event
+	sf::Time m_eventEndTime ;// used to control when events will disipate
+	sf::SoundBuffer m_warningSoundBuffer; 
 	sf::Sound m_warningSound;
+	sf::SoundBuffer m_particleExplosionSound;
+	sf::Sound particleExplosionSound;
+
 	sf::Font m_eventTextFont; // font for the event text display
 	sf::Text m_eventText; // the text object that willl be assigned the font and event text
+	
+
 	std::stringstream m_eventDisplayText ; // string stream that will be set to the text object
 	unsigned int m_eventTextSize; // text size for the event tetx display
 	float m_eventTextOffset; // any offset in x or y that needs to be applied to the text

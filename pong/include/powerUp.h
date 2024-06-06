@@ -8,7 +8,7 @@ class PowerUp{
 public: 
 	
 	PowerUp(float fWindowWidth, float fWindowHeight); // intial constcor for power up that sets its properties for the power up object
-	void drawPowerUp(sf::RenderWindow& window); // draw power ups to screen
+	void drawPowerUp(sf::RenderWindow& window) const; // draw power ups to screen
 	bool collision(sf::FloatRect fBounds); // used to detect collsion between power up and ball
 	void applyEffect(Ball*ball, float fDt); // apply the power up effects to objects 
 
