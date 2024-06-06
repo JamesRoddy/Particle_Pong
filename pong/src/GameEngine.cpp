@@ -5,7 +5,7 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	: m_window(window),
 	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),  // initialsing the m_paddle1 class 
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y - 100.f), 10, 100, sf::Color::White),
-	m_ball(sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f), 8, 400.0f, sf::Color::White),
+	m_ball(sf::Vector2f(m_window.getSize().x/2.f,m_window.getSize().y/2.f), 8, 400.0f, sf::Color::White),
 	m_effects(window.getSize().x, window.getSize().y),
 	m_powerUpsManager(window.getSize().x, window.getSize().y, ".\\assets\\fonts\\impact.ttf"),
 	m_menu(window.getSize().x, window.getSize().y, sf::Vector2f(200.f, 100.f), 25, sf::Color::White, 1.5f)

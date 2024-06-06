@@ -10,8 +10,8 @@ Paddle::Paddle(sf::Vector2f position, float width, float height, sf::Color color
 	m_aISpeedMultiplier = 2.70f; // speed multipler for the  paddle ai to move it based on its distance to its target this variable will also be modfied based on score
 	m_baseAiSpeedMultiplier = 2.70f; // used to reset ai speed
 	m_aiSpeedController = 1.0f; // speed increment/decrement
-	m_minAiSpeed = 2.45f; // lowest speed ai can reach
-	m_maxAiSpeed = 2.95f; // maximum speed for ai 
+	m_minAiSpeed = 2.30f; // lowest speed ai can reach
+	m_maxAiSpeed = 2.85f; // maximum speed for ai 
 	m_shape.setSize(m_size); // set the local size of the paddle
 	m_shape.setPosition(position); // setting intitial pos
 	m_shape.setFillColor(color); 
