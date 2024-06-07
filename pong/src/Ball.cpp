@@ -94,7 +94,7 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 	// without pushing the ball along the collision normal as it is fully inside the paddle 
 	if (m_shape.getRadius() == fOverlap) { 
 		std::cout << fOverlap << std::endl;
-		std::cout << "update overlap" << std::endl;
+		std::cout << "ball overlap at max" << std::endl;
 
 		if (m_velocity.x > 0) {
 			updateVelocity(-1);
@@ -106,7 +106,7 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 	  } 
 	 
 	if (fOverlap>0) { // if the distance to the surface point x and y is smaller than the balls current radius meanig that we have an fOverlap 
-		std::cout << fOverlap << std::endl;
+		
 		
 		sf::Vector2f fNormaliseCollisionVector = sf::Vector2f(fNearestPointToSurface.x / fdistanceToSurfacePoint, fNearestPointToSurface.y / fdistanceToSurfacePoint);
 		// get the collsion normal which is the vector between the centre of the circle and surface point normalsied 
@@ -164,8 +164,7 @@ void Ball::updateVelocity(float fVal)
 	}
 
 	m_velocity.x =  m_speed  * fVal;
-	std::cout << "the speed was"<< m_speed << std::endl;
-	std::cout << "the velocity was" << m_velocity.x << std::endl;
+	
 
 }
 void Ball::resetPos(float fNewX, float fNewY ) {
