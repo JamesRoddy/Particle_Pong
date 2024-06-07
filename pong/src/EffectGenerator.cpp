@@ -159,7 +159,7 @@ void EffectGenerator::updateEventWarnings(float fDt) {
 	}
 
 	if (currentScale.x >= 1.0f) {
-		std::cout << currentScale.x << std::endl;;
+		
 		m_warningSound.play(); // sync up the audio sound with the scaling of the warning sign for when it reach maxiumum scale
 	}
 

@@ -85,7 +85,6 @@ bool PowerUp::negateEffect(Ball* ball) {
 		
 		case INCREASEBALLSPEED:  
 			ball->getShapeReference()->setFillColor(sf::Color::White);// change the colour of the ball back to white 
-			std::cout << ball->getVelocity().x << std::endl;
 			break;
 		}
 	    
