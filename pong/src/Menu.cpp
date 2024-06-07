@@ -2,10 +2,10 @@
 #include <iostream>
 
 // Menu constrctor/initialiser that takes in the window widht and height along with button/text size for Menu objects
-Menu::Menu(float fWidth, float fHeight, sf::Vector2f fButtonSize, unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing) { 
+Menu::Menu(sf::Vector2f fWindowDimensions, sf::Vector2f fButtonSize, unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing) { 
 
-	m_windowHeight = fHeight; // setting width/height attributes
-	m_windowWidth = fWidth; 
+	m_windowHeight = fWindowDimensions.y; // setting width/height attributes
+	m_windowWidth = fWindowDimensions.x; 
 	m_buttonSize = fButtonSize; 
 	m_textCharacterSize = iTextCharSize;
 	m_spacing = fButtonSpacing; // set spacing for buttons

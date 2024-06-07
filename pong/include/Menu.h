@@ -5,7 +5,7 @@
 class Menu {
 
 public:
-	Menu(float fWindowWidth, float fWindowHeight,sf::Vector2f fButtonSize,unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing );
+	Menu(sf::Vector2f fWindowDimensions,sf::Vector2f fButtonSize,unsigned int iTextCharSize,sf::Color textColour,float fButtonSpacing );
 	
 	void draw(sf::RenderWindow& window,bool bShouldDraw) const;
 	void validateOption(int iOptionId);

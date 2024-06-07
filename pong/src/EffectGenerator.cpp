@@ -28,7 +28,9 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	// loading the warning sound and assgining it to the m_warningSoundBuffer attribute of the effect generator class
 	m_warningSoundBuffer.loadFromFile(".\\assets\\audio\\eventWarningSound.wav");
 	m_warningSound.setBuffer(m_warningSoundBuffer); // used to assging the buffer to the m_warning sound object
-	
+	m_particleExplosionBuffer.loadFromFile(".\\assets\\audio\\particleExplosionSound.wav");
+	m_particleExplosionSound.setBuffer(m_particleExplosionBuffer);
+
 	m_eventTextFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf"); // loading the font that will be applied to the event time display
 	m_eventText.setFont(m_eventTextFont); //set the font of the m_eventText object
 	m_eventText.setFillColor(sf::Color::Red); // set the fill colour
@@ -96,7 +98,7 @@ void EffectGenerator::generateExplosion() {
 			  
 
 		}
-	   
+		m_particleExplosionSound.play();
 	}
 		
 	
@@ -184,7 +186,7 @@ void EffectGenerator::resetEventTimer() { // used to reset the event timer and e
 	// change the event hud back to default
 	m_eventText.setString("");// set event text to blanck
 	m_eventWarningSign.setScale(sf::Vector2f(0.0f, 0.0f));// set warning sign scale to 0
-
+	m_particleExplosionSound.stop();
 }
 // used to update the m_eventText object that displays how long until an event will fire
 void EffectGenerator::setEventDisplay(float fDt) {

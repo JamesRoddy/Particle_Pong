@@ -6,7 +6,7 @@
 class PowerUpsManager {
 
 public:
-	PowerUpsManager(float fWindowWidth,float fWindowHeight,std::string sPowerUpFontPath); // initial constcror for the power up manager class that takes in the window width and height along with the font path that willbe assigened to the power up pop up text
+	PowerUpsManager(sf::Vector2f fWindowDimensions,std::string sPowerUpFontPath); // initial constcror for the power up manager class that takes in the window width and height along with the font path that willbe assigened to the power up pop up text
 	void generatePowerUp(); // used to control when power ups should appear on screen
 	void handleCollision(Ball*ball,Paddle*player,Paddle*AI); // handinling collsion and assiging any object refernces the power up needs when collision takes place
 	void draw(sf::RenderWindow &window); // draw all power ups 

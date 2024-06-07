@@ -87,8 +87,9 @@ void Paddle::aiValidateScore(float fPlayerScore, float fAiScore,float fMaxScore)
 	/// used to control the ai speed based on the percentage of how close it is to the max score and how close the player is 
 	float fPlayerPercent = fPlayerScore / fMaxScore;
 	float fAiPercent =  fAiScore / fMaxScore;
-	if (fPlayerPercent >= 0.65f || fPlayerPercent == fAiPercent) { // when the player reaches a score close to the winning or equals out the score
+	if (fPlayerPercent >= (fMaxScore-1/fMaxScore) || fPlayerPercent == fAiPercent) { // when the player reaches a score close to the winning or equals out the score
 		m_aISpeedMultiplier = m_baseAiSpeedMultiplier; // keep the ai speed at a consistent rate as to ensure that the player has a challenge still if they started out on the back foot and are now close to winning or equal
+		std::cout << fPlayerPercent << std::endl;
 		//std::cout << m_aISpeedMultiplier << std::endl;
 		return; // return as we dont modify the speed
 	}

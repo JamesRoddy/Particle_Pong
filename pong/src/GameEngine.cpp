@@ -6,9 +6,9 @@ GameEngine::GameEngine(sf::RenderWindow& window)
 	m_paddle1(sf::Vector2f(20, window.getSize().y / 2.f), 10, 100, sf::Color::White),  // initialsing the m_paddle1 class 
 	m_paddle2(sf::Vector2f(window.getSize().x - 20.f, window.getSize().y - 100.f), 10, 100, sf::Color::White),
 	m_ball(sf::Vector2f(m_window.getSize().x/2.f,m_window.getSize().y/2.f), 8, 400.0f, sf::Color::White),
-	m_effects(window.getSize().x, window.getSize().y),
-	m_powerUpsManager(window.getSize().x, window.getSize().y, ".\\assets\\fonts\\impact.ttf"),
-	m_menu(window.getSize().x, window.getSize().y, sf::Vector2f(200.f, 100.f), 25, sf::Color::White, 1.5f)
+	m_effects(float(window.getSize().x),float(window.getSize().y)),
+	m_powerUpsManager(sf::Vector2f(float(m_window.getSize().x),float(m_window.getSize().y)), ".\\assets\\fonts\\impact.ttf"),
+	m_menu(sf::Vector2f(float(m_window.getSize().x),float(m_window.getSize().y)), sf::Vector2f(200.f, 100.f), 25, sf::Color::White, 1.5f)
 
 {   
 	srand(time(0)); // set the seed for the sequnce of random numbers for the rand() function to generate(used to randomise things such as coodrinate postions)
@@ -66,9 +66,9 @@ void GameEngine::resetGame() {
 	m_gameEndSound.stop();// ensure the end game sound doesnt continue past the game over screen
 	
 	// reset game objects to their original positions
-	m_ball.resetPos(m_window.getSize().x / 2, m_window.getSize().y / 2);
-	m_paddle1.reset(sf::Vector2f(20, m_window.getSize().y / 2));
-	m_paddle2.reset(sf::Vector2f(m_window.getSize().x - 20.f, m_window.getSize().y - 100.f));
+	m_ball.resetPos(float(m_window.getSize().x / 2), float(m_window.getSize().y / 2));
+	m_paddle1.reset(sf::Vector2f(20, float(m_window.getSize().y / 2)));
+	m_paddle2.reset(sf::Vector2f(float(m_window.getSize().x - 20.f),float( m_window.getSize().y - 100.f)));
 
 	m_p1Score = 0;   // also make sure to reset the scores(so it doesnt keep asking them if they want to continue 
 	m_p2Score = 0;  // otherwise the gameStates variable would keep getting set to the  gameOver constant 
@@ -193,11 +193,11 @@ void GameEngine::run()
 			}
 			// allow the user to move the left paddle with both arrow keys and W/S
 			if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){ // using the SFML isKeyPressed method from the keyBoard class to detect when a specifc key is pressed based on the enum for the key passed in
-				m_paddle1.move(-dt , m_window.getSize().y); // if the condtion above is true move the player up
+				m_paddle1.move(-dt , float(m_window.getSize().y)); // if the condtion above is true move the player up
 			
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-				m_paddle1.move(dt, m_window.getSize().y);// if the condtion above is true move the player down
+				m_paddle1.move(dt, float(m_window.getSize().y));// if the condtion above is true move the player down
 				
 			}
 			
@@ -207,7 +207,7 @@ void GameEngine::run()
 			// below is a tracking method created for the paddle class which
 			//allows the AI paddle to track the ball based on the vector between the ball and the paddle 
 			/// get the second paddle to track the ball 
-			m_paddle2.trackBall(m_ball.getPosition(), m_ball.getVelocity(), dt, m_window.getSize().y);
+			m_paddle2.trackBall(m_ball.getPosition(), m_ball.getVelocity(), dt, float(m_window.getSize().y));
 			
 			
 			//// collsion detection  for both paddles 

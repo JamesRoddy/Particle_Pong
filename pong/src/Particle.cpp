@@ -20,8 +20,8 @@ Particle::Particle(float startX, float startY, sf::Color colour, float radius, b
 
 	m_fadeMultiplier = 120.0f; // used to apply fading to particle at a particualr rate
 	m_alpha = 255.0f; // intial alpha
-	m_alphaCollsionVal = 65.0f;// minumum alpha required for collision
-	m_collionSpeedDecrease = 0.90f; // used to decrease on objects speed when it collides with a particle 
+	m_alphaCollsionVal = 85.0f;// minumum alpha required for collision
+	m_collionSpeedDecrease = 0.95f; // used to decrease on objects speed when it collides with a particle 
 	// setting the properties of the particle's shape object(in this case the in built sf::CircleShape object)
 	m_particleShape.setRadius(radius); // set the radius of the particle using the radius argument passed into the constructor  
 	m_particleShape.setPosition(m_particleX, m_particleY); //set pos

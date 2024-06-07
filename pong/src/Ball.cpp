@@ -13,7 +13,7 @@ Ball::Ball(sf::Vector2f position, float radius, float speed, sf::Color color)
 	m_velocity.x = speed;
 	m_velocity.y = speed;
 	m_velocityIncrease = 0.0f;
-	m_speedIncreaseMultiplier = 10.0f; // used to increase ball speed 
+	m_speedIncreaseMultiplier = 20.0f; // used to increase ball speed 
 	m_maxCollsionAngle = 45.0f; // maximum collsion angle that the ball can bounce of the paddle at
 	m_maxSpeed = 575.0f; // maximum speed ball can reach
 	m_shape.setRadius(radius); // set the radius of the m_shape attribute that repsents an object of the inbuilt CircleShape class wihtin sfml this wil ajsut the size of the ball using the float raidus argument passed into the constructor for the ball class 
@@ -86,25 +86,28 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 	
 	float fOverlap = m_shape.getRadius() - fdistanceToSurfacePoint; // calculate  the amount the ball overlapped which is the differnce bewteen the balls radius and the distance between the surface point as the ball is currenlty overlapping the paddle 
 	
-	
-	if (m_shape.getRadius() == fOverlap) { // if our overlap is equal to the radius there is optential for /0  as in order to get the collision normal its the difference between the neareset point to surface normalised therefore if the ball directly overlaps with the nearset point to surfac emenaing we have an overlap with the size of the balls radius when we attempts to caluclate the maginute of the vector between the neareset point to surface and the ball we are essentially squaring 0 therefore if we have an overlap equal to our radius we registee the collsion without pushign the ball along the colsion normal as it is fully inside the paddle 
+	// if our overlap is equal to the radius there is potential for /0  as in order to get the
+	//  collision normal its the difference between the neareset point to surface normalised 
+	// therefore if the ball directly overlaps with the nearset point to surface  we have an 
+	// overlap with the size of the balls radius when we attempts to calculate the maginute of the 
+	// vector between the neareset point to surface and the ball we are essentially squaring 0 therefore if we have an overlap equal to our radius we regitser the collsion 
+	// without pushing the ball along the collision normal as it is fully inside the paddle 
+	if (m_shape.getRadius() == fOverlap) { 
 		std::cout << fOverlap << std::endl;
+		std::cout << "update overlap" << std::endl;
 
 		if (m_velocity.x > 0) {
-			std::cout << "update overlap" << std::endl;
 			updateVelocity(-1);
 		}
 		else if(m_velocity.x<0) {
-			std::cout << "update over lap" << std::endl;
 			updateVelocity(1);
 		}
 		return true;
-	  }
-	 // if the ball is diretcly on the perimeter of the paddle there is a potential for divide by 0 so we dont regsiter the collision
-	// this condtion above doesnt impact gameplay too much as if the ball remains close to the paddle for an extra frame then collsion will be registered
+	  } 
+	 
 	if (fOverlap>0) { // if the distance to the surface point x and y is smaller than the balls current radius meanig that we have an fOverlap 
 		std::cout << fOverlap << std::endl;
-		std::cout << "is overlapping " << std::endl;
+		
 		sf::Vector2f fNormaliseCollisionVector = sf::Vector2f(fNearestPointToSurface.x / fdistanceToSurfacePoint, fNearestPointToSurface.y / fdistanceToSurfacePoint);
 		// get the collsion normal which is the vector between the centre of the circle and surface point normalsied 
 		
@@ -117,12 +120,10 @@ bool Ball::ballCollisionPushBack(sf::RectangleShape paddleBounds) {
 	    m_velocity.y = fRotationY * m_speed;  // apply rotation to velocity vector y
 	
 	    if (fDistanceBetweenBall.x<0.0f ) { // if the distance between the ball is less then 0 then the ball is coming from the right as the paddles postion will be smaller than the ball 
-			std::cout << "update" << std::endl;
 			updateVelocity(1); // so we update the x velcoity to be positive making the ball move to the right again 
 		
 		}
 		else {
-			std::cout << "update" << std::endl;
 	   	    updateVelocity(-1); // opposite of above 
 		}
 		return true; // collsion happend 
@@ -163,7 +164,8 @@ void Ball::updateVelocity(float fVal)
 	}
 
 	m_velocity.x =  m_speed  * fVal;
-	
+	std::cout << "the speed was"<< m_speed << std::endl;
+	std::cout << "the velocity was" << m_velocity.x << std::endl;
 
 }
 void Ball::resetPos(float fNewX, float fNewY ) {

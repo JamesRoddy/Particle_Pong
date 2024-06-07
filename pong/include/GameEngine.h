@@ -42,7 +42,7 @@ private:
 	float m_screenRandomBoundLower = m_window.getSize().y/2.0f + 50.0f; // random range for spawn point of the ball each time the player or AI scores 
 	float m_screenRandomBoundUpper = m_window.getSize().y/2.0f - 50.0f;
 	bool m_shouldDrawMenu;
-	static const int m_maxScore = 8; // a constant vairiable that defines the maximum score(the value of this variable cannot be edited/changed aside from where it is defined)
+	static const int m_maxScore = 7; // a constant vairiable that defines the maximum score(the value of this variable cannot be edited/changed aside from where it is defined)
 	enum GameStates {intro, playing, gameOver,menu};// an enum type is defined that is used to control what should be dislayed to the player and the overall state of the game 
     // enums are a special set of defined constants(integer values only) in this case it provides a group of constants to represent game states 
 	

@@ -2,11 +2,11 @@
 #include <iostream>
 
 
-PowerUpsManager::PowerUpsManager(float fWindowWidth,float fWindowHeight,std::string sPowerUpFontPath) {
+PowerUpsManager::PowerUpsManager(sf::Vector2f fWindowDimensions,std::string sPowerUpFontPath) {
 
 	m_powerUpGenTime = sf::seconds(2.0f); // time it takes to spawn new power ups 
-	m_windowWidth = fWindowWidth; /// window width and height variables used for spawning power ups
-	m_windowHeight = fWindowHeight;
+	m_windowWidth = fWindowDimensions.x; /// window width and height variables used for spawning power ups
+	m_windowHeight = fWindowDimensions.y;
 	m_powerUpTextFont.loadFromFile(sPowerUpFontPath);
 	m_textFadeMultiplier = 0.01f; // a low fade druation to ensure the text is always visble for certain time 
 	m_powerUpSoundBuffer.loadFromFile(".\\assets\\audio\\PowerUp.wav"); // sound buffer for power ups

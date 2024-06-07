@@ -39,8 +39,8 @@ private:
 	sf::Time m_eventEndTime ;// used to control when events will disipate
 	sf::SoundBuffer m_warningSoundBuffer; 
 	sf::Sound m_warningSound;
-	sf::SoundBuffer m_particleExplosionSound;
-	sf::Sound particleExplosionSound;
+	sf::SoundBuffer m_particleExplosionBuffer;
+	sf::Sound m_particleExplosionSound;
 
 	sf::Font m_eventTextFont; // font for the event text display
 	sf::Text m_eventText; // the text object that willl be assigned the font and event text
