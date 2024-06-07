@@ -30,6 +30,11 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_warningSound.setBuffer(m_warningSoundBuffer); // used to assging the buffer to the m_warning sound object
 	m_particleExplosionBuffer.loadFromFile(".\\assets\\audio\\particleExplosionSound.wav");
 	m_particleExplosionSound.setBuffer(m_particleExplosionBuffer);
+	particleCollisionSoundBuffer.loadFromFile(".\\assets\\audio\\beep.flac");
+	particleCollsionSound.setBuffer(particleCollisionSoundBuffer);
+	particleCollsionSound.setVolume(40.0f);
+	particleCollsionSound.setPitch(1.5);
+
 
 	m_eventTextFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf"); // loading the font that will be applied to the event time display
 	m_eventText.setFont(m_eventTextFont); //set the font of the m_eventText object
@@ -66,6 +71,7 @@ void EffectGenerator::handleParticleCollisions(Ball *ball) { // used to handle c
 			
 			
 			ball->setVelocity(-fCurrentBallVelocity); // invert vall velocity on collison with particle
+			particleCollsionSound.play();
 			m_currentParticles.erase(m_currentParticles.begin() + i); // erase the particle
 		}
 	 }

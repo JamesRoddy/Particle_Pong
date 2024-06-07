@@ -53,7 +53,8 @@ private:
 	sf::RectangleShape m_eventWarningSign;
 	sf::Texture m_warningSignTexture;
 	int m_explosionAmount; 
-	
+	sf::SoundBuffer particleCollisionSoundBuffer;
+	sf::Sound particleCollsionSound;
 	enum events {END,PARTICLESTORM}; // used to control what event should fire 
 	events m_newEvent;
 	
