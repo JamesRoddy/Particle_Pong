@@ -84,7 +84,7 @@ void EffectGenerator::generateExplosion() {
 		//generating random floating point number for the fRadius of the particles with and upper bound of 8.0f and lower bound of 6.0f
 		
 		float fParticleRandomRadius = generateRandomValue(8.0f,6.0f); 
-		int iRandomAmount = generateRandomValue(8,6); // generating random amount with an upper bound of 8 and lower bound of 6
+		int iRandomAmount = generateRandomValue(8,5); // generating random amount with an upper bound of 8 and lower bound of 6
 		// genertaing ranomd position for the particle explosion
 		float fPostionX = generateRandomValue(m_windowWidth, m_windowWidth / 4);
 		float fPositionY = generateRandomValue(m_windowHeight, m_windowHeight / 4);
@@ -93,7 +93,7 @@ void EffectGenerator::generateExplosion() {
 			// generate random initial postion for the explosions withn the bounds of the screen
 			//generate particles with a speed range and allow for their alpha value to be manipulated
 			 generateParticles(iRandomAmount, fParticleRandomRadius, true, -400, 400, fPostionX, fPositionY,true);
-			  
+			 iRandomAmount = generateRandomValue(8, 5);
 
 		}
 		m_particleExplosionSound.play();
