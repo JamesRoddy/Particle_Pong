@@ -63,11 +63,9 @@ void EffectGenerator::handleParticleCollisions(Ball *ball) { // used to handle c
 				fCurrentBallVelocity *= m_currentParticles[i].getSpeedDecrease();// decrease the balls velocity when it hits a particle
 				ball->setSpeed(ball->getSpeed() * m_currentParticles[i].getSpeedDecrease()); // also dampen speed
 			}
-			else {
-				
-			}
 			
-			ball->setVelocity(-fCurrentBallVelocity);
+			
+			ball->setVelocity(-fCurrentBallVelocity); // invert vall velocity on collison with particle
 			m_currentParticles.erase(m_currentParticles.begin() + i); // erase the particle
 		}
 	 }

@@ -89,23 +89,19 @@ void Paddle::aiValidateScore(float fPlayerScore, float fAiScore,float fMaxScore)
 	float fAiPercent =  fAiScore / fMaxScore;
 	if (fPlayerPercent >= (fMaxScore-1/fMaxScore) || fPlayerPercent == fAiPercent) { // when the player reaches a score close to the winning or equals out the score
 		m_aISpeedMultiplier = m_baseAiSpeedMultiplier; // keep the ai speed at a consistent rate as to ensure that the player has a challenge still if they started out on the back foot and are now close to winning or equal
-		//std::cout << m_aISpeedMultiplier << std::endl;
 		return; // return as we dont modify the speed
 	}
 	
 	// if the player score is greater than when the last check took place and the percentage for the ai is not higher than the player
 	if (fPlayerScore > m_lastScoreCheckPlayer  &&!(m_aISpeedMultiplier >= m_maxAiSpeed || fAiPercent>=fPlayerPercent)) { 
-		//std::cout << "increment" << std::endl;
 
 		m_aISpeedMultiplier += m_aiSpeedController * fPlayerPercent; // increase the ai speed by the ai speed increment multipled by how close the player is to the socre
 
 	}
 	// if we havent hit our minmum speed and the player score is smaller than the ai score and the player score percentage isnt greater than or equal to the ai
 	else if (fAiScore > m_lastScoreCheckAi && !(m_aISpeedMultiplier <= m_minAiSpeed || fPlayerPercent>=fAiPercent)) {
-	/*	std::cout << "decrement" << std::endl;*/
-		m_aISpeedMultiplier -= m_aiSpeedController * fAiPercent; // decrmeent the score by the ai speed increment multipled by how close the ai is to max score
+		m_aISpeedMultiplier -= m_aiSpeedController * fAiPercent; // decrement the score by the ai speed increment multipled by how close the ai is to max score
 	}
-	//std::cout << m_aISpeedMultiplier << std::endl;
 	// reassign  new scores
 	m_lastScoreCheckPlayer = fPlayerScore;
 	m_lastScoreCheckAi = fAiScore;
