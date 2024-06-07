@@ -30,10 +30,10 @@ EffectGenerator::EffectGenerator(float fwindowwidth, float fwindowHeight) { // e
 	m_warningSound.setBuffer(m_warningSoundBuffer); // used to assging the buffer to the m_warning sound object
 	m_particleExplosionBuffer.loadFromFile(".\\assets\\audio\\particleExplosionSound.wav");
 	m_particleExplosionSound.setBuffer(m_particleExplosionBuffer);
-	particleCollisionSoundBuffer.loadFromFile(".\\assets\\audio\\beep.flac");
-	particleCollsionSound.setBuffer(particleCollisionSoundBuffer);
-	particleCollsionSound.setVolume(40.0f);
-	particleCollsionSound.setPitch(1.5);
+	m_particleCollisionSoundBuffer.loadFromFile(".\\assets\\audio\\beep.flac");
+	m_particleCollsionSound.setBuffer(m_particleCollisionSoundBuffer);
+	m_particleCollsionSound.setVolume(40.0f);
+	m_particleCollsionSound.setPitch(1.5);
 
 
 	m_eventTextFont.loadFromFile(".\\assets\\fonts\\digital-7.ttf"); // loading the font that will be applied to the event time display
@@ -71,7 +71,7 @@ void EffectGenerator::handleParticleCollisions(Ball *ball) { // used to handle c
 			
 			
 			ball->setVelocity(-fCurrentBallVelocity); // invert vall velocity on collison with particle
-			particleCollsionSound.play();
+			m_particleCollsionSound.play(); // play the sound effect associated with the collision
 			m_currentParticles.erase(m_currentParticles.begin() + i); // erase the particle
 		}
 	 }
@@ -99,7 +99,7 @@ void EffectGenerator::generateExplosion() {
 			// generate random initial postion for the explosions withn the bounds of the screen
 			//generate particles with a speed range and allow for their alpha value to be manipulated
 			 generateParticles(iRandomAmount, fParticleRandomRadius, true, -400, 400, fPostionX, fPositionY,true);
-			 iRandomAmount = generateRandomValue(8, 5);
+			 iRandomAmount = generateRandomValue(8, 6);
 
 		}
 		m_particleExplosionSound.play();
