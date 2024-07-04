@@ -1,4 +1,10 @@
-# Pong Coursework Starter Code
+# Particle Pong 
 
-You must download the Coursework folder containing the SFML library from LearningZone (previously Blackboard).
-You can then clone this repo in the pong folder
+Features:
+ray casting 
+2D collsion detection algorithms  
+particle system 
+Event management system
+line intersection algorithms 
+Object orintated approach
+
